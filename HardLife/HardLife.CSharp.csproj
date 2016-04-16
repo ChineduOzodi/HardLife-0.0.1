@@ -70,9 +70,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Dirt.cs" />
+    <Compile Include="Assets\Scripts\FresNoise.cs" />
     <Compile Include="Assets\Scripts\Ground.cs" />
+    <Compile Include="Assets\Scripts\NameGen.cs" />
+    <Compile Include="Assets\Scripts\NamesStrings.cs" />
+    <Compile Include="Assets\Scripts\Region.cs" />
+    <Compile Include="Assets\Scripts\TestWG.cs" />
+    <Compile Include="Assets\Scripts\Tile.cs" />
     <Compile Include="Assets\Scripts\Water.cs" />
-    <Compile Include="Assets\Scripts\WorldGenerator.cs" />
+    <Compile Include="Assets\Scripts\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
