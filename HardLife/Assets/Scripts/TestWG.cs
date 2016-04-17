@@ -16,7 +16,7 @@ public class TestWG : MonoBehaviour {
         timeSave = timeDelay;
         worldGen = new World();
         worldGen.GenerateMap();
-        worldGen.CreateWorld();
+        worldGen.PreviewWorld();
     }
 	
 	// Update is called once per frame
@@ -39,7 +39,7 @@ public class TestWG : MonoBehaviour {
             //    smoothIter = 0;
             //}
             worldGen.GenerateMap();
-            worldGen.CreateWorld();
+            worldGen.PreviewWorld();
             timeSave += timeDelay;
         }
 	

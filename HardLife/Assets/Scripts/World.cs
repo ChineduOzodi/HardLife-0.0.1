@@ -4,63 +4,100 @@ using System.Collections.Generic;
 using System;
 
 public class World : MonoBehaviour {
+    /// <summary>
+    /// The World Class that can generate and create a game world based on inputed parameters
+    /// </summary>
 
     public string worldName;
-    public int width;
-    public int height;
+    public int width = 100;
+    public int height = 80;
     [Range(0,100)]
-    public int randomFillPercent;
-    public string seed;
+    public int randomFillPercent = 52;
+    public string seed = null;
     public bool useRandomSeed;
+
+    public int maxLakeSize = 50;
+    public int maxIslandSize = 4;
+
+    public float[] mountainNC; //Mountain noise conversion scale
     public float mountainScale;
+    public float[] rainNC;
     public float rainScale;
+    public int numLayers;
+    public List<Region> regions;
 
-    int[,] baseMap;
-    int[,] mountainMap;
-    int[,] rainMap;
-    int[,] tempMap;
-    public GameObject whiteBlock;
-    public GameObject[] water;
-    public GameObject[] dirt;
+    public int[][,] mapLayers;
+    public string[] layerNames;
 
-    private Transform worldHolder = null;
     private int tileCount = 12;
-    private List<Region> regions;
+    private NameGen nameGen = new NameGen();
 
+    ///-----initializer(s)
     public World()
     {
-        randomFillPercent = 52;
-        seed = null;
-        height = 80;
-        width = 100;
         useRandomSeed = true;
+
+        float[] mountainNC = new float[] { .5f, .8f, 1f };
         mountainScale = 1f;
+        float[] rainNC = new float[] { .33f, .66f, 1f };
         rainScale = 1f;
+
+        string[] layerNames = { "Base Map", "Temperature Map", "Rain Map", "Mountain Map" };
+
+        SetLayers(layerNames);
         GenerateMap();
 
+
     }
-    public void GenerateMap()
+    //--------------Map Generation Functions----------------
+
+    /// <summary>
+    /// Generates Map based on layers, there currently needs to be at lease 4 layers
+    ///This includes a Base Map, Temperature Map, Rain Map, and Mountain Map
+    /// </summary>
+    public void GenerateMap(string name = null)
     {
-        
-        mainCam.orthographicSize = height / 2f;
+        if (useRandomSeed)
+        {
+            seed = Time.time.ToString();
+        }
 
-        baseMap = new int[width, height];
-        RandomFillMap();
-        SmoothMap(tileCount,2);
-        SmoothMap(tileCount,1);
+        if (name == null)
+            name = nameGen.GenerateWorldName(seed);
 
-        FresNoise noise = new FresNoise();
+        worldName = name;
 
-        mountainMap = new int[width, height];
-        mountainMap = noise.CalcNoise(width, height,new float[] { .5f, .8f, 1f }, seed,mountainScale);
-        rainMap = new int[width, height];
-        rainMap = noise.CalcNoise(width, height, new float[] { .33f, .66f, 1f }, seed, rainScale);
-        tempMap = new int[width, height];
-        GenerateTempMap(new float[] { .33f, .66f, 1f });
+        for (int i = 0; i < numLayers; i++)
+        {
+            string layerName = layerNames[i];
+            int[,] map = mapLayers[i];
+            FresNoise noise = new FresNoise();
 
+            if ( layerName == "Base Map")
+            {
+                mapLayers[i] = RandomFillMap(map);
+                SmoothMap(map, tileCount, 2);
+                SmoothMap(map, tileCount, 1);
+            }
+            else if (layerName == "Temperature Map")
+            {
+                map = GenerateTempMap(map, new float[] { .33f, .66f, 1f });
+            }
+            else if (layerName == "Mountain Map")
+            {
+                map = noise.CalcNoise(width, height, mountainNC, seed, mountainScale);
+            }
+            else if (layerName == "Rain Map")
+            {
+                map = noise.CalcNoise(width, height, rainNC, seed, rainScale);
+            }
+
+        }
+
+        GenerateRegions();
     }
 
-    private void GenerateTempMap(float[] heightMap)
+    private int[,] GenerateTempMap(int[,] tempMap, float[] heightMap)
     {
         FresNoise noise = new FresNoise();
         int max = height / 2;
@@ -78,17 +115,60 @@ public class World : MonoBehaviour {
                 }
             }
         }
-    }
 
-    List<Tile> GetRegionTiles(int startX, int StartY)
+        return tempMap;
+    }
+    ///------- Region Functions
+    ///
+    private void GenerateRegions()
+    {
+        int[,] baseMap = mapLayers[Array.IndexOf(layerNames, "Base Map")];
+
+        //Generate Land and Island Regions
+        List<Region> groundRegions = GetRegions(baseMap,1);
+
+        foreach (Region region in groundRegions)
+        {
+            if (region.tiles.Count <= maxIslandSize)
+            {
+                region.name += "Island";
+            }
+        }
+
+        //Generate Ocea and Sea Regions
+        List<Region> waterRegions = GetRegions(baseMap, 0);
+
+        foreach (Region region in waterRegions)
+        {
+            if (region.tiles.Count <= maxLakeSize)
+            {
+                region.name = "Lake" + region.name;
+            }
+        }
+
+        //foreach (List<Tile> groundRegion in groundRegions)
+        //{
+        //    if (groundRegion.Count < groundThresholdSize)
+        //    {
+        //        foreach (Tile tile in groundRegion)
+        //        {
+        //            baseMap[tile.tileX, tile.tileY] = 0;
+        //        }
+        //    }
+        //}
+
+    }
+    List<Tile> GetRegionTiles(int[,] baseMap, int startX, int StartY)
     {
         List<Tile> tiles = new List<Tile>();
         int[,] mapFlags = new int[width, height];
         int tileType = baseMap[startX, StartY];
 
+        string tileSeed = seed + startX + StartY;
+
         Queue<Tile> queue = new Queue<Tile>();
-        queue.Enqueue(new Tile(startX, StartY));
-        mapFlags[startX, StartY] = 1;
+        queue.Enqueue(new Tile(startX, StartY,tileSeed));
+        mapFlags[startX, StartY] = 1; //Flaged as part of region
 
         while (queue.Count > 0)
         {
@@ -103,8 +183,9 @@ public class World : MonoBehaviour {
                     {
                         if (mapFlags[x,y] == 0 && baseMap[x,y] == tileType)
                         {
+                            tileSeed = seed + x + y;
                             mapFlags[x,y] = 1;
-                            queue.Enqueue(new Tile(x, y));
+                            queue.Enqueue(new Tile(x, y, tileSeed));
                         }
                     }
                 }
@@ -114,9 +195,9 @@ public class World : MonoBehaviour {
         return tiles;
     }
 
-    List<List<Tile>> GetRegions(int tileType)
+    List<Region> GetRegions(int[,] baseMap, int tileType)
     {
-        List<List<Tile>> regions = new List<List<Tile>>();
+        List<Region> regions = new List<Region>();
         int[,] mapFlags = new int[width, height];
         for (int x = 0; x < width; x++)
         {
@@ -124,10 +205,12 @@ public class World : MonoBehaviour {
             {
                 if (mapFlags[x,y] == 0 && baseMap[x,y] == tileType) 
                 {
-                    List<Tile> newRegion = GetRegionTiles(x, y);
+                    string regSeed = seed + x + y;
+                    string newRegionName = nameGen.GenerateRegionName(regSeed);
+                    Region newRegion = new Region(GetRegionTiles(baseMap, x, y), newRegionName,tileType);
                     regions.Add(newRegion);
                     
-                    foreach (Tile tile in newRegion)
+                    foreach (Tile tile in newRegion.tiles)
                     {
                         mapFlags[tile.tileX, tile.tileY] = 1;
                     }
@@ -137,39 +220,29 @@ public class World : MonoBehaviour {
 
         return regions;
     }
-
-    void ProcessMap()
+    ///----------Helper Functions
+    ///
+    private void SetLayers(string[] layers)
     {
-        List<List<Tile>> groundRegions = GetRegions(1);
-        int groundThresholdSize = 2;
+        numLayers = layers.Length;
 
-        foreach (List<Tile> groundRegion in groundRegions)
+        for (int i = 0; i < numLayers; i++)
         {
-            if( groundRegion.Count < groundThresholdSize)
-            {
-                foreach (Tile tile in groundRegion)
-                {
-                    baseMap[tile.tileX, tile.tileY] = 0;
-                }
-            }
+            mapLayers[i] = new int[width, height];
         }
-
+        
     }
-
+    
     bool IsInMapRange (int x, int y)
-    {
-        if (x >= 0 && x < width && y >= 0 && y < height)
-            return true;
-        else
-            return false;
-    }
-
-    void RandomFillMap()
-    {
-        if (useRandomSeed)
         {
-            seed = Time.time.ToString();
+            if (x >= 0 && x < width && y >= 0 && y < height)
+                return true;
+            else
+                return false;
         }
+
+    int[,] RandomFillMap(int[,] baseMap)
+    {
 
         System.Random randNum = new System.Random(seed.GetHashCode());
         
@@ -183,15 +256,17 @@ public class World : MonoBehaviour {
                     baseMap[x, y] = (randNum.Next(0, 100) < randomFillPercent) ? 1 : 0;
             }
         }
+
+        return baseMap;
     }
 
-    public void SmoothMap(int tileCount, int lDist)
+    public int[,] SmoothMap(int[,] baseMap, int tileCount, int lDist)
     {
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
             {
-                int nbrWaterTiles = GetSurroundingWaterCount(x,y, lDist);
+                int nbrWaterTiles = GetSurroundingWaterCount(baseMap, x,y, lDist);
                 double powX = lDist * 2f + 1;
                 tileCount = (int)Math.Pow(powX, 2) / 2;
                 if (nbrWaterTiles > tileCount+1)
@@ -200,9 +275,11 @@ public class World : MonoBehaviour {
                     baseMap[x, y] = 1;
             }
         }
+
+        return baseMap;
     }
 
-    int GetSurroundingWaterCount (int gridX, int gridY, int lDist)
+    int GetSurroundingWaterCount (int[,] baseMap, int gridX, int gridY, int lDist)
     {
         int waterCount = 0;
         for (int nbrX = gridX - lDist; nbrX <=gridX + lDist; nbrX++)
@@ -228,90 +305,5 @@ public class World : MonoBehaviour {
         return waterCount;
     }
 
-    public void CreateWorld()
-    {
-        worldHolder = new GameObject("World").transform;
-
-        for (int x = 0; x < width; x++)
-        {
-                for (int y = 0; y < height; y++)
-                {
-
-                    GameObject toInstantiate = water[UnityEngine.Random.Range(0, water.Length)];
-
-                    if (baseMap[x,y] == 1)
-                    {
-                        toInstantiate = dirt[UnityEngine.Random.Range(0, dirt.Length)];
-                    }
-
-                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y), Quaternion.identity) as GameObject;
-
-                    instance.transform.SetParent(worldHolder);
-                }
-        }
-        
-    }
-
-    public void PreviewWorld(int[,] map = null, int max = 1)
-    {
-        if (map == null)
-        {
-            map = baseMap;
-        }
-        worldHolder = new GameObject("World").transform;
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                float num = (float)map[x, y] / (float)max;
-                Color col = new Color(num, num, num);
-                SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
-                rend.color = col;
-
-                GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
-
-                instance.transform.SetParent(worldHolder);
-            }
-        }
-
-    }
-
-    public void PreviewWorld(String name)
-    {
-        int[,] map = new int[width, height];
-        if (name == "Base")
-            map = baseMap;
-        else if (name == "Mountains")
-            map = mountainMap;
-        else if (name == "Rain")
-            map = rainMap;
-        else if (name == "Temp")
-            map = tempMap;
-
-        int max = 1;
-        worldHolder = new GameObject("World").transform;
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                float num = (float)map[x, y] / (float)max;
-                Color col = new Color(num, num, num);
-                SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
-                rend.color = col;
-
-                GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
-
-                instance.transform.SetParent(worldHolder);
-            }
-        }
-
-    }
-
-    public void DestroyWorld()
-    {
-        if (worldHolder != null)
-            Destroy(worldHolder.gameObject);
-    }
+    
 }

@@ -5,10 +5,14 @@ public class Tile {
 
     public int tileX;
     public int tileY;
+    public string regionName;
 
-    public Tile(int x, int y)
+    private string sd;
+
+    public Tile(int x, int y, string seed)
     {
         tileX = x;
         tileY = y;
+        sd = seed;
     }
 }

@@ -69,6 +69,7 @@ public class FresNoise
         }
         System.Random randNum = new System.Random(seed.GetHashCode());
 
+        
         float xOrg = randNum.Next();
         float yOrg = xOrg;
 
