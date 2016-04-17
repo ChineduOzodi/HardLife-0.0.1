@@ -15,7 +15,6 @@ public class NameGen {
     private Dictionary<string, List<char>> worldNameTable;
     private Dictionary<string, List<char>> regionNameTable;
     private Dictionary<string, List<char>> maleFirstNameTable;
-    private string sd = Time.time.ToString();
 
     // Use this for initialization
     public NameGen() {
@@ -29,19 +28,19 @@ public class NameGen {
     public string GenerateWorldName(string seed = null)
     {
         if (seed == null)
-            seed = sd;
+            seed = Time.time.ToString();
         return GenerateName(worldNameTable,seed);
     }
     public string GenerateRegionName(string seed = null)
     {
         if (seed == null)
-            seed = sd;
+            seed = Time.time.ToString();
         return GenerateName(regionNameTable,seed);
     }
     public string GenerateMaleFirstName(string seed = null)
     {
         if (seed == null)
-            seed = sd;
+            seed = Time.time.ToString();
         return GenerateName(maleFirstNameTable,seed);
     }
     /// <summary>
@@ -123,7 +122,8 @@ public class NameGen {
             seed = Time.time.ToString();
 
         System.Random randNum = new System.Random(seed.GetHashCode());
-        selectedKey = keyList[randNum.Next(keys.Count)];
+        int actualNum = randNum.Next(keyList.Count);
+        selectedKey = keyList[actualNum];
 
         return selectedKey;
     }

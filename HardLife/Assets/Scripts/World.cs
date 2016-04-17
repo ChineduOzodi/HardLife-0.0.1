@@ -17,14 +17,14 @@ public class World : MonoBehaviour {
     public bool useRandomSeed;
 
     public int maxLakeSize = 50;
-    public int maxIslandSize = 4;
+    public int maxIslandSize = 10;
 
     public float[] mountainNC; //Mountain noise conversion scale
     public float mountainScale;
     public float[] rainNC;
     public float rainScale;
     public int numLayers;
-    public List<Region> regions;
+    public Tile[,] tiles;
 
     public int[][,] mapLayers;
     public string[] layerNames;
@@ -37,15 +37,13 @@ public class World : MonoBehaviour {
     {
         useRandomSeed = true;
 
-        float[] mountainNC = new float[] { .5f, .8f, 1f };
-        mountainScale = 1f;
-        float[] rainNC = new float[] { .33f, .66f, 1f };
-        rainScale = 1f;
-
-        string[] layerNames = { "Base Map", "Temperature Map", "Rain Map", "Mountain Map" };
+        mountainNC = new float[3] { .5f, .75f, 1f };
+        mountainScale = 10f;
+        rainNC = new float[3] { .33f, .66f, 1f };
+        rainScale = 7f;
+        layerNames = new [] { "Base Map", "Temperature Map", "Rain Map", "Mountain Map" };
 
         SetLayers(layerNames);
-        GenerateMap();
 
 
     }
@@ -67,6 +65,8 @@ public class World : MonoBehaviour {
 
         worldName = name;
 
+        SetLayers(layerNames);
+
         for (int i = 0; i < numLayers; i++)
         {
             string layerName = layerNames[i];
@@ -76,20 +76,20 @@ public class World : MonoBehaviour {
             if ( layerName == "Base Map")
             {
                 mapLayers[i] = RandomFillMap(map);
-                SmoothMap(map, tileCount, 2);
-                SmoothMap(map, tileCount, 1);
+                SmoothMap(mapLayers[i], tileCount, 2);
+                SmoothMap(mapLayers[i], tileCount, 1);
             }
             else if (layerName == "Temperature Map")
             {
-                map = GenerateTempMap(map, new float[] { .33f, .66f, 1f });
+                map = GenerateTempMap(mapLayers[i], new float[] { .33f, .75f, 1f });
             }
             else if (layerName == "Mountain Map")
             {
-                map = noise.CalcNoise(width, height, mountainNC, seed, mountainScale);
+                mapLayers[i] = noise.CalcNoise(width, height, mountainNC, seed, mountainScale);
             }
             else if (layerName == "Rain Map")
             {
-                map = noise.CalcNoise(width, height, rainNC, seed, rainScale);
+                mapLayers[i] = noise.CalcNoise(width, height, rainNC, seed, rainScale);
             }
 
         }
@@ -101,17 +101,25 @@ public class World : MonoBehaviour {
     {
         FresNoise noise = new FresNoise();
         int max = height / 2;
+       
         for (int x = 0; x < width; x++)
         {
+            float hCount = 0f;
             for (int y = 0; y < height; y++)
             {
-                if (y <= height / 2)
+                if (y <= max)
                 {
-                    tempMap[x, y] = noise.ScaleFloatToInt(y/max,heightMap);
+                    float toFloat = hCount / (float)max;
+                    int scaledNum = noise.ScaleFloatToInt(toFloat, heightMap);
+                    tempMap[x, y] = scaledNum;
+                    hCount++;
                 }
                 else
                 {
-                    tempMap[x, y] = noise.ScaleFloatToInt((y - (y - max))/max, heightMap);
+                    float toFloat = hCount/ (float)max;
+                    int scaledNum = noise.ScaleFloatToInt(toFloat, heightMap);
+                    tempMap[x, y] = scaledNum;
+                    hCount--;
                 }
             }
         }
@@ -131,7 +139,7 @@ public class World : MonoBehaviour {
         {
             if (region.tiles.Count <= maxIslandSize)
             {
-                region.name += "Island";
+                region.name += " Island";
             }
         }
 
@@ -142,8 +150,24 @@ public class World : MonoBehaviour {
         {
             if (region.tiles.Count <= maxLakeSize)
             {
-                region.name = "Lake" + region.name;
+                region.name = "Lake " + region.name;
             }
+            else
+                region.name += " Ocean";
+        }
+
+        waterRegions.AddRange(groundRegions);
+        tiles = new Tile[width, height];
+
+        foreach(Region region in waterRegions)
+        {
+            foreach (Tile tile in region.tiles)
+            {
+                tile.region = region.name;
+                tiles[tile.x, tile.y] = tile;
+            }
+
+            //print(region.name + region.tiles.Count);
         }
 
         //foreach (List<Tile> groundRegion in groundRegions)
@@ -175,11 +199,11 @@ public class World : MonoBehaviour {
             Tile tile = queue.Dequeue();
             tiles.Add(tile);
 
-            for (int x = tile.tileX - 1; x <= tile.tileX + 1; x++)
+            for (int x = tile.x - 1; x <= tile.x + 1; x++)
             {
-                for (int y = tile.tileY - 1; y <= tile.tileY + 1; y++)
+                for (int y = tile.y - 1; y <= tile.y + 1; y++)
                 {
-                    if (IsInMapRange(x,y) && (x == tile.tileX || y == tile.tileY))
+                    if (IsInMapRange(x,y)) //&& (x == tile.x || y == tile.y))
                     {
                         if (mapFlags[x,y] == 0 && baseMap[x,y] == tileType)
                         {
@@ -212,7 +236,7 @@ public class World : MonoBehaviour {
                     
                     foreach (Tile tile in newRegion.tiles)
                     {
-                        mapFlags[tile.tileX, tile.tileY] = 1;
+                        mapFlags[tile.x, tile.y] = 1;
                     }
                 }
             }
@@ -225,6 +249,7 @@ public class World : MonoBehaviour {
     private void SetLayers(string[] layers)
     {
         numLayers = layers.Length;
+        mapLayers = new int[numLayers][,];
 
         for (int i = 0; i < numLayers; i++)
         {

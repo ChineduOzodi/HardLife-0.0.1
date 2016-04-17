@@ -11,11 +11,17 @@ public class WorldGen : World {
     public GameObject[] dirt;
 
     private Transform worldHolder = null;
+    private Camera mainCam;
 
     void Awake()
     {
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
+        DestroyWorld();
         GenerateMap();
+        //PreviewWorld("Temperature Map",2);
+        //PreviewWorld("Base Map", 1);
+        PreviewWorld();
 
     }
 
@@ -45,8 +51,11 @@ public class WorldGen : World {
 
     public void PreviewWorld(string layerName, int max = 1)
     {
-        int[,] map = world.mapLayers[Array.IndexOf(world.layerNames, "layerName")];
+        int[,] map = mapLayers[Array.IndexOf(layerNames, layerName)];
         worldHolder = new GameObject("World").transform;
+
+        mainCam.orthographicSize = height / 2f;
+        mainCam.transform.position = new Vector3(width / 2, height / 2, -10f);
 
         for (int x = 0; x < width; x++)
         {
@@ -68,28 +77,38 @@ public class WorldGen : World {
     /// Preview Map with the string name
     /// </summary>
     /// <param name="name"></param>
-    public void PreviewWorld(String name)
+    public void PreviewWorld()
     {
-        int[,] map = new int[width, height];
-        map = mapLayers[Array.IndexOf(layerNames, name)];
 
-        int max = 1;
-        worldHolder = new GameObject("World").transform;
+        mainCam.orthographicSize = height / 2f;
+        mainCam.transform.position = new Vector3(width / 2, height / 2, -10f);
 
-        for (int x = 0; x < width; x++)
+        for (int i = 0; i < layerNames.Length; i++)
         {
-            for (int y = 0; y < height; y++)
+            int[,] map = mapLayers[i];
+            int max = 2;
+            if (layerNames[i] == "Base Map")
+                maxIslandSize = 1;
+            
+            worldHolder = new GameObject(layerNames[i]).transform;
+
+            for (int x = 0; x < width; x++)
             {
-                float num = (float)map[x, y] / (float)max;
-                Color col = new Color(num, num, num);
-                SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
-                rend.color = col;
+                for (int y = 0; y < height; y++)
+                {
+                    float num = (float)map[x, y] / (float)max;
+                    Color col = new Color(num, num, num);
+                    SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
+                    rend.color = col;
 
-                GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
+                    GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
 
-                instance.transform.SetParent(worldHolder);
+                    instance.transform.SetParent(worldHolder);
+                }
             }
+
         }
+
 
     }
 

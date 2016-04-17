@@ -16,7 +16,7 @@ public class TestWG : MonoBehaviour {
         timeSave = timeDelay;
         worldGen = new World();
         worldGen.GenerateMap();
-        worldGen.PreviewWorld();
+        //worldGen.PreviewWorld();
     }
 	
 	// Update is called once per frame
@@ -25,7 +25,7 @@ public class TestWG : MonoBehaviour {
         //Deletes and creates new world ever timeDelay seconds
         if (Time.time > timeSave)
         {
-            worldGen.DestroyWorld();
+            //worldGen.DestroyWorld();
             //if (smoothIter <= mapSmooth)
             //{
             //    worldGen.SmoothMap(tileCount);
@@ -39,7 +39,7 @@ public class TestWG : MonoBehaviour {
             //    smoothIter = 0;
             //}
             worldGen.GenerateMap();
-            worldGen.PreviewWorld();
+            //worldGen.PreviewWorld();
             timeSave += timeDelay;
         }
 	

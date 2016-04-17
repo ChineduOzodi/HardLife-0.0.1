@@ -3,16 +3,33 @@ using System.Collections;
 
 public class Tile {
 
-    public int tileX;
-    public int tileY;
-    public string regionName;
+    public int x;
+    public int y;
+    public string region;
 
-    private string sd;
+    private string seed;
+
+    public Tile(int x, int y, string seed, string region)
+    {
+        this.x = x;
+        this.y = y;
+        this.seed = seed;
+        this.region = region;
+    }
 
     public Tile(int x, int y, string seed)
     {
-        tileX = x;
-        tileY = y;
-        sd = seed;
+        this.x = x;
+        this.y = y;
+        this.seed = seed;
     }
+
+    public Tile()
+    {
+        x = 0;
+        y = 0;
+        seed = null;
+    }
+
+
 }
