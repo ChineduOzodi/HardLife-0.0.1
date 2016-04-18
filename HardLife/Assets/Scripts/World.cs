@@ -67,13 +67,102 @@ public class World : MonoBehaviour {
 
         SetLayers(layerNames);
 
+        GenerateLayers();
+        GenerateRegions();
+        GenerateBiomes();
+        
+
+    }
+
+    private void GenerateBiomes()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if(mapLayers[Array.IndexOf(layerNames, "Base Map")][width, height] == 1)
+                {
+                    
+                    int tileTemp = mapLayers[Array.IndexOf(layerNames, "Temperature Map")][width, height];
+                    int tileRain = mapLayers[Array.IndexOf(layerNames, "Rain Map")][width, height];
+
+                    tiles[width, height].id = BiomeID(tileTemp,tileRain);
+                    
+
+                }  
+            }
+        }
+    }
+    /// <summary>
+    /// Returns biome ID based on matrix
+    /// </summary>
+    /// <param name="tileTemp"> int of tile temp from 0 to 2</param>
+    /// <param name="tileRain">int of tile rain amount from 0 to 2</param>
+    /// <returns></returns>
+    private int BiomeID(int tileTemp, int tileRain)
+    {
+        int biomeID = 10;
+        int ice = 1;
+        int grass = 2;
+        int jungle = 3;
+        int desert = 4;
+        if (tileTemp == 0)
+        {
+            if (tileRain == 0)
+            {
+                return ice;
+            }
+            else if (tileRain == 1)
+            {
+                return grass;
+            }
+            else if (tileRain == 2)
+            {
+                return ice;
+            }
+        }
+        else if (tileTemp == 1)
+        {
+            if (tileRain == 0)
+            {
+                return grass;
+            }
+            else if (tileRain == 1)
+            {
+                return grass;
+            }
+            else if (tileRain == 2)
+            {
+                return jungle;
+            }
+        }
+        else if (tileTemp == 2)
+        {
+            if (tileRain == 0)
+            {
+                return desert;
+            }
+            else if (tileRain == 1)
+            {
+                return desert;
+            }
+            else if (tileRain == 2)
+            {
+                return jungle;
+            }
+        }
+        return biomeID;
+    }
+
+    private void GenerateLayers()
+    {
         for (int i = 0; i < numLayers; i++)
         {
             string layerName = layerNames[i];
             int[,] map = mapLayers[i];
             FresNoise noise = new FresNoise();
 
-            if ( layerName == "Base Map")
+            if (layerName == "Base Map")
             {
                 mapLayers[i] = RandomFillMap(map);
                 SmoothMap(mapLayers[i], tileCount, 2);
@@ -93,8 +182,6 @@ public class World : MonoBehaviour {
             }
 
         }
-
-        GenerateRegions();
     }
 
     private int[,] GenerateTempMap(int[,] tempMap, float[] heightMap)
