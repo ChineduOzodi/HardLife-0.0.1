@@ -11,38 +11,35 @@ public class World : MonoBehaviour {
     public string worldName;
     public int width = 100;
     public int height = 80;
-    [Range(0,100)]
-    public int randomFillPercent = 52;
+    [Range(45,60)]
+    public int randomFillPercent = 55;
+
     public string seed = null;
-    public bool useRandomSeed;
 
-    public int maxLakeSize = 50;
-    public int maxIslandSize = 10;
-
-    public float[] mountainNC; //Mountain noise conversion scale
-    public float mountainScale;
-    public float[] rainNC;
-    public float rainScale;
-    public int numLayers;
     public Tile[,] tiles;
 
-    public int[][,] mapLayers;
-    public string[] layerNames;
+    protected int[][,] mapLayers;
+    protected string[] layerNames;
 
-    private int tileCount = 12;
+    private float[] mountainNC =  { .5f, .75f, 1f }; //Mountain noise conversion scale
+    private float mountainScale = 10f;
+    private float[] rainNC = { .33f, .66f, 1f };
+    private float rainScale = 7f;
+    private float[] tempNC = { .33f, .5f, 1f };
+    private float tempScale = 5f;
+    private int numLayers;
+    
+    
+    private int maxLakeSize;
+    private int maxIslandSize;
     private NameGen nameGen = new NameGen();
 
     ///-----initializer(s)
     public World()
     {
-        useRandomSeed = true;
-
-        mountainNC = new float[3] { .5f, .75f, 1f };
-        mountainScale = 10f;
-        rainNC = new float[3] { .33f, .66f, 1f };
-        rainScale = 7f;
+        maxLakeSize = (width * height) / 200;
+        maxIslandSize = (width * height) / 1000;    
         layerNames = new [] { "Base Map", "Temperature Map", "Rain Map", "Mountain Map" };
-
         SetLayers(layerNames);
 
 
@@ -55,13 +52,16 @@ public class World : MonoBehaviour {
     /// </summary>
     public void GenerateMap(string name = null)
     {
-        if (useRandomSeed)
+        if (seed == null || seed == "")
         {
             seed = Time.time.ToString();
         }
 
         if (name == null)
+        {
+
             name = nameGen.GenerateWorldName(seed);
+        }
 
         worldName = name;
 
@@ -80,16 +80,18 @@ public class World : MonoBehaviour {
         {
             for (int y = 0; y < height; y++)
             {
-                if(mapLayers[Array.IndexOf(layerNames, "Base Map")][width, height] == 1)
+
+                if(mapLayers[Array.IndexOf(layerNames, "Base Map")][x, y] == 1)
                 {
                     
-                    int tileTemp = mapLayers[Array.IndexOf(layerNames, "Temperature Map")][width, height];
-                    int tileRain = mapLayers[Array.IndexOf(layerNames, "Rain Map")][width, height];
+                    int tileTemp = mapLayers[Array.IndexOf(layerNames, "Temperature Map")][x, y];
+                    int tileRain = mapLayers[Array.IndexOf(layerNames, "Rain Map")][x, y];
 
-                    tiles[width, height].id = BiomeID(tileTemp,tileRain);
-                    
+                    tiles[x, y].id = BiomeID(tileTemp,tileRain);
+                }
+                else
+                    tiles[x, y].id = 0;
 
-                }  
             }
         }
     }
@@ -114,7 +116,7 @@ public class World : MonoBehaviour {
             }
             else if (tileRain == 1)
             {
-                return grass;
+                return ice;
             }
             else if (tileRain == 2)
             {
@@ -144,7 +146,7 @@ public class World : MonoBehaviour {
             }
             else if (tileRain == 1)
             {
-                return desert;
+                return grass;
             }
             else if (tileRain == 2)
             {
@@ -159,22 +161,32 @@ public class World : MonoBehaviour {
         for (int i = 0; i < numLayers; i++)
         {
             string layerName = layerNames[i];
-            int[,] map = mapLayers[i];
             FresNoise noise = new FresNoise();
 
             if (layerName == "Base Map")
             {
-                mapLayers[i] = RandomFillMap(map);
-                SmoothMap(mapLayers[i], tileCount, 2);
-                SmoothMap(mapLayers[i], tileCount, 1);
+                mapLayers[i] = RandomFillMap(mapLayers[i]);
+                SmoothMap(mapLayers[i], 2);
+                SmoothMap(mapLayers[i], 1);
             }
             else if (layerName == "Temperature Map")
             {
-                map = GenerateTempMap(mapLayers[i], new float[] { .33f, .75f, 1f });
+                mapLayers[i] = GenerateTempMap(noise.CalcNoise(width, height, seed, tempScale), tempNC);
             }
             else if (layerName == "Mountain Map")
             {
-                mapLayers[i] = noise.CalcNoise(width, height, mountainNC, seed, mountainScale);
+                int[,] map = noise.CalcNoise(width, height, mountainNC, seed, mountainScale);
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        if (mapLayers[Array.IndexOf(layerNames, "Base Map")][x,y] == 1)
+                        {
+                                mapLayers[i][x, y] = map[x, y];
+                        }
+                    }
+                }
+
             }
             else if (layerName == "Rain Map")
             {
@@ -184,11 +196,11 @@ public class World : MonoBehaviour {
         }
     }
 
-    private int[,] GenerateTempMap(int[,] tempMap, float[] heightMap)
+    private int[,] GenerateTempMap(float[,] tempMap, float[] heightMap)
     {
         FresNoise noise = new FresNoise();
         int max = height / 2;
-       
+        int[,] map = new int[width, height];
         for (int x = 0; x < width; x++)
         {
             float hCount = 0f;
@@ -197,21 +209,25 @@ public class World : MonoBehaviour {
                 if (y <= max)
                 {
                     float toFloat = hCount / (float)max;
-                    int scaledNum = noise.ScaleFloatToInt(toFloat, heightMap);
-                    tempMap[x, y] = scaledNum;
+                    float adjustedFloat = (toFloat + .5f * tempMap[x, y])/1.5f;
+                    int scaledNum = noise.ScaleFloatToInt(adjustedFloat, heightMap);
+                    
+                    map[x, y] = scaledNum;
                     hCount++;
                 }
                 else
                 {
                     float toFloat = hCount/ (float)max;
-                    int scaledNum = noise.ScaleFloatToInt(toFloat, heightMap);
-                    tempMap[x, y] = scaledNum;
+                    float adjustedFloat = (toFloat + .5f * tempMap[x, y]) / 1.5f;
+                    int scaledNum = noise.ScaleFloatToInt(adjustedFloat, heightMap);
+
+                    map[x, y] = scaledNum;
                     hCount--;
                 }
             }
         }
 
-        return tempMap;
+        return map;
     }
     ///------- Region Functions
     ///
@@ -372,7 +388,7 @@ public class World : MonoBehaviour {
         return baseMap;
     }
 
-    public int[,] SmoothMap(int[,] baseMap, int tileCount, int lDist)
+    public int[,] SmoothMap(int[,] baseMap, int lDist)
     {
         for (int y = 0; y < height; y++)
         {
@@ -380,7 +396,7 @@ public class World : MonoBehaviour {
             {
                 int nbrWaterTiles = GetSurroundingWaterCount(baseMap, x,y, lDist);
                 double powX = lDist * 2f + 1;
-                tileCount = (int)Math.Pow(powX, 2) / 2;
+                int tileCount = (int)Math.Pow(powX, 2) / 2;
                 if (nbrWaterTiles > tileCount+1)
                     baseMap[x, y] = 0;
                 else if (nbrWaterTiles < tileCount-1)
@@ -390,7 +406,14 @@ public class World : MonoBehaviour {
 
         return baseMap;
     }
-
+    /// <summary>
+    /// returns the number of surrounding water (int 0) tiles there are around a lDist radius of int from an int array
+    /// </summary>
+    /// <param name="baseMap">map with ints</param>
+    /// <param name="gridX">position x to check</param>
+    /// <param name="gridY">position y to check</param>
+    /// <param name="lDist">distance from x,y to check</param>
+    /// <returns></returns>
     int GetSurroundingWaterCount (int[,] baseMap, int gridX, int gridY, int lDist)
     {
         int waterCount = 0;

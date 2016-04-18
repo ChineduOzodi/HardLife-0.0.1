@@ -27,19 +27,19 @@ public class NameGen {
 
     public string GenerateWorldName(string seed = null)
     {
-        if (seed == null)
+        if (seed == null || seed == "")
             seed = Time.time.ToString();
         return GenerateName(worldNameTable,seed);
     }
     public string GenerateRegionName(string seed = null)
     {
-        if (seed == null)
+        if (seed == null || seed == "")
             seed = Time.time.ToString();
         return GenerateName(regionNameTable,seed);
     }
     public string GenerateMaleFirstName(string seed = null)
     {
-        if (seed == null)
+        if (seed == null || seed == "")
             seed = Time.time.ToString();
         return GenerateName(maleFirstNameTable,seed);
     }

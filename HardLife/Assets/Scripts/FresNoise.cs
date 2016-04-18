@@ -31,7 +31,7 @@ public class FresNoise
         return map;
     }
 
-    public float[,] CalcNoise(int pixWidth, int pixHeight, string seed = null, float scale = 1f)
+    public float[,] CalcNoise(int pixWidth, int pixHeight, string seed = null, float scale = 10f)
     {
         if (seed == null)
         {
@@ -39,7 +39,7 @@ public class FresNoise
         }
         System.Random randNum = new System.Random(seed.GetHashCode());
 
-        float xOrg = randNum.Next();
+        float xOrg = randNum.Next(pixHeight);
         float yOrg = xOrg;
 
         float[,] map = new float[pixWidth, pixHeight];
@@ -49,8 +49,8 @@ public class FresNoise
             int x = 0;
             while (x < pixWidth)
             {
-                float xCoord = xOrg + x / pixWidth * scale;
-                float yCoord = yOrg + y / pixHeight * scale;
+                float xCoord = xOrg + (float)x / (float)pixWidth * scale;
+                float yCoord = yOrg + (float)y / (float)pixHeight * scale;
                 float sample = Mathf.PerlinNoise(xCoord, yCoord);
                 map[x, y] = sample;
                 x++;
@@ -61,7 +61,7 @@ public class FresNoise
         return map;
     }
 
-    public int[,] CalcNoise(int pixWidth, int pixHeight,float[] heightMap, string seed = null, float scale = 100f)
+    public int[,] CalcNoise(int pixWidth, int pixHeight,float[] heightMap, string seed = null, float scale = 10f)
     {
         if (seed == null)
         {
@@ -70,7 +70,7 @@ public class FresNoise
         System.Random randNum = new System.Random(seed.GetHashCode());
 
 
-        float xOrg = 0f; // randNum.Next();
+        float xOrg = randNum.Next(pixHeight);
         float yOrg = xOrg;
 
         int[,] map = new int[pixWidth, pixHeight];
