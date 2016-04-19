@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class WorldGen : MonoBehaviour {
 
-    public new World world = new World();
+    public World world = new World();
+    public LocalMapGen localMapGen;
     public GameObject whiteBlock;
     public GameObject[] water;
     public GameObject[] ice;
@@ -16,11 +17,15 @@ public class WorldGen : MonoBehaviour {
     public GameObject[] hill;
     public GameObject[] mountain;
     public string[,] regionNames;
+    public LocalMap[,] localMaps;
 
     public Canvas createWorldMenu;
     public Text infoText;
     public Text worldNameText;
     public InputField seedInput;
+    public Button createLocalMapButton;
+    bool tileSelected = false;
+    Coord selectedTile;
 
     public WorldTile[,] tiles;
     string[] tType = { "Flat", "Hills", "Mountains" };
@@ -29,12 +34,13 @@ public class WorldGen : MonoBehaviour {
     private int maxLakeSize;
     private int maxIslandSize;
     private GameObject[][] biomeSprites;
-    private Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
+    public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
     private Camera mainCam;
     private GameManager gameManager;
 
     void Awake()
     {
+        localMapGen = gameObject.GetComponent<LocalMapGen>();
         gameManager = gameObject.GetComponent<GameManager>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         createWorldMenu.gameObject.SetActive(false);
@@ -131,6 +137,11 @@ public class WorldGen : MonoBehaviour {
         buildMountains();
     }
 
+    public void CreateLocalMap()
+    {
+        localMaps[selectedTile.x, selectedTile.y] = localMapGen.CreateLocalMap(selectedTile);
+    } 
+
     private void buildMountains()
     {
         layers["Mountains"] = new GameObject("Mountains").transform;
@@ -159,6 +170,7 @@ public class WorldGen : MonoBehaviour {
 
     void SendInfo(int[] coord)
     {
+        selectedTile = new Coord(coord[0], coord[1]);
         string terrain = tType[world.mapLayers[Array.IndexOf(world.layerNames, "Mountain Map")][coord[0], coord[1]]];
         string rain = aveRain[world.mapLayers[Array.IndexOf(world.layerNames, "Rain Map")][coord[0], coord[1]]];
         string info = "Region Name: " + regionNames[coord[0], coord[1]];
@@ -166,6 +178,22 @@ public class WorldGen : MonoBehaviour {
         info += "\nAverage Temperature: " + world.aveTempMap[coord[0], coord[1]] + " C (" + (world.aveTempMap[coord[0], coord[1]] - tempYearRange) + " - " + (world.aveTempMap[coord[0], coord[1]] + tempYearRange) + ")";
         info += "\nAverage Rain: " + rain;
         infoText.text = info;
+    }
+
+    void ToggleTileSelected()
+    {
+        if (tileSelected)
+        {
+            createLocalMapButton.interactable = false;
+            gameObject.transform.localScale = new Vector3(1, 1);
+            tileSelected = false;
+        }
+        else
+        {
+            createLocalMapButton.interactable = true;
+            tileSelected = true;
+        }
+            
     }
 
     private void buildBiome()

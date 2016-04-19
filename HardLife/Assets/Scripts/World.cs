@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System;
 
 [Serializable]
-public class World {
+public class World{
     /// <summary>
     /// The World Class that can generate and create a game world based on inputed parameters
     /// </summary>
 
     public string worldName;
+    public int saveNum = 1;
+
     public int width = 140;
     public int height = 80;
     [Range(45, 60)]
-    public int randomFillPercent = 55;
-    public int saveNum = 1;
-
+    public int randomFillPercent = 53;
     public string seed = null;
 
     int iceID = 1;
@@ -28,6 +28,8 @@ public class World {
     int[] tempMapModMountains = { 0, -2, -4};
     int[] biomeTemps = { 15, -5, 15, 20, 25 };
     public int[,] aveTempMap;
+
+    
 
     public bool useRandomSeed = true;
     public int[][,] mapLayers;
@@ -270,20 +272,20 @@ public class World {
         }
         
     }
-    
-    public bool IsInMapRange (int x, int y)
-        {
-            if (x >= 0 && x < width && y >= 0 && y < height)
-                return true;
-            else
-                return false;
-        }
 
-    int[,] RandomFillMap(int[,] baseMap)
+    public bool IsInMapRange(int x, int y)
+    {
+        if (x >= 0 && x < width && y >= 0 && y < height)
+            return true;
+        else
+            return false;
+    }
+
+    internal int[,] RandomFillMap(int[,] baseMap)
     {
 
         System.Random randNum = new System.Random(seed.GetHashCode());
-        
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -304,12 +306,12 @@ public class World {
         {
             for (int x = 0; x < width; x++)
             {
-                int nbrWaterTiles = GetSurroundingWaterCount(baseMap, x,y, lDist);
+                int nbrWaterTiles = GetSurroundingWaterCount(baseMap, x, y, lDist);
                 double powX = lDist * 2f + 1;
                 int tileCount = (int)Math.Pow(powX, 2) / 2;
-                if (nbrWaterTiles > tileCount+1)
+                if (nbrWaterTiles > tileCount + 1)
                     baseMap[x, y] = 0;
-                else if (nbrWaterTiles < tileCount-1)
+                else if (nbrWaterTiles < tileCount - 1)
                     baseMap[x, y] = 1;
             }
         }
@@ -324,14 +326,14 @@ public class World {
     /// <param name="gridY">position y to check</param>
     /// <param name="lDist">distance from x,y to check</param>
     /// <returns></returns>
-    int GetSurroundingWaterCount (int[,] baseMap, int gridX, int gridY, int lDist)
+    int GetSurroundingWaterCount(int[,] baseMap, int gridX, int gridY, int lDist)
     {
         int waterCount = 0;
-        for (int nbrX = gridX - lDist; nbrX <=gridX + lDist; nbrX++)
+        for (int nbrX = gridX - lDist; nbrX <= gridX + lDist; nbrX++)
         {
             for (int nbrY = gridY - lDist; nbrY <= gridY + lDist; nbrY++)
             {
-                if (IsInMapRange(nbrX,nbrY))
+                if (IsInMapRange(nbrX, nbrY))
                 {
                     if (nbrX != gridX || nbrY != gridY)
                     {
@@ -349,5 +351,5 @@ public class World {
 
         return waterCount;
     }
-    
+
 }

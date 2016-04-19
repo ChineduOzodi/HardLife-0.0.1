@@ -7,6 +7,8 @@ public class Tile {
 
     public int x;
     public int y;
+    public int width;
+    public int height;
     public string region;
     public int id;
 

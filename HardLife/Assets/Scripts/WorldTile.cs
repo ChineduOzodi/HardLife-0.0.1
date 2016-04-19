@@ -10,6 +10,7 @@ public class WorldTile : MonoBehaviour {
     public string region;
     public string seed;
     public int[] coord;
+    bool tileSelected = false;
 
     private GameManager gameManager;
 
@@ -30,8 +31,42 @@ public class WorldTile : MonoBehaviour {
 
     void OnMouseEnter()
     {
-        gameManager.SendMessage("SendInfo", coord);
-        //print("Found Mouse");
-        //print(coord);
+        if (!tileSelected)
+        {
+            gameManager.SendMessage("SendInfo", coord);
+            //print("Found Mouse");
+            //print(coord);
+            //gameObject.transform.localScale = new Vector3(1.25f, 1.25f);
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(.8f, .8f, .8f);
+        }
+        
+    }
+    void OnMouseExit()
+    {
+        if (!tileSelected)
+        {
+            gameObject.transform.localScale = new Vector3(1, 1);
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+        }
+        
+    }
+    void OnMouseDown()
+    {
+        gameObject.transform.localScale = new Vector3(1, 1);
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
+        gameManager.worldGen.layers["Biomes"].BroadcastMessage("ToggleTileSelected");
+        gameManager.worldGen.SendMessage("ToggleTileSelected");
+        //gameObject.GetComponentInParent<Transform>().BroadcastMessage("ToggleTileSelected");
+
+    }
+    void ToggleTileSelected()
+    {
+        if (tileSelected)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+            tileSelected = false;
+        }
+        else
+            tileSelected = true;
     }
 }
