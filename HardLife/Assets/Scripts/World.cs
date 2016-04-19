@@ -3,43 +3,50 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class World : MonoBehaviour {
+[Serializable]
+public class World {
     /// <summary>
     /// The World Class that can generate and create a game world based on inputed parameters
     /// </summary>
 
     public string worldName;
-    public int width = 100;
+    public int width = 140;
     public int height = 80;
-    [Range(45,60)]
+    [Range(45, 60)]
     public int randomFillPercent = 55;
+    public int saveNum = 1;
 
     public string seed = null;
 
-    public Tile[,] tiles;
+    int iceID = 1;
+    int grassID = 2;
+    int jungleID = 3;
+    int desertID = 4;
 
-    protected int[][,] mapLayers;
-    protected string[] layerNames;
+    int[] tempMapModTemp = { -10, -4, 2};
+    int[] tempMapModRain = { 3, 0, -3 };
+    int[] tempMapModMountains = { 0, -2, -4};
+    int[] biomeTemps = { 15, -5, 15, 20, 25 };
+    public int[,] aveTempMap;
 
-    private float[] mountainNC =  { .5f, .75f, 1f }; //Mountain noise conversion scale
+    public bool useRandomSeed = true;
+    public int[][,] mapLayers;
+    public string[] layerNames;
+    
+    private float[] mountainNC =  { .5f, .75f}; //Mountain noise conversion scale
     private float mountainScale = 10f;
-    private float[] rainNC = { .33f, .66f, 1f };
+    private float[] rainNC = { .33f, .66f};
     private float rainScale = 7f;
-    private float[] tempNC = { .33f, .5f, 1f };
+    private float[] tempNC = { .33f, .5f};
     private float tempScale = 5f;
     private int numLayers;
     
-    
-    private int maxLakeSize;
-    private int maxIslandSize;
-    private NameGen nameGen = new NameGen();
+    public NameGen nameGen = new NameGen();
 
     ///-----initializer(s)
     public World()
-    {
-        maxLakeSize = (width * height) / 200;
-        maxIslandSize = (width * height) / 1000;    
-        layerNames = new [] { "Base Map", "Temperature Map", "Rain Map", "Mountain Map" };
+    {    
+        layerNames = new [] { "Base Map", "Temperature Map", "Rain Map", "Mountain Map", "Biome Map"};
         SetLayers(layerNames);
 
 
@@ -68,32 +75,50 @@ public class World : MonoBehaviour {
         SetLayers(layerNames);
 
         GenerateLayers();
-        GenerateRegions();
-        GenerateBiomes();
-        
+        GenerateAverageTemp();        
 
     }
 
-    private void GenerateBiomes()
+    private void GenerateAverageTemp()
     {
+        aveTempMap = new int[width, height];
+        int[,] tempMap = mapLayers[Array.IndexOf(layerNames, "Temperature Map")];
+        int[,] biomeMap = mapLayers[Array.IndexOf(layerNames, "Biome Map")];
+        int[,] rainMap = mapLayers[Array.IndexOf(layerNames, "Rain Map")];
+        int[,] mMap = mapLayers[Array.IndexOf(layerNames, "Mountain Map")];
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                aveTempMap[x, y] = tempMapModTemp[tempMap[x,y]] + tempMapModRain[rainMap[x, y]] + biomeTemps[biomeMap[x,y]] + tempMapModMountains[mMap[x,y]];
+            }
+            
+        }
+    }
+
+    private int[,] GenerateBiomes()
+    {
+        int[,] map = new int[width, height];
+        int[,] baseMap = mapLayers[Array.IndexOf(layerNames, "Base Map")];
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
 
-                if(mapLayers[Array.IndexOf(layerNames, "Base Map")][x, y] == 1)
+                if( baseMap[x, y] == 1)
                 {
                     
                     int tileTemp = mapLayers[Array.IndexOf(layerNames, "Temperature Map")][x, y];
                     int tileRain = mapLayers[Array.IndexOf(layerNames, "Rain Map")][x, y];
 
-                    tiles[x, y].id = BiomeID(tileTemp,tileRain);
+                    map[x, y] = BiomeID(tileTemp,tileRain);
                 }
                 else
-                    tiles[x, y].id = 0;
+                    map[x, y] = 0;
 
             }
         }
+        return map;
     }
     /// <summary>
     /// Returns biome ID based on matrix
@@ -104,53 +129,49 @@ public class World : MonoBehaviour {
     private int BiomeID(int tileTemp, int tileRain)
     {
         int biomeID = 10;
-        int ice = 1;
-        int grass = 2;
-        int jungle = 3;
-        int desert = 4;
         if (tileTemp == 0)
         {
             if (tileRain == 0)
             {
-                return ice;
+                return iceID;
             }
             else if (tileRain == 1)
             {
-                return ice;
+                return iceID;
             }
             else if (tileRain == 2)
             {
-                return ice;
+                return iceID;
             }
         }
         else if (tileTemp == 1)
         {
             if (tileRain == 0)
             {
-                return grass;
+                return grassID;
             }
             else if (tileRain == 1)
             {
-                return grass;
+                return grassID;
             }
             else if (tileRain == 2)
             {
-                return jungle;
+                return jungleID;
             }
         }
         else if (tileTemp == 2)
         {
             if (tileRain == 0)
             {
-                return desert;
+                return desertID;
             }
             else if (tileRain == 1)
             {
-                return grass;
+                return grassID;
             }
             else if (tileRain == 2)
             {
-                return jungle;
+                return jungleID;
             }
         }
         return biomeID;
@@ -192,6 +213,10 @@ public class World : MonoBehaviour {
             {
                 mapLayers[i] = noise.CalcNoise(width, height, rainNC, seed, rainScale);
             }
+            else if (layerName == "Biome Map")
+            {
+                mapLayers[i] = GenerateBiomes();
+            }
 
         }
     }
@@ -231,122 +256,7 @@ public class World : MonoBehaviour {
     }
     ///------- Region Functions
     ///
-    private void GenerateRegions()
-    {
-        int[,] baseMap = mapLayers[Array.IndexOf(layerNames, "Base Map")];
-
-        //Generate Land and Island Regions
-        List<Region> groundRegions = GetRegions(baseMap,1);
-
-        foreach (Region region in groundRegions)
-        {
-            if (region.tiles.Count <= maxIslandSize)
-            {
-                region.name += " Island";
-            }
-        }
-
-        //Generate Ocea and Sea Regions
-        List<Region> waterRegions = GetRegions(baseMap, 0);
-
-        foreach (Region region in waterRegions)
-        {
-            if (region.tiles.Count <= maxLakeSize)
-            {
-                region.name = "Lake " + region.name;
-            }
-            else
-                region.name += " Ocean";
-        }
-
-        waterRegions.AddRange(groundRegions);
-        tiles = new Tile[width, height];
-
-        foreach(Region region in waterRegions)
-        {
-            foreach (Tile tile in region.tiles)
-            {
-                tile.region = region.name;
-                tiles[tile.x, tile.y] = tile;
-            }
-
-            //print(region.name + region.tiles.Count);
-        }
-
-        //foreach (List<Tile> groundRegion in groundRegions)
-        //{
-        //    if (groundRegion.Count < groundThresholdSize)
-        //    {
-        //        foreach (Tile tile in groundRegion)
-        //        {
-        //            baseMap[tile.tileX, tile.tileY] = 0;
-        //        }
-        //    }
-        //}
-
-    }
-    List<Tile> GetRegionTiles(int[,] baseMap, int startX, int StartY)
-    {
-        List<Tile> tiles = new List<Tile>();
-        int[,] mapFlags = new int[width, height];
-        int tileType = baseMap[startX, StartY];
-
-        string tileSeed = seed + startX + StartY;
-
-        Queue<Tile> queue = new Queue<Tile>();
-        queue.Enqueue(new Tile(startX, StartY,tileSeed));
-        mapFlags[startX, StartY] = 1; //Flaged as part of region
-
-        while (queue.Count > 0)
-        {
-            Tile tile = queue.Dequeue();
-            tiles.Add(tile);
-
-            for (int x = tile.x - 1; x <= tile.x + 1; x++)
-            {
-                for (int y = tile.y - 1; y <= tile.y + 1; y++)
-                {
-                    if (IsInMapRange(x,y)) //&& (x == tile.x || y == tile.y))
-                    {
-                        if (mapFlags[x,y] == 0 && baseMap[x,y] == tileType)
-                        {
-                            tileSeed = seed + x + y;
-                            mapFlags[x,y] = 1;
-                            queue.Enqueue(new Tile(x, y, tileSeed));
-                        }
-                    }
-                }
-            }
-        }
-
-        return tiles;
-    }
-
-    List<Region> GetRegions(int[,] baseMap, int tileType)
-    {
-        List<Region> regions = new List<Region>();
-        int[,] mapFlags = new int[width, height];
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                if (mapFlags[x,y] == 0 && baseMap[x,y] == tileType) 
-                {
-                    string regSeed = seed + x + y;
-                    string newRegionName = nameGen.GenerateRegionName(regSeed);
-                    Region newRegion = new Region(GetRegionTiles(baseMap, x, y), newRegionName,tileType);
-                    regions.Add(newRegion);
-                    
-                    foreach (Tile tile in newRegion.tiles)
-                    {
-                        mapFlags[tile.x, tile.y] = 1;
-                    }
-                }
-            }
-        }
-
-        return regions;
-    }
+    
     ///----------Helper Functions
     ///
     private void SetLayers(string[] layers)
@@ -361,7 +271,7 @@ public class World : MonoBehaviour {
         
     }
     
-    bool IsInMapRange (int x, int y)
+    public bool IsInMapRange (int x, int y)
         {
             if (x >= 0 && x < width && y >= 0 && y < height)
                 return true;
@@ -439,6 +349,5 @@ public class World : MonoBehaviour {
 
         return waterCount;
     }
-
     
 }

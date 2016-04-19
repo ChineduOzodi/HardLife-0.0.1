@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class Region {
 
-    public List<Tile> tiles;
+    public List<Coord> tiles;
     public string name;
-    int tileType = 1;
+    public int tileType = 1;
 
-    public Region(List<Tile> theTiles, string regionName, int typeOfTile = 1)
+    public Region(List<Coord> theTiles, string regionName, int typeOfTile = 1)
     {
         tiles = theTiles;
         name = regionName;

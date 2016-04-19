@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+[Serializable]
 public class NameGen {
 
     public int order = 2;
