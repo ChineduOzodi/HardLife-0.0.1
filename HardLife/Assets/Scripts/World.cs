@@ -28,8 +28,9 @@ public class World{
     int[] tempMapModMountains = { 0, -2, -4};
     int[] biomeTemps = { 15, -5, 15, 20, 25 };
     public int[,] aveTempMap;
+    public LocalMap[,] localMaps;
 
-    
+
 
     public bool useRandomSeed = true;
     public int[][,] mapLayers;
@@ -50,7 +51,7 @@ public class World{
     {    
         layerNames = new [] { "Base Map", "Temperature Map", "Rain Map", "Mountain Map", "Biome Map"};
         SetLayers(layerNames);
-
+        localMaps = new LocalMap[width, height];
 
     }
     //--------------Map Generation Functions----------------

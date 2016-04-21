@@ -17,7 +17,6 @@ public class WorldGen : MonoBehaviour {
     public GameObject[] hill;
     public GameObject[] mountain;
     public string[,] regionNames;
-    public LocalMap[,] localMaps;
 
     public Canvas createWorldMenu;
     public Text infoText;
@@ -35,8 +34,8 @@ public class WorldGen : MonoBehaviour {
     private int maxIslandSize;
     private GameObject[][] biomeSprites;
     public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
-    private Camera mainCam;
-    private GameManager gameManager;
+    public Camera mainCam;
+    public GameManager gameManager;
 
     void Awake()
     {
@@ -139,7 +138,10 @@ public class WorldGen : MonoBehaviour {
 
     public void CreateLocalMap()
     {
-        localMaps[selectedTile.x, selectedTile.y] = localMapGen.CreateLocalMap(selectedTile);
+        world.localMaps[selectedTile.x, selectedTile.y] = localMapGen.CreateLocalMap(selectedTile);
+        layers["Biomes"].gameObject.SetActive(false);
+        layers["Mountains"].gameObject.SetActive(false);
+        localMapGen.PreviewMap(world.localMaps[selectedTile.x, selectedTile.y]);
     } 
 
     private void buildMountains()

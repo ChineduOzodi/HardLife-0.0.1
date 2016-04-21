@@ -7,16 +7,22 @@ public class LocalMapGen : MonoBehaviour {
 
     World world;
     public LocalMap local;
+    public WorldGen worldGen;
     public string seed;
     public int width = 100;
     public int height = 100;
 
+    public GameObject whiteBlock;
+
     int aveTemp;
+
+    private Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
 
 	// Use this for initialization
 	void Awake () {
 
-        world = GetComponent<WorldGen>().world;
+        worldGen = GetComponent<WorldGen>();
+        world = worldGen.world;
 
     }
 	
@@ -26,9 +32,7 @@ public class LocalMapGen : MonoBehaviour {
 	}
 
     public LocalMap CreateLocalMap(Coord coord)
-    {
-        DestroyLocalMap();
-        
+    {      
         int x = coord.x;
         int y = coord.y;
 
@@ -44,10 +48,45 @@ public class LocalMapGen : MonoBehaviour {
         int[,] adjacentBaseTiles = AdjacentTiles(baseMap, x, y);
         int[,] adjacentMTiles = AdjacentTiles(mMap, x, y);
 
-        local = new LocalMap(seed, biomeType, mType, adjacentBaseTiles, adjacentMTiles);
+        local = new LocalMap(seed, biomeType, mType, adjacentBaseTiles, adjacentMTiles, width, height);
+        //world.localMaps[x, y] = local;
         return local;
 
     }
+
+    public void PreviewMap(LocalMap local)
+    {
+        DestroyLocalMap();
+
+        FresNoise noise = new FresNoise();
+
+        worldGen.mainCam.orthographicSize = world.height / 2f;
+        worldGen.gameManager.maxCamSize = world.height / 2f;
+        worldGen.mainCam.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
+
+        layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
+
+        //int[,] map = [width, height];
+        float[,] map = local.elevationMap;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                //map[x, y] = noise.ScaleFloatToInt(local.elevationMap[x,y],local.baseMapNC);
+                float num = map[x, y]; // (float)map[x, y] / (float)max;
+                Color col = new Color(num, num, num);
+                SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
+                rend.color = col;
+
+                GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
+
+                instance.transform.SetParent(layers["BaseMap"]);
+            }
+        }
+
+
+
+     }
 
     private int[,] AdjacentTiles(int[,] baseMap, int x, int y)
     {
@@ -59,11 +98,11 @@ public class LocalMapGen : MonoBehaviour {
             {
                 if (IsInMapRange(nbrX, nbrY))
                 {
-                    adj[nbrX, nbrY] = baseMap[nbrX, nbrY];
+                    adj[x+1-nbrX, y+1-nbrY] = baseMap[nbrX, nbrY];
                 }
                 else
                 {
-                    adj[nbrX, nbrY] = -1; 
+                    adj[x + 1 - nbrX, y + 1 - nbrY] = -1; 
                 }
 
             }
@@ -122,6 +161,12 @@ public class LocalMapGen : MonoBehaviour {
 
     private void DestroyLocalMap()
     {
-        throw new NotImplementedException();
+        if (layers != null)
+        {
+            foreach (Transform layer in layers.Values)
+            {
+                Destroy(layer.gameObject);
+            }
+        }
     }
 }
