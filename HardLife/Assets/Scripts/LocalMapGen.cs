@@ -96,13 +96,13 @@ public class LocalMapGen : MonoBehaviour {
         {
             for (int nbrY = y - 1; nbrY <= y + 1; nbrY++)
             {
-                if (IsInMapRange(nbrX, nbrY))
+as                if (IsInMapRange(nbrX, nbrY))
                 {
-                    adj[x+1-nbrX, y+1-nbrY] = baseMap[nbrX, nbrY];
+                    adj[nbrX + 1-x, nbrY + 1-y] = baseMap[nbrX, nbrY];
                 }
                 else
                 {
-                    adj[x + 1 - nbrX, y + 1 - nbrY] = -1; 
+                    adj[nbrX + 1 - x, nbrY + 1 - y] = -1; 
                 }
 
             }
@@ -120,11 +120,11 @@ public class LocalMapGen : MonoBehaviour {
             {
                 if (IsInMapRange(nbrX, nbrY))
                 {
-                    adj[nbrX, nbrY] = baseMap[nbrX, nbrY];
+                    adj[nbrX + 1 - x, nbrY + 1 - y] = baseMap[nbrX, nbrY];
                 }
                 else
                 {
-                    adj[nbrX, nbrY] = baseMap[x,y];
+                    adj[nbrX + 1 - x, nbrY + 1 - y] = baseMap[x,y];
                 }
 
             }
@@ -142,7 +142,7 @@ public class LocalMapGen : MonoBehaviour {
             {
                 if (IsInMapRange(nbrX, nbrY))
                 {
-                    adj[nbrX, nbrY] = baseMap[nbrX, nbrY];
+                    adj[nbrX + 1 - x, nbrY + 1 - y] = baseMap[nbrX, nbrY];
                 }
 
             }

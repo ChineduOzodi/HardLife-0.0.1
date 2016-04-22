@@ -54,116 +54,144 @@ public class LocalMap {
                 {
                     if (adjacentBaseTiles[0,1] == 0 || adjacentElevTiles[0, 1] < elevation)
                     {
-                        heightMap[x, y] -= 1 - vHelperMap[x, y];
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[0, 1] > elevation)
                     {
-                        heightMap[x, y] += 1 - vHelperMap[x, y];
+                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[1, 0] == 0 || adjacentElevTiles[1, 0] < elevation)
                     {
-                        heightMap[x, y] -= 1 - hHelperMap[x, y];
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[1, 0] > elevation)
                     {
-                        heightMap[x, y] += 1 - hHelperMap[x, y];
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[0, 0] == 0 || adjacentElevTiles[0, 0] < elevation)
                     {
-                        heightMap[x, y] -= 1 - cHelperMap[x, y];
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[0, 0] > elevation)
                     {
-                        heightMap[x, y] += 1 - cHelperMap[x, y];
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
                     }
                 }
                 else if (x <= width / 2 && y > height / 2)
                 {
                     if (adjacentBaseTiles[0, 1] == 0 || adjacentElevTiles[0, 1] < elevation)
                     {
-                        heightMap[x, y] -= 1 - vHelperMap[x, y];
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[0, 1] > elevation)
                     {
-                        heightMap[x, y] += 1 - vHelperMap[x, y];
+                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[1, 2] == 0 || adjacentElevTiles[1, 2] < elevation)
                     {
-                        heightMap[x, y] -= 1 - hHelperMap[x, y];
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[1, 2] > elevation)
                     {
-                        heightMap[x, y] += 1 - hHelperMap[x, y];
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[0, 2] == 0 || adjacentElevTiles[0, 2] < elevation)
                     {
-                        heightMap[x, y] -= 1 - cHelperMap[x, y];
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[0, 2] > elevation)
                     {
-                        heightMap[x, y] += 1 - cHelperMap[x, y];
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
                     }
                 }
                 else if (x > width / 2 && y <= height / 2)
                 {
                     if (adjacentBaseTiles[2, 1] == 0 || adjacentElevTiles[2, 1] < elevation)
                     {
-                        heightMap[x, y] -= 1 - vHelperMap[x, y];
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[2, 1] > elevation)
                     {
-                        heightMap[x, y] += 1 - vHelperMap[x, y];
+                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[1, 0] == 0 || adjacentElevTiles[1, 0] < elevation)
                     {
-                        heightMap[x, y] -= 1 - hHelperMap[x, y];
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[1, 0] > elevation)
                     {
-                        heightMap[x, y] += 1 - hHelperMap[x, y];
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[2, 0] == 0 || adjacentElevTiles[2, 0] < elevation)
                     {
-                        heightMap[x, y] -= 1 - cHelperMap[x, y];
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[2, 0] > elevation)
                     {
-                        heightMap[x, y] += 1 - cHelperMap[x, y];
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
                     }
                 }
                 else if (x > width / 2 && y > height / 2)
                 {
                     if (adjacentBaseTiles[2, 1] == 0 || adjacentElevTiles[2, 1] < elevation)
                     {
-                        heightMap[x, y] -= 1 - vHelperMap[x, y];
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[2, 1] > elevation)
                     {
-                        heightMap[x, y] += 1 - vHelperMap[x, y];
+                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[1, 2] == 0 || adjacentElevTiles[1, 2] < elevation)
                     {
-                        heightMap[x, y] -= 1 - hHelperMap[x, y];
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[1, 2] > elevation)
                     {
-                        heightMap[x, y] += 1 - hHelperMap[x, y];
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
                     }
                     if (adjacentBaseTiles[2, 2] == 0 || adjacentElevTiles[2, 2] < elevation)
                     {
-                        heightMap[x, y] -= 1 - cHelperMap[x, y];
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
                     }
                     else if (adjacentElevTiles[2, 2] > elevation)
                     {
-                        heightMap[x, y] += 1 - cHelperMap[x, y];
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
                     }
                 }
             }
         }
 
+        //heightMap = MapScaler(heightMap);
+
         elevationMap = heightMap;
     }
 
+    private float[,] MapScaler(float[,] map)
+    {
+        float max = map[0, 0];
+        float min = map[0, 0];
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (map[x, y] > max)
+                    max = map[x, y];
+                if (map[x, y] < min)
+                    min = map[x, y];
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                map[x, y] = (map[x, y] - min) / (max-min);
+            }
+        }
+
+        return map;
+
+    }
 
     private float[,] GenerateCorHelperMap(float[,] hHelperMap, float[,] vHelperMap)
     {
@@ -172,7 +200,12 @@ public class LocalMap {
         {
             for (int y = 0; y < height; y++)
             {
-                map[x, y] = (hHelperMap[x, y] + vHelperMap[x, y]) / 2f;
+                float newVar = (hHelperMap[x, y] + vHelperMap[x, y]);
+                if (newVar > 1f)
+                {
+                    newVar = 1f;
+                }
+                map[x, y] = newVar;
             }
         }
 
@@ -214,12 +247,12 @@ public class LocalMap {
 
         int max = height / 2;
         float[,] map = new float[width, height];
-        for (int y = 0; y < width; y++)
+        for (int y = 0; y < height; y++)
         {
             float hCount = 0f;
-            for (int x = 0; x < height; x++)
+            for (int x = 0; x < width; x++)
             {
-                if (y <= max)
+                if (x <= max)
                 {
                     float toFloat = hCount / (float)max;
 
