@@ -6,15 +6,18 @@ using UnityEngine.Events;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
     public static GameManager instance = null;
     string savePath;
     public WorldGen worldGen;
     public Canvas mainMenu;
     public Button createWorld;
-    public float camMoveSpeed = .025f;
+    public float camMoveSpeed = .75f;
     public int numAutoSave = 5;
+    public bool setup = false;
+    public Canvas localMapCanvas;
 
     private float zoomSpeed = 15f;
 
@@ -22,7 +25,8 @@ public class GameManager : MonoBehaviour {
     public float maxCamSize = 5;
 
     // Use this for initialization
-    void Awake () {
+    void Awake()
+    {
         if (instance == null)
             instance = this;
         else if (instance != this)
@@ -35,8 +39,9 @@ public class GameManager : MonoBehaviour {
         worldGen = GetComponent<WorldGen>();
         createWorld.onClick.AddListener(() => { CreateWorld(); });
         mainMenu.gameObject.SetActive(true);
-
+        localMapCanvas.gameObject.SetActive(false);
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        setup = false;
     }
 
     private void CreateWorld()
@@ -53,11 +58,11 @@ public class GameManager : MonoBehaviour {
         }
         catch (DirectoryNotFoundException)
         {
-           // Directory.CreateDirectory(Application.persistentDataPath + "/World/");
+            // Directory.CreateDirectory(Application.persistentDataPath + "/World/");
             //savePath = Application.persistentDataPath + "/World/" + worldGen.world.worldName + "_Auto Save.sav";//"worldGen.world.saveNum"
         }
         BinaryFormatter bf = new BinaryFormatter();
-        
+
         FileStream file = File.Create(savePath);
 
         World world = worldGen.world;
@@ -82,7 +87,8 @@ public class GameManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         float moveModifier = camMoveSpeed * mainCam.orthographicSize;
         mainCam.orthographicSize += Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
 
@@ -90,9 +96,30 @@ public class GameManager : MonoBehaviour {
             mainCam.orthographicSize = 4;
         else if (mainCam.orthographicSize > maxCamSize)
             mainCam.orthographicSize = maxCamSize;
+        if (!setup)
+        {
+            float transX = Input.GetAxis("Horizontal") * moveModifier * Time.deltaTime;
+            float transY = Input.GetAxis("Vertical") * moveModifier * Time.deltaTime;
 
-        float transX = Input.GetAxis("Horizontal") * moveModifier;
-        float transY = Input.GetAxis("Vertical") * moveModifier;
-        mainCam.transform.Translate(new Vector3(transX, transY));
+            mainCam.transform.Translate(new Vector3(transX, transY));
+        }
+
+    }
+
+    public void ToggleWorldMap()
+    {
+        if (!worldGen.createWorldMenu.isActiveAndEnabled)
+        {
+            worldGen.createWorldMenu.gameObject.SetActive(true);
+            localMapCanvas.gameObject.SetActive(false);
+            worldGen.localMapGen.layers["BaseMap"].gameObject.SetActive(false);
+            foreach (Transform layers in worldGen.layers.Values)
+            {
+                layers.gameObject.SetActive(true);
+            }
+
+            mainCam.orthographicSize = worldGen.world.height / 2f;
+            mainCam.transform.position = new Vector3(worldGen.world.width / 2, worldGen.world.height / 2, -10f);
+        }
     }
 }

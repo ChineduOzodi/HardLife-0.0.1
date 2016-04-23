@@ -11,6 +11,7 @@ public class WorldTile : MonoBehaviour {
     public string seed;
     public int[] coord;
     bool tileSelected = false;
+    int layerMask = 1 << 5;
 
     private GameManager gameManager;
 
@@ -52,11 +53,16 @@ public class WorldTile : MonoBehaviour {
     }
     void OnMouseDown()
     {
-        gameObject.transform.localScale = new Vector3(1, 1);
-        gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
-        gameManager.worldGen.layers["Biomes"].BroadcastMessage("ToggleTileSelected");
-        gameManager.worldGen.SendMessage("ToggleTileSelected");
-        //gameObject.GetComponentInParent<Transform>().BroadcastMessage("ToggleTileSelected");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, 10f, layerMask))
+        {
+            gameObject.transform.localScale = new Vector3(1, 1);
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
+            gameManager.worldGen.layers["Biomes"].BroadcastMessage("ToggleTileSelected");
+            gameManager.worldGen.SendMessage("ToggleTileSelected");
+            //gameObject.GetComponentInParent<Transform>().BroadcastMessage("ToggleTileSelected");
+        }
+
 
     }
     void ToggleTileSelected()

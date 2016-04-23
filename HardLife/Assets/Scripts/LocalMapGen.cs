@@ -16,7 +16,7 @@ public class LocalMapGen : MonoBehaviour {
 
     int aveTemp;
 
-    private Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
+    public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
 
 	// Use this for initialization
 	void Awake () {
@@ -64,6 +64,9 @@ public class LocalMapGen : MonoBehaviour {
         worldGen.gameManager.maxCamSize = world.height / 2f;
         worldGen.mainCam.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
 
+        worldGen.createWorldMenu.gameObject.SetActive(false);
+        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
+
         layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
 
         //int[,] map = [width, height];
@@ -96,7 +99,7 @@ public class LocalMapGen : MonoBehaviour {
         {
             for (int nbrY = y - 1; nbrY <= y + 1; nbrY++)
             {
-as                if (IsInMapRange(nbrX, nbrY))
+                if (IsInMapRange(nbrX, nbrY))
                 {
                     adj[nbrX + 1-x, nbrY + 1-y] = baseMap[nbrX, nbrY];
                 }
