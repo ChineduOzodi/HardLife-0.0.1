@@ -11,6 +11,8 @@ public class LocalMap {
     public int width;
     public int height;
     public float heightMapScale = 10f;
+    public float baseMapScale = .5f;
+    public float mountainScale = .2f;
 
     //baselayer ID's
     int waterID = 0;
@@ -52,116 +54,164 @@ public class LocalMap {
             {
                 if (x <= width / 2 && y <= height/2)
                 {
-                    if (adjacentBaseTiles[0,1] == 0 || adjacentElevTiles[0, 1] < elevation)
+                    if (adjacentBaseTiles[0,1] == 0)
                     {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[0, 1] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[0, 1] > elevation)
                     {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - vHelperMap[x, y])* mountainScale;
                     }
-                    if (adjacentBaseTiles[1, 0] == 0 || adjacentElevTiles[1, 0] < elevation)
+                    if (adjacentBaseTiles[1, 0] == 0)
                     {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*mountainScale;
+                    }
+                    if ( adjacentElevTiles[1, 0] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[1, 0] > elevation)
                     {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
                     }
-                    if (adjacentBaseTiles[0, 0] == 0 || adjacentElevTiles[0, 0] < elevation)
+                    if (adjacentBaseTiles[0, 0] == 0 )
                     {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[0, 0] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[0, 0] > elevation)
                     {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
                 else if (x <= width / 2 && y > height / 2)
                 {
-                    if (adjacentBaseTiles[0, 1] == 0 || adjacentElevTiles[0, 1] < elevation)
+                    if (adjacentBaseTiles[0, 1] == 0)
                     {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[0, 1] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[0, 1] > elevation)
                     {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - vHelperMap[x, y])*mountainScale;
                     }
-                    if (adjacentBaseTiles[1, 2] == 0 || adjacentElevTiles[1, 2] < elevation)
+                    if (adjacentBaseTiles[1, 2] == 0)
                     {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[1, 2] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[1, 2] > elevation)
                     {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
                     }
-                    if (adjacentBaseTiles[0, 2] == 0 || adjacentElevTiles[0, 2] < elevation)
+                    if (adjacentBaseTiles[0, 2] == 0 )
                     {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[0, 2] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[0, 2] > elevation)
                     {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
                 else if (x > width / 2 && y <= height / 2)
                 {
-                    if (adjacentBaseTiles[2, 1] == 0 || adjacentElevTiles[2, 1] < elevation)
+                    if (adjacentBaseTiles[2, 1] == 0 )
                     {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[2, 1] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[2, 1] > elevation)
                     {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - vHelperMap[x, y])*mountainScale;
                     }
-                    if (adjacentBaseTiles[1, 0] == 0 || adjacentElevTiles[1, 0] < elevation)
+                    if (adjacentBaseTiles[1, 0] == 0 )
                     {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[1, 0] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[1, 0] > elevation)
                     {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
                     }
-                    if (adjacentBaseTiles[2, 0] == 0 || adjacentElevTiles[2, 0] < elevation)
+                    if (adjacentBaseTiles[2, 0] == 0 )
                     {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[2, 0] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[2, 0] > elevation)
                     {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
                 else if (x > width / 2 && y > height / 2)
                 {
-                    if (adjacentBaseTiles[2, 1] == 0 || adjacentElevTiles[2, 1] < elevation)
+                    if (adjacentBaseTiles[2, 1] == 0 )
                     {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[2, 1] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[2, 1] > elevation)
                     {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - vHelperMap[x, y])*mountainScale;
                     }
-                    if (adjacentBaseTiles[1, 2] == 0 || adjacentElevTiles[1, 2] < elevation)
+                    if (adjacentBaseTiles[1, 2] == 0)
                     {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[1, 2] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[1, 2] > elevation)
                     {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
                     }
-                    if (adjacentBaseTiles[2, 2] == 0 || adjacentElevTiles[2, 2] < elevation)
+                    if (adjacentBaseTiles[2, 2] == 0)
                     {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
+                    }
+                    if (adjacentElevTiles[2, 2] < elevation)
+                    {
+                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
                     }
                     else if (adjacentElevTiles[2, 2] > elevation)
                     {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*.5f;
+                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
             }
         }
 
-        //heightMap = MapScaler(heightMap);
+        heightMap = MapScaler(heightMap);
 
         elevationMap = heightMap;
     }
