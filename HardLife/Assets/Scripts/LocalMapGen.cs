@@ -126,8 +126,8 @@ public class LocalMapGen : MonoBehaviour {
                 GameObject instance = Instantiate(tile, new Vector3(x, y), Quaternion.identity) as GameObject;
 
                 instance.transform.SetParent(layers["BaseMap"]);
-                //instance.AddComponent<WorldTile>();
-                //instance.GetComponent<WorldTile>().SetupTile(gameManager, x, y, world.seed);
+                instance.AddComponent<LocalTile>();
+                instance.GetComponent<LocalTile>().SetupTile(worldGen.gameManager, x, y, local.baseMap[x,y].type);
             }
         }
         //layers["Biomes"].gameObject.SetActive(false);

@@ -79,6 +79,7 @@
     <Compile Include="Assets\Scripts\Loader.cs" />
     <Compile Include="Assets\Scripts\LocalMap.cs" />
     <Compile Include="Assets\Scripts\LocalMapGen.cs" />
+    <Compile Include="Assets\Scripts\LocalTile.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
     <Compile Include="Assets\Scripts\NameGen.cs" />
     <Compile Include="Assets\Scripts\NamesStrings.cs" />
