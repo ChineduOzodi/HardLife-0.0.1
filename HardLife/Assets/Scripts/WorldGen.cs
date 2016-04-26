@@ -141,7 +141,7 @@ public class WorldGen : MonoBehaviour {
         world.localMaps[selectedTile.x, selectedTile.y] = localMapGen.CreateLocalMap(selectedTile);
         layers["Biomes"].gameObject.SetActive(false);
         layers["Mountains"].gameObject.SetActive(false);
-        localMapGen.PreviewMap(world.localMaps[selectedTile.x, selectedTile.y]);
+        localMapGen.buildBaseMap(world.localMaps[selectedTile.x, selectedTile.y]);
     } 
 
     private void buildMountains()

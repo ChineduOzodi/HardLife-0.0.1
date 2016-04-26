@@ -11,6 +11,7 @@ public class Tile {
     public int height;
     public string region;
     public int id;
+    public string type;
 
     public Tile(int x, int y, int id)
     {

@@ -49,6 +49,16 @@ public class LocalMap {
         float[,] cHelperMap = GenerateCorHelperMap(hHelperMap, vHelperMap);
         baseMap = new Tile[width, height];
 
+        bool hasShores = false;
+        foreach (int baseNum in adjacentBaseTiles)
+        {
+            if (baseNum == 0)
+            {
+                hasShores = true;
+                break;
+            }
+        }
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -217,8 +227,50 @@ public class LocalMap {
         {
             for (int y = 0; y < height; y++)
             {
-                this.baseMap[x, y] = new Tile(x, y, noise.ScaleFloatToInt(heightMap[x, y], baseMapNC));
+                baseMap[x, y] = new Tile(x, y, noise.ScaleFloatToInt(heightMap[x, y], baseMapNC));
+                
+                
+                if (biomeType == 0) //water local map
+                {
+                    baseMap[x, y].type = "water";
+                }
+                else if (baseMap[x, y].id >= 4)
+                {
+                    baseMap[x, y].type = "rock";
+                }
+                else if (biomeType == 1)
+                {
+
+                    baseMap[x, y].type = "ice";
+                }
+                else if (biomeType == 2)
+                {
+
+                    baseMap[x, y].type = "grass";
+                }
+                else if (biomeType == 3)
+                {
+
+                    baseMap[x, y].type = "jungle";
+                }
+                else if (biomeType == 4)
+                {
+
+                    baseMap[x, y].type = "sand";
+                }
+
+                if (hasShores && baseMap[x,y].id == 0)
+                {
+                    baseMap[x, y].type = "water";
+                }
+                else if (hasShores && baseMap[x, y].id == 1 && biomeType != 1 && biomeType != 0 && biomeType != 4)
+                {
+                    baseMap[x, y].type = "sand";
+                }
+
             }
+                
+
         }
                 
 
