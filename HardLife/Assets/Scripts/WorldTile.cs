@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.EventSystems;
 
 public class WorldTile : MonoBehaviour {
 
@@ -32,7 +33,7 @@ public class WorldTile : MonoBehaviour {
 
     void OnMouseEnter()
     {
-        if (!tileSelected)
+        if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
         {
             gameManager.SendMessage("SendInfo", coord);
             //print("Found Mouse");
@@ -44,7 +45,7 @@ public class WorldTile : MonoBehaviour {
     }
     void OnMouseExit()
     {
-        if (!tileSelected)
+        if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
         {
             gameObject.transform.localScale = new Vector3(1, 1);
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
@@ -53,8 +54,8 @@ public class WorldTile : MonoBehaviour {
     }
     void OnMouseDown()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (!Physics.Raycast(ray, 10f, layerMask))
+        
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
             gameObject.transform.localScale = new Vector3(1, 1);
             gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
