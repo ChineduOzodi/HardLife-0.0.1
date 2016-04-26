@@ -70,13 +70,13 @@ public class LocalMapGen : MonoBehaviour {
         layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
 
         //int[,] map = [width, height];
-        float[,] map = local.elevationMap;
+        Tile[,] map = local.baseMap;
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
                 //map[x, y] = noise.ScaleFloatToInt(local.elevationMap[x,y],local.baseMapNC);
-                float num = map[x, y]; // (float)map[x, y] / (float)max;
+                float num = (float)map[x, y].id/5f; // (float)map[x, y] / (float)max;
                 Color col = new Color(num, num, num);
                 SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
                 rend.color = col;

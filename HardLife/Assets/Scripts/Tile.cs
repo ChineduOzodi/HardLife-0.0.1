@@ -12,28 +12,23 @@ public class Tile {
     public string region;
     public int id;
 
-    private string seed;
-
-    public Tile(int x, int y, string seed, string region)
+    public Tile(int x, int y, int id)
     {
         this.x = x;
         this.y = y;
-        this.seed = seed;
-        this.region = region;
+        this.id = id;
     }
 
-    public Tile(int x, int y, string seed)
+    public Tile(int x, int y)
     {
         this.x = x;
         this.y = y;
-        this.seed = seed;
     }
 
     public Tile()
     {
         x = 0;
         y = 0;
-        seed = null;
     }
 
 

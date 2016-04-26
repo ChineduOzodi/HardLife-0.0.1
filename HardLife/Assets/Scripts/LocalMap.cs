@@ -11,7 +11,7 @@ public class LocalMap {
     public int width;
     public int height;
     public float heightMapScale = 10f;
-    public float baseMapScale = .5f;
+    public float baseMapScale = 1f;
     public float mountainScale = .2f;
 
     //baselayer ID's
@@ -32,8 +32,8 @@ public class LocalMap {
     private float[,] heightMapVerticalHelper;
     private FresNoise noise;
 
-    public float[] baseMapNC = { .33f, .66f };
-    public float[] itemMapNC = { .33f, .66f };
+    private float[] baseMapNC = { .5f,.55f, .85f,.9f };
+    private float[] itemMapNC = { .33f, .66f };
 
     public LocalMap(string seed, int biomeType, int elevation, int[,] adjacentBaseTiles, int[,] adjacentElevTiles, int width, int height)
     {
@@ -47,6 +47,7 @@ public class LocalMap {
         float[,] hHelperMap = GenerateHorHelperMap();
         float[,] vHelperMap = GenerateVertHelperMap();
         float[,] cHelperMap = GenerateCorHelperMap(hHelperMap, vHelperMap);
+        baseMap = new Tile[width, height];
 
         for (int x = 0; x < width; x++)
         {
@@ -212,6 +213,14 @@ public class LocalMap {
         }
 
         heightMap = MapScaler(heightMap);
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                this.baseMap[x, y] = new Tile(x, y, noise.ScaleFloatToInt(heightMap[x, y], baseMapNC));
+            }
+        }
+                
 
         elevationMap = heightMap;
     }
