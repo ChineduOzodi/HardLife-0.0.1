@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 5757bf8776ba743468969e3676352da7
-timeCreated: 1461703793
+timeCreated: 1461715101
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -15,11 +15,17 @@ TextureImporter:
     21300016: frame_decorations4
     21300018: frame_decorations5
     21300020: image_load
-    21300022: image_cancel
+    21300022: image_new
     21300024: image_save
-    21300026: ui_big_pieces_0
+    21300026: image_cancel
     21300028: button_toggle_off
     21300030: button_toggle_on
+    21300032: ui_button1
+    21300034: ui_frame_deco1
+    21300036: ui_button_highilighted
+    21300038: ui_button_selected
+    21300040: ui_button2_selected
+    21300042: ui_frame
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -60,7 +66,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 64
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
@@ -208,21 +214,21 @@ TextureImporter:
     - name: image_load
       rect:
         serializedVersion: 2
-        x: 797
-        y: 462
-        width: 10
-        height: 8
+        x: 796
+        y: 460
+        width: 12
+        height: 11
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: image_cancel
+    - name: image_new
       rect:
         serializedVersion: 2
-        x: 798
-        y: 476
-        width: 8
-        height: 12
+        x: 797
+        y: 475
+        width: 10
+        height: 14
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -230,21 +236,21 @@ TextureImporter:
     - name: image_save
       rect:
         serializedVersion: 2
-        x: 813
-        y: 477
-        width: 10
-        height: 11
+        x: 812
+        y: 476
+        width: 12
+        height: 13
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: ui_big_pieces_0
+    - name: image_cancel
       rect:
         serializedVersion: 2
-        x: 813
-        y: 462
-        width: 10
-        height: 9
+        x: 812
+        y: 460
+        width: 12
+        height: 12
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -271,6 +277,80 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+    - name: ui_button1
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 517
+        width: 124
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 41, y: 0, z: 41, w: 0}
+      outline: []
+    - name: ui_frame_deco1
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 316
+        width: 81
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 32, y: 0, z: 16, w: 0}
+      outline: []
+    - name: ui_button_highilighted
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 487
+        width: 124
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 42, y: 0, z: 41, w: 0}
+      outline: []
+    - name: ui_button_selected
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 458
+        width: 124
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 41, y: 0, z: 41, w: 0}
+      outline: []
+    - name: ui_button2_selected
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 401
+        width: 74
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 24, y: 0, z: 25, w: 0}
+      outline: []
+    - name: ui_frame
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 42
+        width: 98
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 31, y: 31, z: 33, w: 16}
+      outline:
+      - - {x: -47, y: 48}
+        - {x: -49, y: 46}
+        - {x: -49, y: -46}
+        - {x: -47, y: -48}
+        - {x: 47, y: -48}
+        - {x: 49, y: -46}
+        - {x: 49, y: 46}
+        - {x: 47, y: 48}
     outline: []
   spritePackingTag: 
   userData: 

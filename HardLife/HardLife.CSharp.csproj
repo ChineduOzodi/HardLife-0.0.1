@@ -61,6 +61,9 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="pseudoSinCos">
+      <HintPath>Assets\2DLightAsset\Scripts\Helpers\pseudoSinCos.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="HardLife.CSharp.Plugins.csproj">
@@ -69,9 +72,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\2DLightAsset\Examples\RigidBodyInterpolationSolution\FollowLight2d.cs" />
+    <Compile Include="Assets\2DLightAsset\Scripts\2DLight\DynamicLight.cs" />
+    <Compile Include="Assets\2DLightAsset\Scripts\Helpers\interface_touch.cs" />
+    <Compile Include="Assets\2DLightAsset\Scripts\Helpers\interface_touch2.cs" />
+    <Compile Include="Assets\2DLightAsset\Scripts\rotate.cs" />
+    <Compile Include="Assets\MiniMap\Scripts\InnerMap.cs" />
+    <Compile Include="Assets\MiniMap\Scripts\MapArrow.cs" />
+    <Compile Include="Assets\MiniMap\Scripts\MapCanvasController.cs" />
+    <Compile Include="Assets\MiniMap\Scripts\MapMarker.cs" />
+    <Compile Include="Assets\MiniMap\Scripts\MarkerGroup.cs" />
     <Compile Include="Assets\Scripts\Basic Classes\Coord.cs" />
     <Compile Include="Assets\Scripts\Basic Classes\Dirt.cs" />
     <Compile Include="Assets\Scripts\Basic Classes\Ground.cs" />
+    <Compile Include="Assets\Scripts\DayNightCycle.cs" />
     <Compile Include="Assets\Scripts\FresNoise.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GameTime.cs" />
@@ -94,6 +108,8 @@
     <Compile Include="Assets\Scripts\WorldTile.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\2DLightAsset\Shaders\Gradient-NoTexture-Radial-SingleColor-ToTransparent-RegularUV-AlphaBlend.shader" />
+    <None Include="Assets\2DLightAsset\Shaders\NoTexture.shader" />
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
