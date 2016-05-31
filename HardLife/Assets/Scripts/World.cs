@@ -8,33 +8,26 @@ public class World{
     /// <summary>
     /// The World Class that can generate and create a game world based on inputed parameters
     /// </summary>
-
+	#region "Declarations"
     public string worldName;
-    public int saveNum = 1;
+    internal int saveNum = 1;
 
-    public int width = 140;
-    public int height = 80;
+	internal Vector2 worldSize;
+	internal Vector2 localSize;
     [Range(45, 60)]
     public int randomFillPercent = 53;
-    public string seed = null;
+    internal string seed = null;
 
-    int iceID = 1;
-    int grassID = 2;
-    int jungleID = 3;
-    int desertID = 4;
+//    int iceID = 1;
+//    int grassID = 2;
+//    int jungleID = 3;
+//    int desertID = 4;
 
-    int[] tempMapModTemp = { -10, -4, 2};
-    int[] tempMapModRain = { 3, 0, -3 };
-    int[] tempMapModMountains = { 0, -2, -4};
-    int[] biomeTemps = { 15, -5, 15, 20, 25 };
-    public int[,] aveTempMap;
     public LocalMap[,] localMaps;
+	public LocalMap localMap;
+	public int[][,] mapLayers;
+	public string[] layerNames;
 
-
-
-    public bool useRandomSeed = true;
-    public int[][,] mapLayers;
-    public string[] layerNames;
     
     private float[] mountainNC =  { .5f, .75f}; //Mountain noise conversion scale
     private float mountainScale = 10f;
@@ -45,7 +38,7 @@ public class World{
     private int numLayers;
     
     public NameGen nameGen = new NameGen();
-
+	#endregion
     ///-----initializer(s)
     public World()
     {    
@@ -84,7 +77,12 @@ public class World{
 
     private void GenerateAverageTemp()
     {
-        aveTempMap = new int[width, height];
+		int[] tempMapModTemp = { -10, -4, 2};
+		int[] tempMapModRain = { 3, 0, -3 };
+		int[] tempMapModMountains = { 0, -2, -4};
+		int[] biomeTemps = { 15, -5, 15, 20, 25 };
+
+        float[,] aveTempMap = new float[width, height];
         int[,] tempMap = mapLayers[Array.IndexOf(layerNames, "Temperature Map")];
         int[,] biomeMap = mapLayers[Array.IndexOf(layerNames, "Biome Map")];
         int[,] rainMap = mapLayers[Array.IndexOf(layerNames, "Rain Map")];

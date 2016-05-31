@@ -6,16 +6,16 @@ using UnityEngine.UI;
 
 public class WorldGen : MonoBehaviour {
 
-    
+	public bool useRandomSeed = true;
     public LocalMapGen localMapGen;
     public GameObject whiteBlock;
-    public GameObject[] water;
-    public GameObject[] ice;
-    public GameObject[] grass;
-    public GameObject[] jungle;
-    public GameObject[] desert;
-    public GameObject[] hill;
-    public GameObject[] mountain;
+    private Sprite[] water;
+    private Sprite[] ice;
+    private Sprite[] grass;
+    private Sprite[] jungle;
+    private Sprite[] desert;
+    private Sprite[] hill;
+    private Sprite[] mountain;
     public string[,] regionNames;
 
     public Canvas createWorldMenu;
@@ -42,13 +42,47 @@ public class WorldGen : MonoBehaviour {
         localMapGen = gameObject.GetComponent<LocalMapGen>();
         gameManager = gameObject.GetComponent<GameManager>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        createWorldMenu.gameObject.SetActive(false);
 
         biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
         maxLakeSize = (gameManager.world.width * gameManager.world.height) / 200;
 		maxIslandSize = (gameManager.world.width * gameManager.world.height) / 1000;
 
     }
+	void OnMouseEnter()
+	{
+		if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
+		{
+			gameManager.SendMessage("SendInfo", coord);
+			//print("Found Mouse");
+			//print(coord);
+			//gameObject.transform.localScale = new Vector3(1.25f, 1.25f);
+			gameObject.GetComponent<SpriteRenderer>().color = new Color(.8f, .8f, .8f);
+		}
+
+	}
+	void OnMouseExit()
+	{
+		if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
+		{
+			gameObject.transform.localScale = new Vector3(1, 1);
+			gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+		}
+
+	}
+	void OnMouseDown()
+	{
+
+		if (!EventSystem.current.IsPointerOverGameObject())
+		{
+			gameObject.transform.localScale = new Vector3(1, 1);
+			gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
+			gameManager.worldGen.layers["Biomes"].BroadcastMessage("ToggleTileSelected");
+			gameManager.worldGen.SendMessage("ToggleTileSelected");
+			//gameObject.GetComponentInParent<Transform>().BroadcastMessage("ToggleTileSelected");
+		}
+
+
+	}
 
     public void CreateWorld()
     {

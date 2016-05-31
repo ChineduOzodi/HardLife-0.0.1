@@ -58,11 +58,11 @@ public class GameManager : MonoBehaviour
             RunMainMenuSetup();
 
         }
-        else if (levelInt == 1) //World Creation
-        {
-            
-            RunWorldCreationSetup();
-        }
+//        else if (levelInt == 1) //World Creation
+//        {
+//            
+//            RunWorldCreationSetup();
+//        }
         else if (levelInt == 1) //Local Map Play
         {
             
@@ -71,11 +71,6 @@ public class GameManager : MonoBehaviour
     }
 
     private void RunLocalMapSetup()
-    {
-        throw new NotImplementedException();
-    }
-
-    private void RunWorldCreationSetup()
     {
         throw new NotImplementedException();
     }

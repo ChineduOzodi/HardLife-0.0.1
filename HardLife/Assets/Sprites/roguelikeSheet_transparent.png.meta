@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cca136f1479044d489ca5c07812f5128
-timeCreated: 1464676443
+timeCreated: 1464721531
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -12,7 +12,7 @@ TextureImporter:
     21300010: grass_0
     21300012: dirt_0
     21300014: rock_0
-    21300016: roguelikeSheet_transparent_8
+    21300016: sand_0
     21300018: roguelikeSheet_transparent_9
     21300020: roguelikeSheet_transparent_10
     21300022: roguelikeSheet_transparent_11
@@ -69,7 +69,7 @@ TextureImporter:
     21300124: grass_1
     21300126: dirt_1
     21300128: rock_1
-    21300130: roguelikeSheet_transparent_65
+    21300130: sand_1
     21300132: roguelikeSheet_transparent_66
     21300134: roguelikeSheet_transparent_67
     21300136: roguelikeSheet_transparent_68
@@ -1842,7 +1842,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_8
+    - name: sand_0
       rect:
         serializedVersion: 2
         x: 136
@@ -2469,7 +2469,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_65
+    - name: sand_1
       rect:
         serializedVersion: 2
         x: 136
