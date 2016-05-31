@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
     private Camera mainCam;
     public float maxCamSize = 5;
 
+
+    internal Vector2 gridWorldSize;
+    internal float nodeRadius;
+    internal LayerMask unwalkableMask;
+
+    #region "MonoDev Functions"
     // Use this for initialization
     void Awake()
     {
@@ -36,13 +42,49 @@ public class GameManager : MonoBehaviour
 
         savePath = Application.persistentDataPath + "currentWorld.world";
 
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        setup = false;
+    }
+
+    void OnLevelWasLoaded(int levelInt)
+    {
+        if (levelInt == 0) //Main Menu
+        {
+            RunMainMenuSetup();
+
+        }
+        else if (levelInt == 1) //World Creation
+        {
+            
+            RunWorldCreationSetup();
+        }
+        else if (levelInt == 1) //Local Map Play
+        {
+            
+            RunLocalMapSetup();
+        }
+    }
+
+    private void RunLocalMapSetup()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void RunWorldCreationSetup()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void RunMainMenuSetup()
+    {
         worldGen = GetComponent<WorldGen>();
         createWorld.onClick.AddListener(() => { CreateWorld(); });
         mainMenu.gameObject.SetActive(true);
         localMapCanvas.gameObject.SetActive(false);
-        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        setup = false;
     }
+
+    #endregion
+
 
     private void CreateWorld()
     {
