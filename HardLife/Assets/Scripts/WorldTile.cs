@@ -28,7 +28,7 @@ public class WorldTile : MonoBehaviour {
         this.y = y;
         this.seed = seed + x + y;
         coord = new int[] { x, y };
-        worldName = gameManager.worldGen.world.worldName;
+        worldName = gameManager.world.worldName;
     }
 
     void OnMouseEnter()

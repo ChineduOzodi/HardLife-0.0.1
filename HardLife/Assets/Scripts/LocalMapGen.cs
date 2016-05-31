@@ -7,7 +7,7 @@ public class LocalMapGen : MonoBehaviour {
 
     World world;
     public LocalMap local;
-    public WorldGen worldGen;
+    public GameManager gameManager;
     public string seed;
     public int width = 100;
     public int height = 100;
@@ -28,15 +28,15 @@ public class LocalMapGen : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-        worldGen = GetComponent<WorldGen>();
-        world = worldGen.world;
+        gameManager = GetComponent<GameManager>();
+        world = gameManager.world;
 
         sprites = new Dictionary<string, GameObject[]>();
-        sprites.Add("water", worldGen.water);
-        sprites.Add("sand", worldGen.desert);
-        sprites.Add("grass", worldGen.grass);
-        sprites.Add("rock", rock);
-        sprites.Add("jungle", worldGen.jungle);
+//        sprites.Add("water", worldGen.water);
+//        sprites.Add("sand", worldGen.desert);
+//        sprites.Add("grass", worldGen.grass);
+//        sprites.Add("rock", rock);
+//        sprites.Add("jungle", worldGen.jungle);
 
     }
 	
@@ -74,12 +74,12 @@ public class LocalMapGen : MonoBehaviour {
 
         FresNoise noise = new FresNoise();
 
-        worldGen.mainCam.orthographicSize = local.height / 2f;
-        worldGen.gameManager.maxCamSize = local.height / 2f;
-        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
-
-        worldGen.createWorldMenu.gameObject.SetActive(false);
-        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
+//        worldGen.mainCam.orthographicSize = local.height / 2f;
+//        worldGen.gameManager.maxCamSize = local.height / 2f;
+//        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
+//
+//        worldGen.createWorldMenu.gameObject.SetActive(false);
+//        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
 
         layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
 
@@ -92,12 +92,12 @@ public class LocalMapGen : MonoBehaviour {
                 //map[x, y] = noise.ScaleFloatToInt(local.elevationMap[x,y],local.baseMapNC);
                 float num = (float)map[x, y].id/5f; // (float)map[x, y] / (float)max;
                 Color col = new Color(num, num, num);
-                SpriteRenderer rend = worldGen.whiteBlock.GetComponent<SpriteRenderer>();
-                rend.color = col;
+                //SpriteRenderer rend = worldGen.whiteBlock.GetComponent<SpriteRenderer>();
+                //rend.color = col;
 
-                GameObject instance = Instantiate(worldGen.whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
+                //GameObject instance = Instantiate(worldGen.whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
 
-                instance.transform.SetParent(layers["BaseMap"]);
+                //instance.transform.SetParent(layers["BaseMap"]);
             }
         }
      }
@@ -106,12 +106,12 @@ public class LocalMapGen : MonoBehaviour {
         DestroyLocalMap();
         this.local = local;
 
-        worldGen.mainCam.orthographicSize = local.height / 2f;
-        worldGen.gameManager.maxCamSize = local.height / 2f;
-        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
-
-        worldGen.createWorldMenu.gameObject.SetActive(false);
-        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
+//        worldGen.mainCam.orthographicSize = local.height / 2f;
+//        worldGen.gameManager.maxCamSize = local.height / 2f;
+//        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
+//
+//        worldGen.createWorldMenu.gameObject.SetActive(false);
+//        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
 
         layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
         Tile[,] map = local.baseMap;
@@ -127,7 +127,7 @@ public class LocalMapGen : MonoBehaviour {
 
                 instance.transform.SetParent(layers["BaseMap"]);
                 instance.AddComponent<LocalTile>();
-                instance.GetComponent<LocalTile>().SetupTile(worldGen.gameManager, x, y, local.baseMap[x,y].type);
+                //instance.GetComponent<LocalTile>().SetupTile(worldGen.gameManager, x, y, local.baseMap[x,y].type);
             }
         }
         //layers["Biomes"].gameObject.SetActive(false);

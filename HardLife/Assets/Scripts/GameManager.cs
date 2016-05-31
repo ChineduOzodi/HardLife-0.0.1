@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System;
 using UnityEngine.Events;
@@ -8,27 +9,33 @@ using System.IO;
 
 public class GameManager : MonoBehaviour
 {
+	#region "Declarations"
 
-    public static GameManager instance = null;
-    string savePath;
-    public WorldGen worldGen;
-    public Canvas mainMenu;
+	//GameManager Set-up
+	public static GameManager instance = null;
+	string savePath;
+	public int numAutoSave = 5;
+	public bool setup = false;
+
+	private float zoomSpeed = 15f;
+	public float camMoveSpeed = .75f;
+	public float maxCamSize = 5;
+
+	public WorldGen worldGen;
+	public World world;
+
+	//World Settings
+	public Vector2 gridWorldSize;
+	internal float nodeRadius;
+	internal LayerMask unwalkableMask;
+
+	//Local Settings
+	public Vector2 gridLocalSize;
+
+    //Main Menu Setup
     public Button createWorld;
-    public float camMoveSpeed = .75f;
-    public int numAutoSave = 5;
-    public bool setup = false;
-    public Canvas localMapCanvas;
 
-    private float zoomSpeed = 15f;
-
-    private Camera mainCam;
-    public float maxCamSize = 5;
-
-
-    internal Vector2 gridWorldSize;
-    internal float nodeRadius;
-    internal LayerMask unwalkableMask;
-
+	#endregion
     #region "MonoDev Functions"
     // Use this for initialization
     void Awake()
@@ -41,8 +48,6 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         savePath = Application.persistentDataPath + "currentWorld.world";
-
-        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         setup = false;
     }
 
@@ -77,19 +82,16 @@ public class GameManager : MonoBehaviour
 
     private void RunMainMenuSetup()
     {
-        worldGen = GetComponent<WorldGen>();
-        createWorld.onClick.AddListener(() => { CreateWorld(); });
-        mainMenu.gameObject.SetActive(true);
-        localMapCanvas.gameObject.SetActive(false);
+        //worldGen = GetComponent<WorldGen>();
+        //createWorld.onClick.AddListener(() => { CreateWorld(); });
     }
 
     #endregion
 
-
-    private void CreateWorld()
+    public void CreateWorld()
     {
-        mainMenu.gameObject.SetActive(false);
-        worldGen.OpenMenu();
+		setup = true;
+		SceneManager.LoadScene ("world_creation");
     }
 
     public void Save()
@@ -107,12 +109,11 @@ public class GameManager : MonoBehaviour
 
         FileStream file = File.Create(savePath);
 
-        World world = worldGen.world;
         bf.Serialize(file, world);
         file.Close();
-        worldGen.world.saveNum++;
-        if (worldGen.world.saveNum > numAutoSave)
-            worldGen.world.saveNum = 1;
+        world.saveNum++;
+        if (world.saveNum > numAutoSave)
+            world.saveNum = 1;
     }
     public void Load()
     {
@@ -120,7 +121,7 @@ public class GameManager : MonoBehaviour
         {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(savePath, FileMode.Open);
-            worldGen.world = (World)bf.Deserialize(file);
+            world = (World)bf.Deserialize(file);
             file.Close();
 
             worldGen.loadWorld();
@@ -128,22 +129,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
+	public void LoadLocal (){
+		Load ();
+		SceneManager.LoadScene ("local_map");
+	}
+
     // Update is called once per frame
     void Update()
     {
-        float moveModifier = camMoveSpeed * mainCam.orthographicSize;
-        mainCam.orthographicSize += Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
 
-        if (mainCam.orthographicSize < 4)
-            mainCam.orthographicSize = 4;
-        else if (mainCam.orthographicSize > maxCamSize)
-            mainCam.orthographicSize = maxCamSize;
+        float moveModifier = camMoveSpeed * Camera.main.orthographicSize;
+        Camera.main.orthographicSize += Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
+
+        if (Camera.main.orthographicSize < 4)
+            Camera.main.orthographicSize = 4;
+        else if (Camera.main.orthographicSize > maxCamSize)
+            Camera.main.orthographicSize = maxCamSize;
         if (!setup)
         {
             float transX = Input.GetAxis("Horizontal") * moveModifier * Time.deltaTime;
             float transY = Input.GetAxis("Vertical") * moveModifier * Time.deltaTime;
 
-            mainCam.transform.Translate(new Vector3(transX, transY));
+            Camera.main.transform.Translate(new Vector3(transX, transY));
         }
 
     }
@@ -153,15 +160,14 @@ public class GameManager : MonoBehaviour
         if (!worldGen.createWorldMenu.isActiveAndEnabled)
         {
             worldGen.createWorldMenu.gameObject.SetActive(true);
-            localMapCanvas.gameObject.SetActive(false);
             worldGen.localMapGen.layers["BaseMap"].gameObject.SetActive(false);
             foreach (Transform layers in worldGen.layers.Values)
             {
                 layers.gameObject.SetActive(true);
             }
 
-            mainCam.orthographicSize = worldGen.world.height / 2f;
-            mainCam.transform.position = new Vector3(worldGen.world.width / 2, worldGen.world.height / 2, -10f);
+            Camera.main.orthographicSize = gridWorldSize.y / 2f;
+            Camera.main.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
         }
     }
 }

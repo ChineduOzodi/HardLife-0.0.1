@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class WorldGen : MonoBehaviour {
 
-    public World world = new World();
+    
     public LocalMapGen localMapGen;
     public GameObject whiteBlock;
     public GameObject[] water;
@@ -45,38 +45,32 @@ public class WorldGen : MonoBehaviour {
         createWorldMenu.gameObject.SetActive(false);
 
         biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
-        maxLakeSize = (world.width * world.height) / 200;
-        maxIslandSize = (world.width * world.height) / 1000;
+        maxLakeSize = (gameManager.world.width * gameManager.world.height) / 200;
+		maxIslandSize = (gameManager.world.width * gameManager.world.height) / 1000;
 
-
-    }
-
-    internal void OpenMenu()
-    {
-        createWorldMenu.gameObject.SetActive(true);
     }
 
     public void CreateWorld()
     {
         DestroyWorld();
 
-        mainCam.orthographicSize = world.height / 2f;
-        gameManager.maxCamSize = world.height / 2f;
-        mainCam.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
+        mainCam.orthographicSize = gameManager.world.height / 2f;
+        gameManager.maxCamSize = gameManager.world.height / 2f;
+        mainCam.transform.position = new Vector3(gameManager.world.width / 2, gameManager.world.height / 2, -10f);
 
-        if (world.useRandomSeed)
+        if (gameManager.world.useRandomSeed)
         {
-            world.seed = Time.time.ToString();
-            seedInput.text = world.seed;
+            gameManager.world.seed = Time.time.ToString();
+            seedInput.text = gameManager.world.seed;
         }
         else
-            world.seed = seedInput.text;
+            gameManager.world.seed = seedInput.text;
 
-        world.GenerateMap();
+        gameManager.world.GenerateMap();
         GenerateRegions();
-        seedInput.text = world.seed; // just in case GenerateMap changes the world.seed
+        seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
 
-        worldNameText.text = world.worldName;
+        worldNameText.text = gameManager.world.worldName;
         //buildBasicLayers();
         buildBiome();
         buildMountains();
@@ -84,14 +78,14 @@ public class WorldGen : MonoBehaviour {
     public void loadWorld()
     {
 
-        mainCam.orthographicSize = world.height / 2f;
-        gameManager.maxCamSize = world.height / 2f;
-        mainCam.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
+        mainCam.orthographicSize = gameManager.world.height / 2f;
+        gameManager.maxCamSize = gameManager.world.height / 2f;
+        mainCam.transform.position = new Vector3(gameManager.world.width / 2, gameManager.world.height / 2, -10f);
 
         GenerateRegions();
-        seedInput.text = world.seed; // just in case GenerateMap changes the world.seed
+        seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
 
-        worldNameText.text = world.worldName;
+        worldNameText.text = gameManager.world.worldName;
         //buildBasicLayers();
         buildBiome();
         buildMountains();
@@ -99,15 +93,15 @@ public class WorldGen : MonoBehaviour {
 
     public void PreviewWorld(string layerName, int max = 1)
     {
-        int[,] map = world.mapLayers[Array.IndexOf(world.layerNames, layerName)];
-        layers["World"] = new GameObject("World").transform;
+        int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, layerName)];
+        layers["gameManager.world"] = new GameObject("gameManager.world").transform;
 
-        mainCam.orthographicSize = world.height / 2f;
-        mainCam.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
+        mainCam.orthographicSize = gameManager.world.height / 2f;
+        mainCam.transform.position = new Vector3(gameManager.world.width / 2, gameManager.world.height / 2, -10f);
 
-        for (int x = 0; x < world.width; x++)
+        for (int x = 0; x < gameManager.world.width; x++)
         {
-            for (int y = 0; y < world.height; y++)
+            for (int y = 0; y < gameManager.world.height; y++)
             {
                 float num = (float)map[x, y] / (float)max;
                 Color col = new Color(num, num, num);
@@ -116,7 +110,7 @@ public class WorldGen : MonoBehaviour {
 
                 GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
 
-                instance.transform.SetParent(layers["World"]);
+                instance.transform.SetParent(layers["gameManager.world"]);
             }
         }
 
@@ -128,8 +122,8 @@ public class WorldGen : MonoBehaviour {
     public void PreviewWorld()
     {
 
-        mainCam.orthographicSize = world.height / 2f;
-        mainCam.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
+        mainCam.orthographicSize = gameManager.world.height / 2f;
+        mainCam.transform.position = new Vector3(gameManager.world.width / 2, gameManager.world.height / 2, -10f);
 
         buildBasicLayers();
         buildBiome();
@@ -138,19 +132,19 @@ public class WorldGen : MonoBehaviour {
 
     public void CreateLocalMap()
     {
-        world.localMaps[selectedTile.x, selectedTile.y] = localMapGen.CreateLocalMap(selectedTile);
+        gameManager.world.localMaps[selectedTile.x, selectedTile.y] = localMapGen.CreateLocalMap(selectedTile);
         layers["Biomes"].gameObject.SetActive(false);
         layers["Mountains"].gameObject.SetActive(false);
-        localMapGen.buildBaseMap(world.localMaps[selectedTile.x, selectedTile.y]);
+        localMapGen.buildBaseMap(gameManager.world.localMaps[selectedTile.x, selectedTile.y]);
     } 
 
     private void buildMountains()
     {
         layers["Mountains"] = new GameObject("Mountains").transform;
-        int[,] map = world.mapLayers[Array.IndexOf(world.layerNames, "Mountain Map")];
-        for (int x = 0; x < world.width; x++)
+        int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Mountain Map")];
+        for (int x = 0; x < gameManager.world.width; x++)
         {
-            for (int y = 0; y < world.height; y++)
+            for (int y = 0; y < gameManager.world.height; y++)
             {
                 if (map[x,y] == 1)
                 {
@@ -173,11 +167,11 @@ public class WorldGen : MonoBehaviour {
     void SendInfo(int[] coord)
     {
         selectedTile = new Coord(coord[0], coord[1]);
-        string terrain = tType[world.mapLayers[Array.IndexOf(world.layerNames, "Mountain Map")][coord[0], coord[1]]];
-        string rain = aveRain[world.mapLayers[Array.IndexOf(world.layerNames, "Rain Map")][coord[0], coord[1]]];
+        string terrain = tType[gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Mountain Map")][coord[0], coord[1]]];
+        string rain = aveRain[gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Rain Map")][coord[0], coord[1]]];
         string info = "Region Name: " + regionNames[coord[0], coord[1]];
         info += "\nTerrain Type: " + terrain;
-        info += "\nAverage Temperature: " + world.aveTempMap[coord[0], coord[1]] + " C (" + (world.aveTempMap[coord[0], coord[1]] - tempYearRange) + " - " + (world.aveTempMap[coord[0], coord[1]] + tempYearRange) + ")";
+        info += "\nAverage Temperature: " + gameManager.world.aveTempMap[coord[0], coord[1]] + " C (" + (gameManager.world.aveTempMap[coord[0], coord[1]] - tempYearRange) + " - " + (gameManager.world.aveTempMap[coord[0], coord[1]] + tempYearRange) + ")";
         info += "\nAverage Rain: " + rain;
         infoText.text = info;
     }
@@ -201,11 +195,11 @@ public class WorldGen : MonoBehaviour {
     private void buildBiome()
     {
         layers["Biomes"] = new GameObject("Biomes").transform;
-        int[,] map = world.mapLayers[Array.IndexOf(world.layerNames, "Biome Map")];
+        int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Biome Map")];
 
-        for (int x = 0; x < world.width; x++)
+        for (int x = 0; x < gameManager.world.width; x++)
         {
-            for (int y = 0; y < world.height; y++)
+            for (int y = 0; y < gameManager.world.height; y++)
             {
                 int sprite = map[x,y];
                 int num = UnityEngine.Random.Range(0, biomeSprites[sprite].Length);
@@ -214,7 +208,7 @@ public class WorldGen : MonoBehaviour {
 
                 instance.transform.SetParent(layers["Biomes"]);
                 instance.AddComponent<WorldTile>();
-                instance.GetComponent<WorldTile>().SetupTile(gameManager, x,y,world.seed);
+                instance.GetComponent<WorldTile>().SetupTile(gameManager, x,y,gameManager.world.seed);
             }
         }
         //layers["Biomes"].gameObject.SetActive(false);
@@ -222,16 +216,16 @@ public class WorldGen : MonoBehaviour {
 
     private void buildBasicLayers()
     {
-        for (int i = 0; i < world.layerNames.Length; i++)
+        for (int i = 0; i < gameManager.world.layerNames.Length; i++)
         {
-            int[,] map = world.mapLayers[i];
+            int[,] map = gameManager.world.mapLayers[i];
             int max = 2;
 
-            layers[world.layerNames[i]] = new GameObject(world.layerNames[i]).transform;
+            layers[gameManager.world.layerNames[i]] = new GameObject(gameManager.world.layerNames[i]).transform;
 
-            for (int x = 0; x < world.width; x++)
+            for (int x = 0; x < gameManager.world.width; x++)
             {
-                for (int y = 0; y < world.height; y++)
+                for (int y = 0; y < gameManager.world.height; y++)
                 {
                     float num = (float)map[x, y] / (float)max;
                     Color col = new Color(num, num, num);
@@ -240,11 +234,11 @@ public class WorldGen : MonoBehaviour {
 
                     GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
 
-                    instance.transform.SetParent(layers[world.layerNames[i]]);
+                    instance.transform.SetParent(layers[gameManager.world.layerNames[i]]);
                 }
             }
 
-            layers[world.layerNames[i]].gameObject.SetActive(false);
+            layers[gameManager.world.layerNames[i]].gameObject.SetActive(false);
 
         }
     }
@@ -253,9 +247,9 @@ public class WorldGen : MonoBehaviour {
     /// </summary>
     private void GenerateRegions()
     {
-        tiles = new WorldTile[world.width, world.height];
-        int[,] baseMap = world.mapLayers[Array.IndexOf(world.layerNames, "Base Map")];
-        regionNames = new string[world.width, world.height];
+        tiles = new WorldTile[gameManager.world.width, gameManager.world.height];
+        int[,] baseMap = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Base Map")];
+        regionNames = new string[gameManager.world.width, gameManager.world.height];
         //Generate Land and Island Regions
         List<Region> regions = GetRegions(baseMap, 1);
         regions.AddRange(GetRegions(baseMap, 0));
@@ -291,10 +285,10 @@ public class WorldGen : MonoBehaviour {
     List<Coord> GetRegionTiles(int[,] baseMap, int startX, int StartY)
     {
         List<Coord> tiles = new List<Coord>();
-        int[,] mapFlags = new int[world.width, world.height];
+        int[,] mapFlags = new int[gameManager.world.width, gameManager.world.height];
         int tileType = baseMap[startX, StartY];
 
-        string tileSeed = world.seed + startX + StartY;
+        string tileSeed = gameManager.world.seed + startX + StartY;
 
         Queue<Coord> queue = new Queue<Coord>();
         queue.Enqueue(new Coord(startX, StartY));
@@ -309,7 +303,7 @@ public class WorldGen : MonoBehaviour {
             {
                 for (int y = tile.y - 1; y <= tile.y + 1; y++)
                 {
-                    if (world.IsInMapRange(x, y)) //&& (x == tile.x || y == tile.y))
+                    if (gameManager.world.IsInMapRange(x, y)) //&& (x == tile.x || y == tile.y))
                     {
                         if (mapFlags[x, y] == 0 && baseMap[x, y] == tileType)
                         {
@@ -327,15 +321,15 @@ public class WorldGen : MonoBehaviour {
     List<Region> GetRegions(int[,] baseMap, int tileType)
     {
         List<Region> regions = new List<Region>();
-        int[,] mapFlags = new int[world.width, world.height];
-        for (int x = 0; x < world.width; x++)
+        int[,] mapFlags = new int[gameManager.world.width, gameManager.world.height];
+        for (int x = 0; x < gameManager.world.width; x++)
         {
-            for (int y = 0; y < world.height; y++)
+            for (int y = 0; y < gameManager.world.height; y++)
             {
                 if (mapFlags[x, y] == 0 && baseMap[x, y] == tileType)
                 {
-                    string regSeed = world.seed + x + y;
-                    string newRegionName = world.nameGen.GenerateRegionName(regSeed);
+                    string regSeed = gameManager.world.seed + x + y;
+                    string newRegionName = gameManager.world.nameGen.GenerateRegionName(regSeed);
                     Region newRegion = new Region(GetRegionTiles(baseMap, x, y), newRegionName, tileType);
                     regions.Add(newRegion);
 
@@ -364,14 +358,14 @@ public class WorldGen : MonoBehaviour {
 
     void ToggleRandomSeed()
     {
-        if (world.useRandomSeed)
+        if (gameManager.world.useRandomSeed)
         {
-            world.useRandomSeed = false;
+            gameManager.world.useRandomSeed = false;
             seedInput.interactable = true;
         }
         else
         {
-            world.useRandomSeed = true;
+            gameManager.world.useRandomSeed = true;
             seedInput.interactable = false;
         }
             
