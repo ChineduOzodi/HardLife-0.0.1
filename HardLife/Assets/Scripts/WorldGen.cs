@@ -9,7 +9,7 @@ public class WorldGen : MonoBehaviour {
     
     public bool useRandomSeed = true;
     bool tileSelected = false;
-    WorldTile selectedTile;
+    SpriteRenderer selectedTile;
     internal GameManager gameManager;
     public Camera mainCam;
 

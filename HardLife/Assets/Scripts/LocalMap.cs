@@ -11,6 +11,7 @@ public class LocalMap {
 
     public string seed;
     internal string biome;
+	internal string mountainLevel;
     internal float elevation;
     internal float rain;
     internal float aveTemp;
@@ -18,13 +19,6 @@ public class LocalMap {
     public float heightMapScale = 10f;
     public float baseMapScale = 1f;
     public float mountainScale = .2f;
-
-    //baselayer ID's
-    int waterID = 0;
-    int sandID = 1;
-    int grassID = 2;
-    int jungleID = 3;
-    int desertID = 4;
 
     public float[,] elevationMap;
     public Tile[,] baseMap;

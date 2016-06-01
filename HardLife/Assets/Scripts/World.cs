@@ -21,11 +21,6 @@ public class World{
     public int randomFillPercent = 53;
     internal string seed = null;
 
-//    int iceID = 1;
-//    int grassID = 2;
-//    int jungleID = 3;
-//    int desertID = 4;
-
     public LocalMap[,] localMaps;
 	public LocalMap localMap;
     
@@ -43,9 +38,6 @@ public class World{
         worldSizeX = Mathf.RoundToInt(worldSize.x / nodeDiameter);
         worldSizeY = Mathf.RoundToInt(worldSize.y / nodeDiameter);
         localMaps = new LocalMap[worldSizeX, worldSizeY];
-
-        GenerateMap();
-
     }
     //--------------Map Generation Functions----------------
 
@@ -73,7 +65,7 @@ public class World{
         //SetLayers(layerNames);
 
         GenerateLayers();
-        //GenerateAverageTemp();        
+               
 
     }
 
@@ -106,6 +98,8 @@ public class World{
         //Biome Map
         string[,] biomeMap = GenerateBiomes(baseMap, tempMap,mMap,rainMap);
 
+		tempMap = GenerateAverageTemp(biomeMap, tempMap,mMap,rainMap);
+
         for (int x = 0; x < worldSizeX; x++)
         {
             for (int y = 0; y < worldSizeY; y++)
@@ -119,27 +113,33 @@ public class World{
         }
     }
 
-  //  private void GenerateAverageTemp()
-  //  {
-		//int[] tempMapModTemp = { -10, -4, 2};
-		//int[] tempMapModRain = { 3, 0, -3 };
-		//int[] tempMapModMountains = { 0, -2, -4};
-		//int[] biomeTemps = { 15, -5, 15, 20, 25 };
+	private float[,] GenerateAverageTemp(string[,] biomeMap,float[,] tempMap, float[,] elevMap, float[,] rainMap)
+    {
+		float baseTemp = 25;
+		float tempScale = 5;
+		float rainScale = 3;
+		float elevScale = 4;
+		Dictionary<string,float> biomeTemps = new Dictionary<string,float> ();
+		biomeTemps.Add ("Grass", 15);
+		biomeTemps.Add ("Ice", -5);
+		biomeTemps.Add ("Jungle", 20);
+		biomeTemps.Add ("Desert", 25);
 
-  //      float[,] aveTempMap = new float[worldSizeX, worldSizeY];
-  //      int[,] tempMap = mapLayers[Array.IndexOf(layerNames, "Temperature Map")];
-  //      int[,] biomeMap = mapLayers[Array.IndexOf(layerNames, "Biome Map")];
-  //      int[,] rainMap = mapLayers[Array.IndexOf(layerNames, "Rain Map")];
-  //      int[,] mMap = mapLayers[Array.IndexOf(layerNames, "Mountain Map")];
-  //      for (int x = 0; x < worldSizeX; x++)
-  //      {
-  //          for (int y = 0; y < worldSizeY; y++)
-  //          {
-  //              aveTempMap[x, y] = tempMapModTemp[tempMap[x,y]] + tempMapModRain[rainMap[x, y]] + biomeTemps[biomeMap[x,y]] + tempMapModMountains[mMap[x,y]];
-  //          }
+        float[,] map = new float[worldSizeX, worldSizeY];
+
+        for (int x = 0; x < worldSizeX; x++)
+        {
+            for (int y = 0; y < worldSizeY; y++)
+            {
+				map [x, y] = biomeTemps [biomeMap [x, y]] + (tempMap [x, y] * tempScale * 2 - tempScale)
+				- (rainMap [x, y] * rainScale)
+				- (elevMap [x, y] * elevScale);
+            }
             
-  //      }
-  //  }
+        }
+
+		return map;
+    }
 
     private string[,] GenerateBiomes(int[,] baseMap, float[,] tempMap, float[,] elevMap, float[,] rainMap)
     {
@@ -169,9 +169,91 @@ public class World{
     /// <returns></returns>
     private string BiomeName(float temp, float rain, float elevation)
     {
+		string biomeName = "Unknown";
         float[] mountainNC = { .5f, .75f }; //Mountain noise conversion scale
         float[] rainNC = { .33f, .66f };
         float[] tempNC = { .33f, .5f };
+		if (temp < tempNC [0]) {
+			if (rain < rainNC [0]) {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Ice";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Ice";
+				} else {
+					biomeName = "Ice";
+				}
+			} else if (rain < rainNC [1]) {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Grass";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Ice";
+				} else {
+					biomeName = "Ice";
+				}
+			} else {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Grass";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Grass";
+				} else {
+					biomeName = "Ice";
+				}
+			}
+		} else if (temp < tempNC [1]) {
+			if (rain < rainNC [0]) {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Desert";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Grass";
+				} else {
+					biomeName = "Grass";
+				}
+			} else if (rain < rainNC [1]) {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Grass";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Grass";
+				} else {
+					biomeName = "Ice";
+				}
+			} else {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Jungle";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Grass";
+				} else {
+					biomeName = "Ice";
+				}
+			}
+		} else {
+			if (rain < rainNC [0]) {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Desert";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Desert";
+				} else {
+					biomeName = "Desert";
+				}
+			} else if (rain < rainNC [1]) {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Desert";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Grass";
+				} else {
+					biomeName = "Grass";
+				}
+			} else {
+				if (elevation < mountainNC [0]) {
+					biomeName = "Jungle";
+				} else if (elevation < mountainNC [1]) {
+					biomeName = "Jungle";
+				} else {
+					biomeName = "Jungle";
+				}
+			}
+		}
+
+		return biomeName;
     }
 
     
@@ -214,17 +296,6 @@ public class World{
     
     ///----------Helper Functions
     ///
-    //private void SetLayers(string[] layers)
-    //{
-    //    numLayers = layers.Length;
-    //    mapLayers = new int[numLayers][,];
-
-    //    for (int i = 0; i < numLayers; i++)
-    //    {
-    //        mapLayers[i] = new int[worldSizeX, worldSizeY];
-    //    }
-        
-    //}
 
     public bool IsInMapRange(int x, int y)
     {
