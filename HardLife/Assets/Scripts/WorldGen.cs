@@ -5,10 +5,17 @@ using System;
 using UnityEngine.UI;
 
 public class WorldGen : MonoBehaviour {
+    #region "Declarations"
+    
+    public bool useRandomSeed = true;
+    bool tileSelected = false;
+    WorldTile selectedTile;
+    internal GameManager gameManager;
+    public Camera mainCam;
 
-	public bool useRandomSeed = true;
-    public LocalMapGen localMapGen;
-    public GameObject whiteBlock;
+
+    //texturing
+    private Sprite whiteBlock;
     private Sprite[] water;
     private Sprite[] ice;
     private Sprite[] grass;
@@ -16,95 +23,94 @@ public class WorldGen : MonoBehaviour {
     private Sprite[] desert;
     private Sprite[] hill;
     private Sprite[] mountain;
-    public string[,] regionNames;
 
-    public Canvas createWorldMenu;
+    //UI Setup
     public Text infoText;
     public Text worldNameText;
     public InputField seedInput;
     public Button createLocalMapButton;
-    bool tileSelected = false;
-    Coord selectedTile;
-
-    public WorldTile[,] tiles;
+    
     string[] tType = { "Flat", "Hills", "Mountains" };
     string[] aveRain = { "Little", "Normal", "Lots" };
     private int tempYearRange = 10;
-    private int maxLakeSize;
-    private int maxIslandSize;
-    private GameObject[][] biomeSprites;
-    public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
-    public Camera mainCam;
-    public GameManager gameManager;
+    private float maxLakeSize;
+    private float maxIslandSize;
+    //private GameObject[][] biomeSprites;
+    //public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
+    
+    
+    #endregion
 
     void Awake()
     {
-        localMapGen = gameObject.GetComponent<LocalMapGen>();
         gameManager = gameObject.GetComponent<GameManager>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
-        biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
-        maxLakeSize = (gameManager.world.width * gameManager.world.height) / 200;
-		maxIslandSize = (gameManager.world.width * gameManager.world.height) / 1000;
+        //biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
+        maxLakeSize = (gameManager.gridWorldSize.x * gameManager.gridWorldSize.y) / 200;
+		maxIslandSize = (gameManager.gridWorldSize.x * gameManager.gridWorldSize.y) / 1000;
 
     }
-	void OnMouseEnter()
-	{
-		if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
-		{
-			gameManager.SendMessage("SendInfo", coord);
-			//print("Found Mouse");
-			//print(coord);
-			//gameObject.transform.localScale = new Vector3(1.25f, 1.25f);
-			gameObject.GetComponent<SpriteRenderer>().color = new Color(.8f, .8f, .8f);
-		}
+	//void OnMouseEnter()
+	//{
+	//	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
+	//	{
+	//		gameManager.SendMessage("SendInfo", coord);
+	//		//print("Found Mouse");
+	//		//print(coord);
+	//		//gameObject.transform.localScale = new Vector3(1.25f, 1.25f);
+	//		gameObject.GetComponent<SpriteRenderer>().color = new Color(.8f, .8f, .8f);
+	//	}
 
-	}
-	void OnMouseExit()
-	{
-		if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
-		{
-			gameObject.transform.localScale = new Vector3(1, 1);
-			gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
-		}
+	//}
+	//void OnMouseExit()
+	//{
+	//	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
+	//	{
+	//		gameObject.transform.localScale = new Vector3(1, 1);
+	//		gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+	//	}
 
-	}
-	void OnMouseDown()
-	{
+	//}
+	//void OnMouseDown()
+	//{
 
-		if (!EventSystem.current.IsPointerOverGameObject())
-		{
-			gameObject.transform.localScale = new Vector3(1, 1);
-			gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
-			gameManager.worldGen.layers["Biomes"].BroadcastMessage("ToggleTileSelected");
-			gameManager.worldGen.SendMessage("ToggleTileSelected");
-			//gameObject.GetComponentInParent<Transform>().BroadcastMessage("ToggleTileSelected");
-		}
+	//	if (!EventSystem.current.IsPointerOverGameObject())
+	//	{
+	//		gameObject.transform.localScale = new Vector3(1, 1);
+	//		gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
+	//		gameManager.worldGen.layers["Biomes"].BroadcastMessage("ToggleTileSelected");
+	//		gameManager.worldGen.SendMessage("ToggleTileSelected");
+	//		//gameObject.GetComponentInParent<Transform>().BroadcastMessage("ToggleTileSelected");
+	//	}
 
 
-	}
+	//}
 
     public void CreateWorld()
     {
-        DestroyWorld();
+        //DestroyWorld();
 
-        mainCam.orthographicSize = gameManager.world.height / 2f;
-        gameManager.maxCamSize = gameManager.world.height / 2f;
-        mainCam.transform.position = new Vector3(gameManager.world.width / 2, gameManager.world.height / 2, -10f);
+        mainCam.orthographicSize = gameManager.gridWorldSize.x / 2f;
+        gameManager.maxCamSize = gameManager.gridWorldSize.y / 2f;
+        //mainCam.transform.position = new Vector3(0, 0, -10f);
 
-        if (gameManager.world.useRandomSeed)
+        if (useRandomSeed)
         {
             gameManager.world.seed = Time.time.ToString();
             seedInput.text = gameManager.world.seed;
         }
         else
+        {
             gameManager.world.seed = seedInput.text;
+        }
+           
 
         gameManager.world.GenerateMap();
         GenerateRegions();
         seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
 
-        worldNameText.text = gameManager.world.worldName;
+        worldNameText.text = gameManager.world.name;
         //buildBasicLayers();
         buildBiome();
         buildMountains();
@@ -119,7 +125,7 @@ public class WorldGen : MonoBehaviour {
         GenerateRegions();
         seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
 
-        worldNameText.text = gameManager.world.worldName;
+        worldNameText.text = gameManager.world.name;
         //buildBasicLayers();
         buildBiome();
         buildMountains();
@@ -392,14 +398,14 @@ public class WorldGen : MonoBehaviour {
 
     void ToggleRandomSeed()
     {
-        if (gameManager.world.useRandomSeed)
+        if (useRandomSeed)
         {
-            gameManager.world.useRandomSeed = false;
+            useRandomSeed = false;
             seedInput.interactable = true;
         }
         else
         {
-            gameManager.world.useRandomSeed = true;
+            useRandomSeed = true;
             seedInput.interactable = false;
         }
             

@@ -5,11 +5,16 @@ using System;
 [Serializable]
 public class LocalMap {
 
-    public int x;
-    public int y;
+    internal Vector3 worldPosition;
+    internal Vector2 localSize;
+    int localSizeX, localSizeY;
+
     public string seed;
-    public int width;
-    public int height;
+    internal string biome;
+    internal float elevation;
+    internal float rain;
+    internal float aveTemp;
+
     public float heightMapScale = 10f;
     public float baseMapScale = 1f;
     public float mountainScale = .2f;

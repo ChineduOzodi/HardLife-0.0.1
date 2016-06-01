@@ -5,7 +5,7 @@ public class Grid : MonoBehaviour {
 
     public LayerMask unwalkableMask;
     private Vector2 gridWorldSize;
-    public float nodeRadius = 1;
+    public float nodeRadius = .5f;
     public Node[,] grid;
     public List<Node> walkableNodes;
 
