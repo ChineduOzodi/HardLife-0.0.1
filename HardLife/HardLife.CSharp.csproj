@@ -95,7 +95,7 @@
     <Compile Include="Assets\Scripts\Region.cs" />
     <Compile Include="Assets\Scripts\Road.cs" />
     <Compile Include="Assets\Scripts\Roof.cs" />
-    <Compile Include="Assets\Scripts\TestWG.cs" />
+    <Compile Include="Assets\Scripts\SpriteManager.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
     <Compile Include="Assets\Scripts\Water.cs" />
     <Compile Include="Assets\Scripts\World.cs" />

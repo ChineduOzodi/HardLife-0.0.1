@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class LocalMapGen : MonoBehaviour {
+public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
 
     World world;
     public LocalMap local;
@@ -28,7 +28,7 @@ public class LocalMapGen : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-        gameManager = GetComponent<GameManager>();
+        gameManager = GetComponent<GameManager>(); //TODO Will this be in the same object as world manager or in it's own object?
         world = gameManager.world;
 
         sprites = new Dictionary<string, GameObject[]>();
@@ -42,29 +42,30 @@ public class LocalMapGen : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
     public LocalMap CreateLocalMap(Coord coord)
-    {      
-        int x = coord.x;
-        int y = coord.y;
+    {
+        throw new NotImplementedException();
+        //int x = coord.x;
+        //int y = coord.y;
 
-        seed = world.seed + x + y;
+        //seed = world.seed + x + y;
 
-        aveTemp = world.aveTempMap[x, y];
-        int[,] baseMap = world.mapLayers[Array.IndexOf(world.layerNames, "Base Map")];
-        int[,] biomeMap = world.mapLayers[Array.IndexOf(world.layerNames, "Biome Map")];
-        int[,] mMap = world.mapLayers[Array.IndexOf(world.layerNames, "Mountain Map")];
-        int biomeType = biomeMap[x, y];
-        int mType = mMap[x, y];
+        //aveTemp = world.aveTempMap[x, y];
+        //int[,] baseMap = world.mapLayers[Array.IndexOf(world.layerNames, "Base Map")];
+        //int[,] biomeMap = world.mapLayers[Array.IndexOf(world.layerNames, "Biome Map")];
+        //int[,] mMap = world.mapLayers[Array.IndexOf(world.layerNames, "Mountain Map")];
+        //int biomeType = biomeMap[x, y];
+        //int mType = mMap[x, y];
 
-        int[,] adjacentBaseTiles = AdjacentTiles(baseMap, x, y);
-        int[,] adjacentMTiles = AdjacentTiles(mMap, x, y);
+        //int[,] adjacentBaseTiles = AdjacentTiles(baseMap, x, y);
+        //int[,] adjacentMTiles = AdjacentTiles(mMap, x, y);
 
-        local = new LocalMap(seed, biomeType, mType, adjacentBaseTiles, adjacentMTiles, width, height);
-        //world.localMaps[x, y] = local;
-        return local;
+        //local = new LocalMap(seed, biomeType, mType, adjacentBaseTiles, adjacentMTiles, width, height);
+        ////world.localMaps[x, y] = local;
+        //return local;
 
     }
 
@@ -103,34 +104,35 @@ public class LocalMapGen : MonoBehaviour {
      }
     public void buildBaseMap(LocalMap local)
     {
-        DestroyLocalMap();
-        this.local = local;
+        throw new NotImplementedException();
+        //        DestroyLocalMap();
+        //        this.local = local;
 
-//        worldGen.mainCam.orthographicSize = local.height / 2f;
-//        worldGen.gameManager.maxCamSize = local.height / 2f;
-//        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
-//
-//        worldGen.createWorldMenu.gameObject.SetActive(false);
-//        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
+        ////        worldGen.mainCam.orthographicSize = local.height / 2f;
+        ////        worldGen.gameManager.maxCamSize = local.height / 2f;
+        ////        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
+        ////
+        ////        worldGen.createWorldMenu.gameObject.SetActive(false);
+        ////        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
 
-        layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
-        Tile[,] map = local.baseMap;
+        //        layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
+        //        Tile[,] map = local.baseMap;
 
-        for (int x = 0; x < local.width; x++)
-        {
-            for (int y = 0; y < local.height; y++)
-            {
-                string sprite = map[x, y].type;
-                int num = UnityEngine.Random.Range(0, sprites[sprite].Length);
-                GameObject tile = sprites[sprite][num].gameObject;
-                GameObject instance = Instantiate(tile, new Vector3(x, y), Quaternion.identity) as GameObject;
+        //        for (int x = 0; x < local.width; x++)
+        //        {
+        //            for (int y = 0; y < local.height; y++)
+        //            {
+        //                string sprite = map[x, y].type;
+        //                int num = UnityEngine.Random.Range(0, sprites[sprite].Length);
+        //                GameObject tile = sprites[sprite][num].gameObject;
+        //                GameObject instance = Instantiate(tile, new Vector3(x, y), Quaternion.identity) as GameObject;
 
-                instance.transform.SetParent(layers["BaseMap"]);
-                instance.AddComponent<LocalTile>();
-                //instance.GetComponent<LocalTile>().SetupTile(worldGen.gameManager, x, y, local.baseMap[x,y].type);
-            }
-        }
-        //layers["Biomes"].gameObject.SetActive(false);
+        //                instance.transform.SetParent(layers["BaseMap"]);
+        //                instance.AddComponent<LocalTile>();
+        //                //instance.GetComponent<LocalTile>().SetupTile(worldGen.gameManager, x, y, local.baseMap[x,y].type);
+        //            }
+        //        }
+        //        //layers["Biomes"].gameObject.SetActive(false);
     }
 
     private int[,] AdjacentTiles(int[,] baseMap, int x, int y)

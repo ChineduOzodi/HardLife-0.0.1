@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cca136f1479044d489ca5c07812f5128
-timeCreated: 1464721531
+timeCreated: 1465890827
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -867,7 +867,7 @@ TextureImporter:
     21301720: roguelikeSheet_transparent_860
     21301722: roguelikeSheet_transparent_861
     21301724: roguelikeSheet_transparent_862
-    21301726: roguelikeSheet_transparent_863
+    21301726: ice_0
     21301728: roguelikeSheet_transparent_864
     21301730: roguelikeSheet_transparent_865
     21301732: roguelikeSheet_transparent_866
@@ -1223,9 +1223,9 @@ TextureImporter:
     21302432: roguelikeSheet_transparent_1216
     21302434: roguelikeSheet_transparent_1217
     21302436: roguelikeSheet_transparent_1218
-    21302438: roguelikeSheet_transparent_1219
-    21302440: roguelikeSheet_transparent_1220
-    21302442: roguelikeSheet_transparent_1221
+    21302438: boulder_0
+    21302440: boulder_1
+    21302442: boulder_2
     21302444: roguelikeSheet_transparent_1222
     21302446: roguelikeSheet_transparent_1223
     21302448: roguelikeSheet_transparent_1224
@@ -11247,7 +11247,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_863
+    - name: ice_0
       rect:
         serializedVersion: 2
         x: 544
@@ -15163,7 +15163,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_1219
+    - name: boulder_0
       rect:
         serializedVersion: 2
         x: 918
@@ -15174,7 +15174,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_1220
+    - name: boulder_1
       rect:
         serializedVersion: 2
         x: 935
@@ -15185,7 +15185,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_1221
+    - name: boulder_2
       rect:
         serializedVersion: 2
         x: 952

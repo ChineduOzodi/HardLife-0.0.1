@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 //            
 //            RunWorldCreationSetup();
 //        }
-        else if (levelInt == 1) //Local Map Play
+        else if (levelInt == 2) //Local Map Play
         {
             
             RunLocalMapSetup();
@@ -152,17 +152,17 @@ public class GameManager : MonoBehaviour
 
     public void ToggleWorldMap()
     {
-        if (!worldGen.createWorldMenu.isActiveAndEnabled)
-        {
-            worldGen.createWorldMenu.gameObject.SetActive(true);
-            worldGen.localMapGen.layers["BaseMap"].gameObject.SetActive(false);
-            foreach (Transform layers in worldGen.layers.Values)
-            {
-                layers.gameObject.SetActive(true);
-            }
+        //if (!worldGen.createWorldMenu.isActiveAndEnabled)
+        //{
+        //    worldGen.createWorldMenu.gameObject.SetActive(true);
+        //    worldGen.localMapGen.layers["BaseMap"].gameObject.SetActive(false);
+        //    foreach (Transform layers in worldGen.layers.Values)
+        //    {
+        //        layers.gameObject.SetActive(true);
+        //    }
 
-            Camera.main.orthographicSize = gridWorldSize.y / 2f;
-            Camera.main.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
-        }
+        //    Camera.main.orthographicSize = gridWorldSize.y / 2f;
+        //    Camera.main.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
+        //}
     }
 }

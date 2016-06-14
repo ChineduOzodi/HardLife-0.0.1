@@ -37,6 +37,8 @@ public class World{
         nodeDiameter = nodeRadius * 2;
         worldSizeX = Mathf.RoundToInt(worldSize.x / nodeDiameter);
         worldSizeY = Mathf.RoundToInt(worldSize.y / nodeDiameter);
+        localSizeX = Mathf.RoundToInt(localSize.x / nodeDiameter);
+        localSizeY = Mathf.RoundToInt(localSize.y / nodeDiameter);
         localMaps = new LocalMap[worldSizeX, worldSizeY];
     }
     //--------------Map Generation Functions----------------

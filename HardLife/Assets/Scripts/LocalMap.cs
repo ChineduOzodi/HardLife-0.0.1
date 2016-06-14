@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 [Serializable]
-public class LocalMap {
+public class LocalMap { //TODO Add coments to class
 
     internal Vector3 worldPosition;
     internal Vector2 localSize;
@@ -37,8 +37,7 @@ public class LocalMap {
     public LocalMap(string seed, int biomeType, int elevation, int[,] adjacentBaseTiles, int[,] adjacentElevTiles, int width, int height)
     {
         this.seed = seed;
-        this.height = height;
-        this.width = width;
+        localSize = new Vector2(width,height);
 
         noise = new FresNoise();
         float[,] heightMap = noise.CalcNoise(width, height, seed, heightMapScale);
@@ -278,108 +277,110 @@ public class LocalMap {
 
     private float[,] MapScaler(float[,] map)
     {
-        float max = map[0, 0];
-        float min = map[0, 0];
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                if (map[x, y] > max)
-                    max = map[x, y];
-                if (map[x, y] < min)
-                    min = map[x, y];
-            }
-        }
+        throw new NotImplementedException();
+        //float max = map[0, 0];
+        //float min = map[0, 0];
+        //for (int x = 0; x < width; x++)
+        //{
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        if (map[x, y] > max)
+        //            max = map[x, y];
+        //        if (map[x, y] < min)
+        //            min = map[x, y];
+        //    }
+        //}
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                map[x, y] = (map[x, y] - min) / (max-min);
-            }
-        }
+        //for (int x = 0; x < width; x++)
+        //{
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        map[x, y] = (map[x, y] - min) / (max-min);
+        //    }
+        //}
 
-        return map;
+        //return map;
 
     }
 
     private float[,] GenerateCorHelperMap(float[,] hHelperMap, float[,] vHelperMap)
     {
-        float[,] map = new float[width, height];
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                float newVar = (hHelperMap[x, y] + vHelperMap[x, y]);
-                if (newVar > 1f)
-                {
-                    newVar = 1f;
-                }
-                map[x, y] = newVar;
-            }
-        }
+        throw new NotImplementedException();
+        //float[,] map = new float[width, height];
+        //for (int x = 0; x < width; x++)
+        //{
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        float newVar = (hHelperMap[x, y] + vHelperMap[x, y]);
+        //        if (newVar > 1f)
+        //        {
+        //            newVar = 1f;
+        //        }
+        //        map[x, y] = newVar;
+        //    }
+        //}
 
-        return map;
+        //return map;
     }
 
     private float[,] GenerateHorHelperMap()
     {
-        
-        int max = height / 2;
-        float[,] map = new float[width, height];
-        for (int x = 0; x < width; x++)
-        {
-            float hCount = 0f;
-            for (int y = 0; y < height; y++)
-            {
-                if (y <= max)
-                {
-                    float toFloat = hCount / (float)max;
+        throw new NotImplementedException();
+        //int max = height / 2;
+        //float[,] map = new float[width, height];
+        //for (int x = 0; x < width; x++)
+        //{
+        //    float hCount = 0f;
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        if (y <= max)
+        //        {
+        //            float toFloat = hCount / (float)max;
 
-                    map[x, y] = toFloat;
-                    hCount++;
-                }
-                else
-                {
-                    float toFloat = hCount / (float)max;
+        //            map[x, y] = toFloat;
+        //            hCount++;
+        //        }
+        //        else
+        //        {
+        //            float toFloat = hCount / (float)max;
 
-                    map[x, y] = toFloat;
-                    hCount--;
-                }
-            }
-        }
+        //            map[x, y] = toFloat;
+        //            hCount--;
+        //        }
+        //    }
+        //}
 
-        return map;
+        //return map;
     }
 
     private float[,] GenerateVertHelperMap()
     {
+        throw new NotImplementedException();
+        //int max = height / 2;
+        //float[,] map = new float[width, height];
+        //for (int y = 0; y < height; y++)
+        //{
+        //    float hCount = 0f;
+        //    for (int x = 0; x < width; x++)
+        //    {
+        //        if (x <= max)
+        //        {
+        //            float toFloat = hCount / (float)max;
 
-        int max = height / 2;
-        float[,] map = new float[width, height];
-        for (int y = 0; y < height; y++)
-        {
-            float hCount = 0f;
-            for (int x = 0; x < width; x++)
-            {
-                if (x <= max)
-                {
-                    float toFloat = hCount / (float)max;
+        //            map[x, y] = toFloat;
+        //            hCount++;
+        //        }
+        //        else
+        //        {
+        //            float toFloat = hCount / (float)max;
 
-                    map[x, y] = toFloat;
-                    hCount++;
-                }
-                else
-                {
-                    float toFloat = hCount / (float)max;
+        //            map[x, y] = toFloat;
+        //            hCount--;
+        //        }
+        //    }
+        //}
 
-                    map[x, y] = toFloat;
-                    hCount--;
-                }
-            }
-        }
-
-        return map;
+        //return map;
     }
 
 }
