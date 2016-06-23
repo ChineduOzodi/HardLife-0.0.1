@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
 
 	//GameManager Set-up
 	public static GameManager instance = null;
-	string savePath;
+    internal SpriteManager spriteManager;
+    string savePath;
 	public int numAutoSave = 5;
 	public bool setup = false;
 
@@ -23,17 +24,17 @@ public class GameManager : MonoBehaviour
 
 	public WorldGen worldGen;
 	public World world;
+    
 
-	//World Settings
-	public Vector2 gridWorldSize;
-	internal float nodeRadius;
+    //World Settings
+    public Vector2 worldSize; //Sets the grid size for detecting objects in the world. 
+                                   //TODO: make sure it isn't confuse with other worldSize
+	internal float nodeRadius = .5f;
 	internal LayerMask unwalkableMask;
 
 	//Local Settings
-	public Vector2 gridLocalSize;
+	public Vector2 localSize;
 
-    //Main Menu Setup
-    public Button createWorld;
 
 	#endregion
     #region "MonoDev Functions"
@@ -48,6 +49,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         savePath = Application.persistentDataPath + "currentWorld.world";
+        spriteManager = new SpriteManager();
         setup = false;
     }
 
@@ -55,7 +57,7 @@ public class GameManager : MonoBehaviour
     {
         if (levelInt == 0) //Main Menu
         {
-            RunMainMenuSetup();
+            //RunMainMenuSetup();
 
         }
 //        else if (levelInt == 1) //World Creation
@@ -73,12 +75,6 @@ public class GameManager : MonoBehaviour
     private void RunLocalMapSetup()
     {
         throw new NotImplementedException();
-    }
-
-    private void RunMainMenuSetup()
-    {
-        //worldGen = GetComponent<WorldGen>();
-        //createWorld.onClick.AddListener(() => { CreateWorld(); });
     }
 
     #endregion

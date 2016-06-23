@@ -18,7 +18,7 @@ public class Grid : MonoBehaviour {
     {
         //Get info from gameManager
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
-        gridWorldSize = gameManager.gridWorldSize;
+        gridWorldSize = gameManager.worldSize;
         nodeRadius = gameManager.nodeRadius;
         unwalkableMask = gameManager.unwalkableMask;
 

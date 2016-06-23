@@ -7,7 +7,7 @@ public class LocalMap { //TODO Add coments to class
 
     internal Vector3 worldPosition;
     internal Vector2 localSize;
-    int localSizeX, localSizeY;
+    int localSizeX, localSizeY, worldPositionX,worldPostionY;
 
     public string seed;
     internal string region;
@@ -17,6 +17,8 @@ public class LocalMap { //TODO Add coments to class
     internal float elevation;
     internal float rain;
     internal float aveTemp;
+
+    internal float lastUpdated = 0f;
 
     public float heightMapScale = 10f;
     public float baseMapScale = 1f;
@@ -36,7 +38,12 @@ public class LocalMap { //TODO Add coments to class
     private float[] baseMapNC = { .5f,.55f, .85f,.9f };
     private float[] itemMapNC = { .33f, .66f };
 
-    public LocalMap(string seed, int biomeType, int elevation, int[,] adjacentBaseTiles, int[,] adjacentElevTiles, int width, int height)
+    public LocalMap(int _worldPositionX, int _worldPositionY)
+    {
+        worldPositionX = _worldPositionX;
+        worldPostionY = _worldPositionY;
+    }
+    public void GenerateLocalMap(string seed, int biomeType, int elevation, int[,] adjacentBaseTiles, int[,] adjacentElevTiles, int width, int height)
     {
         this.seed = seed;
         localSize = new Vector2(width,height);

@@ -13,6 +13,12 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     internal GameManager gameManager;
     public Camera mainCam;
 
+    Transform biomeEmpty;
+    Transform mountEmpty;
+
+    SpriteRenderer[,] biomeMap;
+    SpriteRenderer[,] mountMap;
+
 
     //texturing
     //private Sprite whiteBlock;
@@ -43,7 +49,6 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     {
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>() ;
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-
         //biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
         
 
@@ -88,11 +93,13 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     {
         //DestroyWorld();
 
-        //mainCam.orthographicSize = gameManager.gridWorldSize.x / 2f;
-        //gameManager.maxCamSize = gameManager.gridWorldSize.y / 2f;
+        mainCam.orthographicSize = gameManager.worldSize.x / 2f;
+        gameManager.maxCamSize = gameManager.worldSize.y / 2f;
         //mainCam.transform.position = new Vector3(0, 0, -10f);
 
-        if (useRandomSeed)
+        gameManager.world = new World(gameManager.worldSize, gameManager.localSize, gameManager.nodeRadius); //new world
+
+        if (useRandomSeed) //determine seed
         {
             gameManager.world.seed = Time.time.ToString();
             seedInput.text = gameManager.world.seed;
@@ -101,7 +108,6 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         {
             gameManager.world.seed = seedInput.text;
         }
-           
 
         gameManager.world.GenerateMap(gameManager.world.seed);
         seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
@@ -109,7 +115,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         worldNameText.text = gameManager.world.name;
         //buildBasicLayers();
         buildBiome();
-        buildMountains();
+        //buildMountains();
     }
     public void loadWorld()
     {
@@ -231,25 +237,25 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
     private void buildBiome()
     {
-        throw new NotImplementedException();
-        //layers["Biomes"] = new GameObject("Biomes").transform;
+        biomeEmpty = new GameObject("Biomes").transform;
+        Vector3 worldBottomLeft = transform.position - Vector3.right * gameManager.world.worldSize.x / 2 - Vector3.up * gameManager.world.worldSize.y / 2;
         //int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Biome Map")];
 
-        //for (int x = 0; x < gameManager.world.worldSize.x; x++)
-        //{
-        //    for (int y = 0; y < gameManager.world.worldSize.y; y++)
-        //    {
-        //        int sprite = map[x,y];
-        //        int num = UnityEngine.Random.Range(0, biomeSprites[sprite].Length);
-        //        GameObject tile = biomeSprites[sprite][num].gameObject;
-        //        GameObject instance = Instantiate(tile, new Vector3(x, y), Quaternion.identity) as GameObject;
+        //SetupUsedTles
 
-        //        instance.transform.SetParent(layers["Biomes"]);
-        //        instance.AddComponent<WorldTile>();
-        //        instance.GetComponent<WorldTile>().SetupTile(gameManager, x,y,gameManager.world.seed);
-        //    }
-        //}
-        ////layers["Biomes"].gameObject.SetActive(false);
+        for (int x = 0; x < gameManager.world.worldSizeX; x++)
+        {
+            for (int y = 0; y < gameManager.world.worldSizeY; y++)
+            {                
+                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
+                GameObject tile = new GameObject("BiomeTile");
+                tile.transform.position = worldPoint;
+                SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
+                instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMaps[x, y].biome);
+                instance.transform.SetParent(biomeEmpty);
+            }
+        }
+        //layers["Biomes"].gameObject.SetActive(false);
     }
 
     private void buildBasicLayers()

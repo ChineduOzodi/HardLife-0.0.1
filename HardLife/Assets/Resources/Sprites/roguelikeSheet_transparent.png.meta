@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cca136f1479044d489ca5c07812f5128
-timeCreated: 1465890827
+timeCreated: 1466721393
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -895,7 +895,7 @@ TextureImporter:
     21301776: roguelikeSheet_transparent_888
     21301778: roguelikeSheet_transparent_889
     21301780: roguelikeSheet_transparent_890
-    21301782: roguelikeSheet_transparent_891
+    21301782: jungle_0
     21301784: roguelikeSheet_transparent_892
     21301786: roguelikeSheet_transparent_893
     21301788: roguelikeSheet_transparent_894
@@ -1705,7 +1705,7 @@ TextureImporter:
     21303396: roguelikeSheet_transparent_1698
     21303398: roguelikeSheet_transparent_1699
     21303400: roguelikeSheet_transparent_1700
-    21303402: roguelikeSheet_transparent_1701
+    21303402: error
     21303404: roguelikeSheet_transparent_1702
     21303406: roguelikeSheet_transparent_1703
   serializedVersion: 2
@@ -1730,7 +1730,7 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -3
+  textureFormat: 7
   maxTextureSize: 2048
   textureSettings:
     filterMode: 0
@@ -1750,7 +1750,7 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 16
   alphaIsTransparency: 1
-  textureType: 8
+  textureType: 5
   buildTargetSettings: []
   spriteSheet:
     sprites:
@@ -11555,7 +11555,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_891
+    - name: jungle_0
       rect:
         serializedVersion: 2
         x: 51
@@ -20465,7 +20465,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_1701
+    - name: error
       rect:
         serializedVersion: 2
         x: 901

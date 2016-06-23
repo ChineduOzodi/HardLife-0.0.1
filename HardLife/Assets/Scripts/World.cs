@@ -16,7 +16,7 @@ public class World{
     internal Vector2 localSize;
     internal float nodeRadius;
     internal float nodeDiameter;
-    int worldSizeX, worldSizeY, localSizeX, localSizeY;
+    internal int worldSizeX, worldSizeY, localSizeX, localSizeY;
     [Range(45, 60)]
     public int randomFillPercent = 53;
     internal string seed = null;
@@ -116,6 +116,7 @@ public class World{
             for (int y = 0; y < worldSizeY; y++)
             {
                 //Set Local Map Declarations
+                localMaps[x, y] = new LocalMap(x,y);
                 localMaps[x, y].biome = biomeMap[x, y];
                 localMaps[x, y].aveTemp = tempMap[x, y];
                 localMaps[x, y].elevation = mMap[x, y];
@@ -127,7 +128,8 @@ public class World{
 
 	private float[,] GenerateAverageTemp(string[,] biomeMap,float[,] tempMap, float[,] elevMap, float[,] rainMap)
     {
-		float baseTemp = 25;
+        //Possible Biome Names: Unknown, Ice, Grass, Desert, Jungle, Water
+        float baseTemp = 25;
 		float tempScale = 5;
 		float rainScale = 3;
 		float elevScale = 4;
@@ -136,6 +138,7 @@ public class World{
 		biomeTemps.Add ("Ice", -5);
 		biomeTemps.Add ("Jungle", 20);
 		biomeTemps.Add ("Desert", 25);
+        biomeTemps.Add("Water", 25);
 
         float[,] map = new float[worldSizeX, worldSizeY];
 
@@ -181,6 +184,7 @@ public class World{
     /// <returns></returns>
     private string BiomeName(float temp, float rain, float elevation)
     {
+        //Possible Biome Names: Unknown, Ice, Grass, Desert, Jungle
 		string biomeName = "Unknown";
         float[] mountainNC = { .5f, .75f }; //Mountain noise conversion scale
         float[] rainNC = { .33f, .66f };
