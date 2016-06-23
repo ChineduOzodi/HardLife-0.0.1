@@ -32,9 +32,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     
     string[] tType = { "Flat", "Hills", "Mountains" };
     string[] aveRain = { "Little", "Normal", "Lots" };
-    private int tempYearRange = 10;
-    private float maxLakeSize;
-    private float maxIslandSize;
+    
     //private GameObject[][] biomeSprites;
     //public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
     
@@ -43,12 +41,11 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
     void Awake()
     {
-        gameManager = gameObject.GetComponent<GameManager>(); //TODO will this be it's own object like currently set?
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>() ;
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
         //biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
-        maxLakeSize = (gameManager.gridWorldSize.x * gameManager.gridWorldSize.y) / 200; // TODO move region generation to the World class
-		maxIslandSize = (gameManager.gridWorldSize.x * gameManager.gridWorldSize.y) / 1000;
+        
 
     }
 	//void OnMouseEnter()
@@ -91,8 +88,8 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     {
         //DestroyWorld();
 
-        mainCam.orthographicSize = gameManager.gridWorldSize.x / 2f;
-        gameManager.maxCamSize = gameManager.gridWorldSize.y / 2f;
+        //mainCam.orthographicSize = gameManager.gridWorldSize.x / 2f;
+        //gameManager.maxCamSize = gameManager.gridWorldSize.y / 2f;
         //mainCam.transform.position = new Vector3(0, 0, -10f);
 
         if (useRandomSeed)
@@ -106,8 +103,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         }
            
 
-        gameManager.world.GenerateMap();
-        GenerateRegions();
+        gameManager.world.GenerateMap(gameManager.world.seed);
         seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
 
         worldNameText.text = gameManager.world.name;
@@ -121,8 +117,6 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         mainCam.orthographicSize = gameManager.world.worldSize.x / 2f;
         gameManager.maxCamSize = gameManager.world.worldSize.y / 2f;
         mainCam.transform.position = new Vector3(gameManager.world.worldSize.x / 2, gameManager.world.worldSize.y / 2, -10f);
-
-        GenerateRegions();
         seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
 
         worldNameText.text = gameManager.world.name;
@@ -290,107 +284,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     /// <summary>
     /// 
     /// </summary>
-    private void GenerateRegions()
-    {
-        throw new NotImplementedException();
-        //tiles = new WorldTile[gameManager.world.worldSize.x, gameManager.world.worldSize.y];
-        //int[,] baseMap = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Base Map")];
-        //regionNames = new string[gameManager.world.worldSize.x, gameManager.world.worldSize.y];
-        ////Generate Land and Island Regions
-        //List<Region> regions = GetRegions(baseMap, 1);
-        //regions.AddRange(GetRegions(baseMap, 0));
-
-        //foreach (Region region in regions)
-        //{
-        //    if (region.tileType == 1)
-        //    {
-        //        if (region.tiles.Count <= maxIslandSize)
-        //        {
-        //            region.name += " Island";
-        //        }
-
-        //    }
-        //    else if (region.tileType == 0)
-        //    {
-        //        if (region.tiles.Count <= maxLakeSize)
-        //        {
-        //            region.name = "Lake " + region.name;
-        //        }
-        //        else
-        //            region.name += " Ocean";
-        //    }
-
-        //    foreach (Coord tile in region.tiles)
-        //    {
-        //        regionNames[tile.x, tile.y] = region.name;
-        //    }
-
-        //}
-
-    }
-    List<Coord> GetRegionTiles(int[,] baseMap, int startX, int StartY)
-    {
-        throw new NotImplementedException();
-        //List<Coord> tiles = new List<Coord>();
-        //int[,] mapFlags = new int[gameManager.world.worldSize.x, gameManager.world.worldSize.y];
-        //int tileType = baseMap[startX, StartY];
-
-        //string tileSeed = gameManager.world.seed + startX + StartY;
-
-        //Queue<Coord> queue = new Queue<Coord>();
-        //queue.Enqueue(new Coord(startX, StartY));
-        //mapFlags[startX, StartY] = 1; //Flaged as part of region
-
-        //while (queue.Count > 0)
-        //{
-        //    Coord tile = queue.Dequeue();
-        //    tiles.Add(tile);
-
-        //    for (int x = tile.x - 1; x <= tile.x + 1; x++)
-        //    {
-        //        for (int y = tile.y - 1; y <= tile.y + 1; y++)
-        //        {
-        //            if (gameManager.world.IsInMapRange(x, y)) //&& (x == tile.x || y == tile.y))
-        //            {
-        //                if (mapFlags[x, y] == 0 && baseMap[x, y] == tileType)
-        //                {
-        //                    mapFlags[x, y] = 1;
-        //                    queue.Enqueue(new Coord(x, y));
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        //return tiles;
-    }
-
-    List<Region> GetRegions(int[,] baseMap, int tileType)
-    {
-        throw new NotImplementedException();
-        //List<Region> regions = new List<Region>();
-        //int[,] mapFlags = new int[gameManager.world.worldSize.x, gameManager.world.worldSize.y];
-        //for (int x = 0; x < gameManager.world.worldSize.x; x++)
-        //{
-        //    for (int y = 0; y < gameManager.world.worldSize.y; y++)
-        //    {
-        //        if (mapFlags[x, y] == 0 && baseMap[x, y] == tileType)
-        //        {
-        //            string regSeed = gameManager.world.seed + x + y;
-        //            string newRegionName = gameManager.world.nameGen.GenerateRegionName(regSeed);
-        //            Region newRegion = new Region(GetRegionTiles(baseMap, x, y), newRegionName, tileType);
-        //            regions.Add(newRegion);
-
-        //            foreach (Coord tile in newRegion.tiles)
-        //            {
-        //                mapFlags[tile.x, tile.y] = 1;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //return regions;
-    }
+    
     public void DestroyWorld()
     {
         throw new NotImplementedException();
@@ -405,7 +299,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
     }
 
-    void ToggleRandomSeed()
+    public void ToggleRandomSeed()
     {
         if (useRandomSeed)
         {

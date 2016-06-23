@@ -21,6 +21,10 @@ public class World{
     public int randomFillPercent = 53;
     internal string seed = null;
 
+    private int tempYearRange = 10;
+    private float maxLakeSize;
+    private float maxIslandSize;
+
     public LocalMap[,] localMaps;
 	public LocalMap localMap;
     
@@ -35,10 +39,15 @@ public class World{
         localSize = _localSize;
         nodeRadius = _nodeRadius;
         nodeDiameter = nodeRadius * 2;
+
         worldSizeX = Mathf.RoundToInt(worldSize.x / nodeDiameter);
         worldSizeY = Mathf.RoundToInt(worldSize.y / nodeDiameter);
         localSizeX = Mathf.RoundToInt(localSize.x / nodeDiameter);
         localSizeY = Mathf.RoundToInt(localSize.y / nodeDiameter);
+
+        maxLakeSize = (worldSize.x * worldSize.y) / 200;
+        maxIslandSize = (worldSize.x * worldSize.y) / 1000;
+
         localMaps = new LocalMap[worldSizeX, worldSizeY];
     }
     //--------------Map Generation Functions----------------
@@ -67,7 +76,7 @@ public class World{
         //SetLayers(layerNames);
 
         GenerateLayers();
-               
+        GenerateRegions();
 
     }
 
@@ -111,6 +120,7 @@ public class World{
                 localMaps[x, y].aveTemp = tempMap[x, y];
                 localMaps[x, y].elevation = mMap[x, y];
                 localMaps[x, y].rain = rainMap[x, y];
+                localMaps[x, y].baseNum = baseMap[x, y];
             }
         }
     }
@@ -293,9 +303,104 @@ public class World{
 
         return map;
     }
-    ///------- Region Functions
-    ///
-    
+    #region "Region Functions"
+    private void GenerateRegions()
+    {
+        //throw new NotImplementedException();
+        //Generate Land and Island Regions
+        List<Region> regions = GetRegions(1);
+        regions.AddRange(GetRegions(0));
+
+        foreach (Region region in regions)
+        {
+            if (region.tileType == 1)
+            {
+                if (region.tiles.Count <= maxIslandSize)
+                {
+                    region.name += " Island";
+                }
+
+            }
+            else if (region.tileType == 0)
+            {
+                if (region.tiles.Count <= maxLakeSize)
+                {
+                    region.name = "Lake " + region.name;
+                }
+                else
+                    region.name += " Ocean";
+            }
+
+            foreach (Coord tile in region.tiles)
+            {
+                localMaps[tile.x, tile.y].region = region.name;
+            }
+
+        }
+
+    }
+    List<Coord> GetRegionTiles(int startX, int StartY)
+    {
+        List<Coord> tiles = new List<Coord>();
+        int[,] mapFlags = new int[worldSizeX, worldSizeY];
+        int tileType = localMaps[startX, StartY].baseNum;
+
+        string tileSeed = seed + startX + StartY;
+
+        Queue<Coord> queue = new Queue<Coord>();
+        queue.Enqueue(new Coord(startX, StartY));
+        mapFlags[startX, StartY] = 1; //Flaged as part of region
+
+        while (queue.Count > 0)
+        {
+            Coord tile = queue.Dequeue();
+            tiles.Add(tile);
+
+            for (int x = tile.x - 1; x <= tile.x + 1; x++)
+            {
+                for (int y = tile.y - 1; y <= tile.y + 1; y++)
+                {
+                    if (IsInMapRange(x, y)) //&& (x == tile.x || y == tile.y))
+                    {
+                        if (mapFlags[x, y] == 0 && localMaps[x, y].baseNum == tileType)
+                        {
+                            mapFlags[x, y] = 1;
+                            queue.Enqueue(new Coord(x, y));
+                        }
+                    }
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+    List<Region> GetRegions(int tileType)
+    {
+        List<Region> regions = new List<Region>();
+        int[,] mapFlags = new int[worldSizeX, worldSizeY];
+        for (int x = 0; x < worldSizeX; x++)
+        {
+            for (int y = 0; y < worldSizeY; y++)
+            {
+                if (mapFlags[x, y] == 0 && localMaps[x, y].baseNum == tileType)
+                {
+                    string regSeed = seed + x + y;
+                    string newRegionName = nameGen.GenerateRegionName(regSeed);
+                    Region newRegion = new Region(GetRegionTiles(x, y), newRegionName, tileType);
+                    regions.Add(newRegion);
+
+                    foreach (Coord tile in newRegion.tiles)
+                    {
+                        mapFlags[tile.x, tile.y] = 1;
+                    }
+                }
+            }
+        }
+
+        return regions;
+    }
+#endregion
     ///----------Helper Functions
     ///
 

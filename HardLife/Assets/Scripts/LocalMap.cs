@@ -10,6 +10,8 @@ public class LocalMap { //TODO Add coments to class
     int localSizeX, localSizeY;
 
     public string seed;
+    internal string region;
+    internal int baseNum;
     internal string biome;
 	internal string mountainLevel;
     internal float elevation;
