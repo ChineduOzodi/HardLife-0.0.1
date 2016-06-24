@@ -91,7 +91,8 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
     public void CreateWorld()
     {
-        //DestroyWorld();
+        gameManager.setup = true;
+        DestroyWorld();
 
         mainCam.orthographicSize = gameManager.worldSize.x / 2f;
         gameManager.maxCamSize = gameManager.worldSize.y / 2f;
@@ -115,7 +116,8 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         worldNameText.text = gameManager.world.name;
         //buildBasicLayers();
         buildBiome();
-        //buildMountains();
+        buildMountains();
+        gameManager.setup = false;
     }
     public void loadWorld()
     {
@@ -181,29 +183,39 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
     private void buildMountains()
     {
-        throw new NotImplementedException();
-        //layers["Mountains"] = new GameObject("Mountains").transform;
-        //int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Mountain Map")];
-        //for (int x = 0; x < gameManager.world.worldSize.x; x++)
-        //{
-        //    for (int y = 0; y < gameManager.world.worldSize.y; y++)
-        //    {
-        //        if (map[x,y] == 1)
-        //        {
-        //            int num = UnityEngine.Random.Range(0, hill.Length);
-        //            GameObject tile = hill[num].gameObject;
-        //            GameObject instance = Instantiate(tile, new Vector3(x, y), Quaternion.identity) as GameObject;
-        //            instance.transform.SetParent(layers["Mountains"]);
-        //        }
-        //        else if(map[x,y] == 2)
-        //        {
-        //            int num = UnityEngine.Random.Range(0, mountain.Length);
-        //            GameObject tile = mountain[num].gameObject;
-        //            GameObject instance = Instantiate(tile, new Vector3(x, y), Quaternion.identity) as GameObject;
-        //            instance.transform.SetParent(layers["Mountains"]);
-        //        }
-        //    }
-        //}
+
+        mountEmpty = new GameObject("Mountains").transform;
+        mountMap = new SpriteRenderer[gameManager.world.worldSizeX, gameManager.world.worldSizeY];
+        Vector3 worldBottomLeft = transform.position - Vector3.right * gameManager.world.worldSize.x / 2 - Vector3.up * gameManager.world.worldSize.y / 2;
+
+        for (int x = 0; x < gameManager.world.worldSizeX; x++)
+        {
+            for (int y = 0; y < gameManager.world.worldSizeY; y++)
+            {
+                if (gameManager.world.localMaps[x, y].mountainLevel == "Hills" && gameManager.world.localMaps[x, y].biome != "Water")
+                {
+                    Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
+                    GameObject tile = new GameObject("Hill");
+                    tile.transform.position = worldPoint;
+                    SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
+                    instance.sprite = gameManager.spriteManager.GetSprite("silvercoin");
+                    instance.sortingOrder = 1;
+                    instance.transform.SetParent(mountEmpty);
+                    mountMap[x, y] = instance;
+                }
+                else if (gameManager.world.localMaps[x, y].mountainLevel == "Mountains" && gameManager.world.localMaps[x, y].biome != "Water")
+                {
+                    Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
+                    GameObject tile = new GameObject("Mountain");
+                    tile.transform.position = worldPoint;
+                    SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
+                    instance.sprite = gameManager.spriteManager.GetSprite("boulder");
+                    instance.sortingOrder = 1;
+                    instance.transform.SetParent(mountEmpty);
+                    mountMap[x, y] = instance;
+                }
+            }
+        }
     }
 
     void SendInfo(int[] coord)
@@ -238,6 +250,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     private void buildBiome()
     {
         biomeEmpty = new GameObject("Biomes").transform;
+        biomeMap = new SpriteRenderer[gameManager.world.worldSizeX, gameManager.world.worldSizeY];
         Vector3 worldBottomLeft = transform.position - Vector3.right * gameManager.world.worldSize.x / 2 - Vector3.up * gameManager.world.worldSize.y / 2;
         //int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Biome Map")];
 
@@ -253,6 +266,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
                 SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
                 instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMaps[x, y].biome);
                 instance.transform.SetParent(biomeEmpty);
+                biomeMap[x, y] = instance;
             }
         }
         //layers["Biomes"].gameObject.SetActive(false);
@@ -293,14 +307,15 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     
     public void DestroyWorld()
     {
-        throw new NotImplementedException();
-        //if (layers != null)
-        //{
-        //    foreach (Transform layer in layers.Values)
-        //    {
-        //        Destroy(layer.gameObject);
-        //    }
-        //}
+
+        if (biomeEmpty != null)
+        {
+            Destroy(biomeEmpty.gameObject);
+        }
+        if (mountEmpty != null)
+        {
+            Destroy(mountEmpty.gameObject);
+        }
 
 
     }

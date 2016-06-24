@@ -19,9 +19,11 @@ public class World{
     internal int worldSizeX, worldSizeY, localSizeX, localSizeY;
     [Range(45, 60)]
     public int randomFillPercent = 53;
+
+    //[Range(0,100)]
+    //public int waterFillPercent = 75; //THis is in case you wnat to use the elvation Map to determine land and water instead of baseMap
     internal string seed = null;
 
-    private int tempYearRange = 10;
     private float maxLakeSize;
     private float maxIslandSize;
 
@@ -100,16 +102,16 @@ public class World{
         //Temperature Map Generation
         float[,] tempMap = GenerateTempMap(noise.CalcNoise(worldSizeX, worldSizeY, seed+"temp", tempScale));
 
-        //Mountain Map Generation
-        float[,] mMap = noise.CalcNoise(worldSizeX, worldSizeY,  seed+"elevation", mountainScale);
+        //Elevation Map Generation
+        float[,] elevMap = noise.CalcNoise(worldSizeX, worldSizeY,  seed+"elevation", mountainScale);
 
         //Rain Map Generation
         float[,] rainMap = noise.CalcNoise(worldSizeX, worldSizeY, seed+"rain", rainScale);
 
         //Biome Map
-        string[,] biomeMap = GenerateBiomes(baseMap, tempMap,mMap,rainMap);
+        string[,] biomeMap = GenerateBiomes(baseMap, tempMap,elevMap,rainMap);
 
-		tempMap = GenerateAverageTemp(biomeMap, tempMap,mMap,rainMap);
+		tempMap = GenerateAverageTemp(biomeMap, tempMap,elevMap,rainMap);
 
         for (int x = 0; x < worldSizeX; x++)
         {
@@ -119,9 +121,22 @@ public class World{
                 localMaps[x, y] = new LocalMap(x,y);
                 localMaps[x, y].biome = biomeMap[x, y];
                 localMaps[x, y].aveTemp = tempMap[x, y];
-                localMaps[x, y].elevation = mMap[x, y];
+                localMaps[x, y].elevation = elevMap[x, y];
                 localMaps[x, y].rain = rainMap[x, y];
                 localMaps[x, y].baseNum = baseMap[x, y];
+
+                //Set Mounatin Level
+                if (localMaps[x, y].elevation < .5)
+                {
+                    localMaps[x, y].mountainLevel = "Flat";
+                }
+                else if (localMaps[x, y].elevation < .75)
+                {
+                    localMaps[x, y].mountainLevel = "Hills";
+                }else 
+                {
+                    localMaps[x, y].mountainLevel = "Mountains";
+                }
             }
         }
     }
@@ -129,7 +144,6 @@ public class World{
 	private float[,] GenerateAverageTemp(string[,] biomeMap,float[,] tempMap, float[,] elevMap, float[,] rainMap)
     {
         //Possible Biome Names: Unknown, Ice, Grass, Desert, Jungle, Water
-        float baseTemp = 25;
 		float tempScale = 5;
 		float rainScale = 3;
 		float elevScale = 4;
@@ -188,7 +202,7 @@ public class World{
 		string biomeName = "Unknown";
         float[] mountainNC = { .5f, .75f }; //Mountain noise conversion scale
         float[] rainNC = { .33f, .66f };
-        float[] tempNC = { .33f, .5f };
+        float[] tempNC = { .4f, .75f };
 		if (temp < tempNC [0]) {
 			if (rain < rainNC [0]) {
 				if (elevation < mountainNC [0]) {
@@ -248,7 +262,7 @@ public class World{
 				} else if (elevation < mountainNC [1]) {
 					biomeName = "Desert";
 				} else {
-					biomeName = "Desert";
+					biomeName = "Grass";
 				}
 			} else if (rain < rainNC [1]) {
 				if (elevation < mountainNC [0]) {

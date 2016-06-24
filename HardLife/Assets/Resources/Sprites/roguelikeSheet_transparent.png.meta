@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cca136f1479044d489ca5c07812f5128
-timeCreated: 1466721393
+timeCreated: 1466740185
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -600,7 +600,7 @@ TextureImporter:
     21301186: roguelikeSheet_transparent_593
     21301188: roguelikeSheet_transparent_594
     21301190: roguelikeSheet_transparent_595
-    21301192: roguelikeSheet_transparent_596
+    21301192: silvercoin_0
     21301194: roguelikeSheet_transparent_597
     21301196: roguelikeSheet_transparent_598
     21301198: roguelikeSheet_transparent_599
@@ -1730,7 +1730,7 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: 7
+  textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
     filterMode: 0
@@ -1750,7 +1750,7 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 16
   alphaIsTransparency: 1
-  textureType: 5
+  textureType: 8
   buildTargetSettings: []
   spriteSheet:
     sprites:
@@ -8310,7 +8310,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_596
+    - name: silvercoin_0
       rect:
         serializedVersion: 2
         x: 748
