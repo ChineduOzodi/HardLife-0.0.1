@@ -2,12 +2,13 @@
 using System.Collections;
 using System;
 
-[Serializable]
+//[Serializable]
 public class LocalMap { //TODO Add comments to class
     //General Variables
+    internal World world;
     internal Vector3 worldPosition;
     internal Vector2 localSize;
-    int localSizeX, localSizeY, worldPositionX,worldPostionY;
+    internal int localSizeX, localSizeY, worldPositionX,worldPositionY;
 
     public string seed;
     internal string region;
@@ -17,6 +18,8 @@ public class LocalMap { //TODO Add comments to class
     internal float elevation;
     internal float rain;
     internal float aveTemp;
+
+    bool hasShores = false;
 
     internal float lastUpdated = 0f;
 
@@ -41,364 +44,330 @@ public class LocalMap { //TODO Add comments to class
     private float nodeRadius;
     private float nodeDiameter;
 
-    public LocalMap(int _worldPositionX, int _worldPositionY)
+    public LocalMap(int _worldPositionX, int _worldPositionY, string _seed)
     {
         worldPositionX = _worldPositionX;
-        worldPostionY = _worldPositionY;
-    }
-    public void GenerateLocalMap(string seed, int biomeType, int elevation, int[,] adjacentBaseTiles, int[,] adjacentElevTiles, Vector2 _localSize, float _nodeRadius)
-    {
-        this.seed = seed;
-        localSize = _localSize;
+        worldPositionY = _worldPositionY;
 
-        nodeRadius = _nodeRadius;
+        seed = _seed + worldPositionX + worldPositionY;
+    }
+    public void GenerateLocalMap( World _world)
+    {
+        world = _world;
+
+        localSize = world.localSize;
+
+        nodeRadius = world.nodeRadius;
         nodeDiameter = nodeRadius * 2;
 
-        localSizeX = Mathf.RoundToInt(localSize.x / nodeDiameter);
-        localSizeY = Mathf.RoundToInt(localSize.y / nodeDiameter);
+        localSizeX = world.localSizeX;
+        localSizeY = world.localSizeY;
 
+        // Setup Helper Maps elevation map
         noise = new FresNoise();
         float[,] heightMap = noise.CalcNoise(localSizeX, localSizeY, seed, heightMapScale);
         float[,] hMap = heightMap;
         float[,] hHelperMap = GenerateHorHelperMap();
         float[,] vHelperMap = GenerateVertHelperMap();
         float[,] cHelperMap = GenerateCorHelperMap(hHelperMap, vHelperMap);
-        baseMap = new Tile[localSizeX, localSizeY];
 
-        bool hasShores = false;
-        foreach (int baseNum in adjacentBaseTiles)
+        LocalMap[,] adjacentLocalMaps = AdjacentLocalMaps();
+
+        //Check if has shores
+        foreach( LocalMap localMap in adjacentLocalMaps)
         {
-            if (baseNum == 0)
+            if (localMap.biome == "Water")
             {
                 hasShores = true;
                 break;
             }
         }
 
+        #region "Heigh Map Generation"
         for (int x = 0; x < localSizeX; x++)
         {
             for (int y = 0; y < localSizeY; y++)
             {
-                if (x <= localSizeX / 2 && y <= localSizeY/2)
+                if (x <= localSizeX / 2 && y <= localSizeY/2) //Bottom Left Generation
                 {
-                    if (adjacentBaseTiles[0,1] == 0)
+                    //Adjacent Elevation Application
+                    heightMap[x, y] += (1 - vHelperMap[x, y]) * (adjacentLocalMaps[0, 1].elevation - elevation);
+                    heightMap[x, y] += (1 - hHelperMap[x, y]) * (adjacentLocalMaps[1, 0].elevation - elevation);
+                    heightMap[x, y] += (1 - cHelperMap[x, y]) * (adjacentLocalMaps[0, 0].elevation - elevation);
+
+                    if (adjacentLocalMaps[0,1].biome == "Water") //Water application
                     {
                         heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
                     }
-                    if (adjacentElevTiles[0, 1] < elevation)
+                    if (adjacentLocalMaps[1, 0].biome == "Water")
                     {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
+                        heightMap[x, y] -= (1 - hHelperMap[x, y])*baseMapScale;
                     }
-                    else if (adjacentElevTiles[0, 1] > elevation)
-                    {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])* mountainScale;
-                    }
-                    if (adjacentBaseTiles[1, 0] == 0)
-                    {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y])*mountainScale;
-                    }
-                    if ( adjacentElevTiles[1, 0] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[1, 0] > elevation)
-                    {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
-                    }
-                    if (adjacentBaseTiles[0, 0] == 0 )
+                    if (adjacentLocalMaps[0, 0].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
-                    }
-                    if (adjacentElevTiles[0, 0] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[0, 0] > elevation)
-                    {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
                 else if (x <= localSizeX / 2 && y > localSizeY / 2)
                 {
-                    if (adjacentBaseTiles[0, 1] == 0)
+                    //Adjacent Elevation Application
+                    heightMap[x, y] += (1 - vHelperMap[x, y]) * (adjacentLocalMaps[0, 1].elevation - elevation);
+                    heightMap[x, y] += (1 - hHelperMap[x, y]) * (adjacentLocalMaps[1, 2].elevation - elevation);
+                    heightMap[x, y] += (1 - cHelperMap[x, y]) * (adjacentLocalMaps[0, 2].elevation - elevation);
+
+                    if (adjacentLocalMaps[0, 1].biome == "Water") //Water Application
                     {
                         heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
                     }
-                    if (adjacentElevTiles[0, 1] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[0, 1] > elevation)
-                    {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])*mountainScale;
-                    }
-                    if (adjacentBaseTiles[1, 2] == 0)
+                    if (adjacentLocalMaps[1, 2].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - hHelperMap[x, y])*baseMapScale;
                     }
-                    if (adjacentElevTiles[1, 2] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[1, 2] > elevation)
-                    {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
-                    }
-                    if (adjacentBaseTiles[0, 2] == 0 )
+                    if (adjacentLocalMaps[0, 2].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
-                    }
-                    if (adjacentElevTiles[0, 2] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[0, 2] > elevation)
-                    {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
                 else if (x > localSizeX / 2 && y <= localSizeY / 2)
                 {
-                    if (adjacentBaseTiles[2, 1] == 0 )
+                    //Adjacent Elevation Application
+                    heightMap[x, y] += (1 - vHelperMap[x, y]) * (adjacentLocalMaps[2, 1].elevation - elevation);
+                    heightMap[x, y] += (1 - hHelperMap[x, y]) * (adjacentLocalMaps[1, 0].elevation - elevation);
+                    heightMap[x, y] += (1 - cHelperMap[x, y]) * (adjacentLocalMaps[2, 0].elevation - elevation);
+
+                    if (adjacentLocalMaps[2, 1].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
                     }
-                    if (adjacentElevTiles[2, 1] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[2, 1] > elevation)
-                    {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])*mountainScale;
-                    }
-                    if (adjacentBaseTiles[1, 0] == 0 )
+                    if (adjacentLocalMaps[1, 0].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - hHelperMap[x, y])*baseMapScale;
                     }
-                    if (adjacentElevTiles[1, 0] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[1, 0] > elevation)
-                    {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
-                    }
-                    if (adjacentBaseTiles[2, 0] == 0 )
+                    if (adjacentLocalMaps[2, 0].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
-                    }
-                    if (adjacentElevTiles[2, 0] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[2, 0] > elevation)
-                    {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
                 else if (x > localSizeX / 2 && y > localSizeY / 2)
                 {
-                    if (adjacentBaseTiles[2, 1] == 0 )
+                    //Adjacent Elevation Application
+                    heightMap[x, y] += (1 - vHelperMap[x, y]) * (adjacentLocalMaps[2, 1].elevation - elevation);
+                    heightMap[x, y] += (1 - hHelperMap[x, y]) * (adjacentLocalMaps[1, 2].elevation - elevation);
+                    heightMap[x, y] += (1 - cHelperMap[x, y]) * (adjacentLocalMaps[2, 2].elevation - elevation);
+
+                    if (adjacentLocalMaps[2, 1].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - vHelperMap[x, y])*baseMapScale;
                     }
-                    if (adjacentElevTiles[2, 1] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - vHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[2, 1] > elevation)
-                    {
-                        heightMap[x, y] += (1 - vHelperMap[x, y])*mountainScale;
-                    }
-                    if (adjacentBaseTiles[1, 2] == 0)
+                    if (adjacentLocalMaps[1, 2].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - hHelperMap[x, y])*baseMapScale;
                     }
-                    if (adjacentElevTiles[1, 2] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - hHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[1, 2] > elevation)
-                    {
-                        heightMap[x, y] += (1 - hHelperMap[x, y])*mountainScale;
-                    }
-                    if (adjacentBaseTiles[2, 2] == 0)
+                    if (adjacentLocalMaps[2, 2].biome == "Water")
                     {
                         heightMap[x, y] -= (1 - cHelperMap[x, y])*baseMapScale;
-                    }
-                    if (adjacentElevTiles[2, 2] < elevation)
-                    {
-                        heightMap[x, y] -= (1 - cHelperMap[x, y]) * mountainScale;
-                    }
-                    else if (adjacentElevTiles[2, 2] > elevation)
-                    {
-                        heightMap[x, y] += (1 - cHelperMap[x, y])*mountainScale;
                     }
                 }
             }
         }
+        #endregion
+        heightMap = MapScaler(heightMap);               
 
-        heightMap = MapScaler(heightMap);
+        elevationMap = heightMap; //Set local elevation map
+
+        CreateBaseMap();
+
+    }
+
+    private void CreateBaseMap()
+    {
+        baseMap = new Tile[localSizeX, localSizeY];
+
         for (int x = 0; x < localSizeX; x++)
         {
             for (int y = 0; y < localSizeY; y++)
             {
-                baseMap[x, y] = new Tile(x, y, noise.ScaleFloatToInt(heightMap[x, y], baseMapNC));
+                baseMap[x, y] = new Tile(x, y, noise.ScaleFloatToInt(elevationMap[x, y], baseMapNC));
                 
                 
-                if (biomeType == 0) //water local map
+                if (biome == "Water") //water local map
                 {
-                    baseMap[x, y].type = "water";
+                    baseMap[x, y].type = "Water";
                 }
                 else if (baseMap[x, y].id >= 4)
                 {
-                    baseMap[x, y].type = "rock";
+                    baseMap[x, y].type = "Rock";
                 }
-                else if (biomeType == 1)
+                else if (biome == "Ice")
                 {
 
-                    baseMap[x, y].type = "ice";
+                    baseMap[x, y].type = "Ice";
                 }
-                else if (biomeType == 2)
+                else if (biome == "Grass")
                 {
 
-                    baseMap[x, y].type = "grass";
+                    baseMap[x, y].type = "Grass";
                 }
-                else if (biomeType == 3)
+                else if (biome == "Jungle")
                 {
 
-                    baseMap[x, y].type = "jungle";
+                    baseMap[x, y].type = "Jungle";
                 }
-                else if (biomeType == 4)
+                else if (biome == "Desert")
                 {
 
-                    baseMap[x, y].type = "sand";
+                    baseMap[x, y].type = "Sand";
                 }
 
                 if (hasShores && baseMap[x,y].id == 0)
                 {
-                    baseMap[x, y].type = "water";
+                    baseMap[x, y].type = "Water";
                 }
-                else if (hasShores && baseMap[x, y].id == 1 && biomeType != 1 && biomeType != 0 && biomeType != 4)
+                else if (hasShores && baseMap[x, y].id == 1 && biome != "Ice" && biome != "Water" && biome != "Desert")
                 {
-                    baseMap[x, y].type = "sand";
+                    baseMap[x, y].type = "Sand";
                 }
 
             }
                 
 
         }
-                
-
-        elevationMap = heightMap;
     }
 
-    private float[,] MapScaler(float[,] map)
+    private LocalMap[,] AdjacentLocalMaps()
     {
-        throw new NotImplementedException();
-        //float max = map[0, 0];
-        //float min = map[0, 0];
-        //for (int x = 0; x < localSizeX; x++)
-        //{
-        //    for (int y = 0; y < localSizeY; y++)
-        //    {
-        //        if (map[x, y] > max)
-        //            max = map[x, y];
-        //        if (map[x, y] < min)
-        //            min = map[x, y];
-        //    }
-        //}
+        LocalMap[,] adj =  new LocalMap[3,3];
 
-        //for (int x = 0; x < localSizeX; x++)
-        //{
-        //    for (int y = 0; y < localSizeY; y++)
-        //    {
-        //        map[x, y] = (map[x, y] - min) / (max-min);
-        //    }
-        //}
+        for (int nbrX = worldPositionX - 1; nbrX <= worldPositionX + 1; nbrX++)
+        {
+            for (int nbrY = worldPositionY - 1; nbrY <= worldPositionY + 1; nbrY++)
+            {
+                if (IsInWorldMapRange(nbrX, nbrY))
+                {
+                    adj[nbrX + 1 - worldPositionX, nbrY + 1 - worldPositionY] = world.localMaps[nbrX, nbrY];
+                }
+                else
+                {
+                    adj[nbrX + 1 - worldPositionX, nbrY + 1 - worldPositionY] = null;
+                }
 
-        //return map;
+            }
+        }
+
+        return adj;
+    }
+    private bool IsInWorldMapRange(int x, int y)
+    {
+        if (x >= 0 && x < world.worldSizeX && y >= 0 && y < world.worldSizeY)
+            return true;
+        else
+            return false;
+    }
+    private float[,] MapScaler(float[,] map) //Scales float Maps Betwee 0 and 1
+    {
+        float max = map[0, 0];
+        float min = map[0, 0];
+        for (int x = 0; x < localSizeX; x++)
+        {
+            for (int y = 0; y < localSizeY; y++)
+            {
+                if (map[x, y] > max)
+                    max = map[x, y];
+                if (map[x, y] < min)
+                    min = map[x, y];
+            }
+        }
+
+        for (int x = 0; x < localSizeX; x++)
+        {
+            for (int y = 0; y < localSizeY; y++)
+            {
+                map[x, y] = (map[x, y] - min) / (max - min);
+            }
+        }
+
+        return map;
 
     }
 
     private float[,] GenerateCorHelperMap(float[,] hHelperMap, float[,] vHelperMap)
     {
-        throw new NotImplementedException();
-        //float[,] map = new float[localSizeX, localSizeY];
-        //for (int x = 0; x < localSizeX; x++)
-        //{
-        //    for (int y = 0; y < localSizeY; y++)
-        //    {
-        //        float newVar = (hHelperMap[x, y] + vHelperMap[x, y]);
-        //        if (newVar > 1f)
-        //        {
-        //            newVar = 1f;
-        //        }
-        //        map[x, y] = newVar;
-        //    }
-        //}
+        //throw new NotImplementedException();
+        float[,] map = new float[localSizeX, localSizeY];
+        for (int x = 0; x < localSizeX; x++)
+        {
+            for (int y = 0; y < localSizeY; y++)
+            {
+                float newVar = (hHelperMap[x, y] + vHelperMap[x, y]);
+                if (newVar > 1f)
+                {
+                    newVar = 1f;
+                }
+                map[x, y] = newVar;
+            }
+        }
 
-        //return map;
+        return map;
     }
 
     private float[,] GenerateHorHelperMap()
     {
-        throw new NotImplementedException();
-        //int max = localSizeY / 2;
-        //float[,] map = new float[localSizeX, localSizeY];
-        //for (int x = 0; x < localSizeX; x++)
-        //{
-        //    float hCount = 0f;
-        //    for (int y = 0; y < localSizeY; y++)
-        //    {
-        //        if (y <= max)
-        //        {
-        //            float toFloat = hCount / (float)max;
+        //throw new NotImplementedException();
+        int max = localSizeY / 2;
+        float[,] map = new float[localSizeX, localSizeY];
+        for (int x = 0; x < localSizeX; x++)
+        {
+            float hCount = 0f;
+            for (int y = 0; y < localSizeY; y++)
+            {
+                if (y <= max)
+                {
+                    float toFloat = hCount / (float)max;
 
-        //            map[x, y] = toFloat;
-        //            hCount++;
-        //        }
-        //        else
-        //        {
-        //            float toFloat = hCount / (float)max;
+                    map[x, y] = toFloat;
+                    hCount++;
+                }
+                else
+                {
+                    float toFloat = hCount / (float)max;
 
-        //            map[x, y] = toFloat;
-        //            hCount--;
-        //        }
-        //    }
-        //}
+                    map[x, y] = toFloat;
+                    hCount--;
+                }
+            }
+        }
 
-        //return map;
+        return map;
     }
 
     private float[,] GenerateVertHelperMap()
     {
-        throw new NotImplementedException();
-        //int max = localSizeY / 2;
-        //float[,] map = new float[localSizeX, localSizeY];
-        //for (int y = 0; y < localSizeY; y++)
-        //{
-        //    float hCount = 0f;
-        //    for (int x = 0; x < localSizeX; x++)
-        //    {
-        //        if (x <= max)
-        //        {
-        //            float toFloat = hCount / (float)max;
 
-        //            map[x, y] = toFloat;
-        //            hCount++;
-        //        }
-        //        else
-        //        {
-        //            float toFloat = hCount / (float)max;
+        int max = localSizeY / 2;
+        float[,] map = new float[localSizeX, localSizeY];
+        for (int y = 0; y < localSizeY; y++)
+        {
+            float hCount = 0f;
+            for (int x = 0; x < localSizeX; x++)
+            {
+                if (x <= max)
+                {
+                    float toFloat = hCount / (float)max;
 
-        //            map[x, y] = toFloat;
-        //            hCount--;
-        //        }
-        //    }
-        //}
+                    map[x, y] = toFloat;
+                    hCount++;
+                }
+                else
+                {
+                    float toFloat = hCount / (float)max;
 
-        //return map;
+                    map[x, y] = toFloat;
+                    hCount--;
+                }
+            }
+        }
+
+        return map;
     }
 
 }

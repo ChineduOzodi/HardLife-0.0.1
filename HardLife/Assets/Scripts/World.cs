@@ -118,7 +118,7 @@ public class World{
             for (int y = 0; y < worldSizeY; y++)
             {
                 //Set Local Map Declarations
-                localMaps[x, y] = new LocalMap(x,y);
+                localMaps[x, y] = new LocalMap(x,y,seed);
                 localMaps[x, y].biome = biomeMap[x, y];
                 localMaps[x, y].aveTemp = tempMap[x, y];
                 localMaps[x, y].elevation = elevMap[x, y];

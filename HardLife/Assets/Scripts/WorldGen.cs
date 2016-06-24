@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     #region "Declarations"
@@ -20,30 +21,20 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     SpriteRenderer[,] biomeMap;
     SpriteRenderer[,] mountMap;
 
-
-    //texturing
-    //private Sprite whiteBlock;
-    //private Sprite[] water;
-    //private Sprite[] ice;
-    //private Sprite[] grass;
-    //private Sprite[] jungle;
-    //private Sprite[] desert;
-    //private Sprite[] hill;
-    //private Sprite[] mountain;
-
     //UI Setup
     public Text infoText;
     public Text worldNameText;
     public InputField seedInput;
     public Button createLocalMapButton;
     
-    string[] tType = { "Flat", "Hills", "Mountains" };
+    //string[] tType = { "Flat", "Hills", "Mountains" };
     string[] aveRain = { "Little", "Normal", "Lots" };
-    
+    private float tempYearRange = 10;
+
     //private GameObject[][] biomeSprites;
     //public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
-    
-    
+
+
     #endregion
 
     void Awake()
@@ -77,30 +68,25 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     //}
     public void LeftMouseDown()
     {
-        if (selectedTile != null)
-        {
-            selectedTile.color = new Color(1f, 1f, 1f);
-        }
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
-        biomeMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
-        //biomeMap[coord.x, coord.y].transform.localScale = new Vector3(1, 1);
-        selectedTile = biomeMap[coord.x, coord.y];
-        //ToggleTileSelected();
 
-        //if (!EventSystem.current.IsPointerOverGameObject())
-        //{
-        //    if (selectedTile != null)
-        //    {
-        //        selectedTile.color = new Color(1f, 1f, 1f);
-        //    }
-        //    Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //    Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
-        //    biomeMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
-        //    //biomeMap[coord.x, coord.y].transform.localScale = new Vector3(1, 1);
-        //    selectedTile = biomeMap[coord.x, coord.y];
-        //    //ToggleTileSelected();
-        //}
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            if (selectedTile != null)
+            {
+                selectedTile.color = new Color(1f, 1f, 1f);
+            }
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
+            biomeMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
+            
+            gameManager.world.localMap = gameManager.world.localMaps[coord.x, coord.y];
+
+            selectedTile = biomeMap[coord.x, coord.y];
+            TileSelected();
+
+            SendInfo(coord);
+
+        }
 
 
     }
@@ -112,7 +98,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
         mainCam.orthographicSize = gameManager.worldSize.x / 2f;
         gameManager.maxCamSize = gameManager.worldSize.y / 2f;
-        //mainCam.transform.position = new Vector3(0, 0, -10f);
+        mainCam.transform.position = new Vector3(0, 0, -10f);
 
         gameManager.world = new World(gameManager.worldSize, gameManager.localSize, gameManager.nodeRadius); //new world
 
@@ -190,11 +176,8 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
     public void CreateLocalMap()
     {
-        throw new NotImplementedException();
-        //gameManager.world.localMaps[selectedTile.x, selectedTile.y] = localMapGen.CreateLocalMap(selectedTile);
-        //layers["Biomes"].gameObject.SetActive(false);
-        //layers["Mountains"].gameObject.SetActive(false);
-        //localMapGen.buildBaseMap(gameManager.world.localMaps[selectedTile.x, selectedTile.y]);
+        gameManager.setup = true;
+        SceneManager.LoadScene("local_map");
     } 
 
     private void buildMountains()
@@ -234,33 +217,33 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         }
     }
 
-    void SendInfo(int[] coord)
+    void SendInfo(Coord coord)
     {
-        throw new NotImplementedException();
-        //selectedTile = new Coord(coord[0], coord[1]);
-        //string terrain = tType[gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Mountain Map")][coord[0], coord[1]]];
-        //string rain = aveRain[gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Rain Map")][coord[0], coord[1]]];
-        //string info = "Region Name: " + regionNames[coord[0], coord[1]];
-        //info += "\nTerrain Type: " + terrain;
-        //info += "\nAverage Temperature: " + gameManager.world.aveTempMap[coord[0], coord[1]] + " C (" + (gameManager.world.aveTempMap[coord[0], coord[1]] - tempYearRange) + " - " + (gameManager.world.aveTempMap[coord[0], coord[1]] + tempYearRange) + ")";
-        //info += "\nAverage Rain: " + rain;
-        //infoText.text = info;
+        string terrain = gameManager.world.localMaps[coord.x, coord.y].mountainLevel;
+        string rain = gameManager.world.localMaps[coord.x, coord.y].rain.ToString();
+        string info = "Region Name: " + gameManager.world.localMaps[coord.x, coord.y].region;
+        string aveTemp = Mathf.RoundToInt(gameManager.world.localMaps[coord.x, coord.y].aveTemp) + " C (" + (Mathf.RoundToInt(gameManager.world.localMaps[coord.x, coord.y].aveTemp) - tempYearRange) + " - " + (Mathf.RoundToInt(gameManager.world.localMaps[coord.x, coord.y].aveTemp) + tempYearRange) + ")";
+        info += "\nTerrain Type: " + terrain;
+        info += "\nAverage Temperature: " + aveTemp;
+        info += "\nAverage Rain: " + rain + " in";
+        infoText.text = info;
     }
 
-    void ToggleTileSelected()
+    void TileSelected()
     {
+
+        //Previously TOggleTileSelected
         if (tileSelected)
         {
-            createLocalMapButton.interactable = false;
-            gameObject.transform.localScale = new Vector3(1, 1);
-            tileSelected = false;
+            //createLocalMapButton.interactable = false;
+            //tileSelected = false;
         }
         else
         {
             createLocalMapButton.interactable = true;
             tileSelected = true;
         }
-            
+
     }
 
     private void buildBiome()
@@ -317,9 +300,6 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
         //}
     }
-    /// <summary>
-    /// 
-    /// </summary>
     
     public void DestroyWorld()
     {

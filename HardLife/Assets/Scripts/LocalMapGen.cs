@@ -8,35 +8,20 @@ public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
     World world;
     public LocalMap local;
     public GameManager gameManager;
-    public string seed;
-    public int width = 100;
-    public int height = 100;
 
-    //public GameObject whiteBlock;
-    //public GameObject[] water;
-    //public GameObject[] sand;
-    //public GameObject[] grass;
-    //public GameObject[] jungle;
-    //public GameObject[] desert;
-    public GameObject[] rock;
-    private Dictionary<String, GameObject[]> sprites;
+    GameObject baseMapEmpty;
+    GameObject itemMapEmpty;
 
-    int aveTemp;
+    SpriteRenderer[,] baseMap;
+    SpriteRenderer[,] itemMap;
 
-    public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
+    // Use this for initialization
+    void Awake () {
 
-	// Use this for initialization
-	void Awake () {
-
-        gameManager = GetComponent<GameManager>(); //TODO Will this be in the same object as world manager or in it's own object?
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         world = gameManager.world;
 
-        sprites = new Dictionary<string, GameObject[]>();
-//        sprites.Add("water", worldGen.water);
-//        sprites.Add("sand", worldGen.desert);
-//        sprites.Add("grass", worldGen.grass);
-//        sprites.Add("rock", rock);
-//        sprites.Add("jungle", worldGen.jungle);
+        CreateLocalMap();
 
     }
 	
@@ -45,35 +30,36 @@ public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
 
 	}
 
-    public LocalMap CreateLocalMap(Coord coord)
+    public void CreateLocalMap()
     {
-        throw new NotImplementedException();
-        //int x = coord.x;
-        //int y = coord.y;
 
-        //seed = world.seed + x + y;
+        int x = world.localMap.worldPositionX;
+        int y = world.localMap.worldPositionY;
 
-        //aveTemp = world.aveTempMap[x, y];
-        //int[,] baseMap = world.mapLayers[Array.IndexOf(world.layerNames, "Base Map")];
-        //int[,] biomeMap = world.mapLayers[Array.IndexOf(world.layerNames, "Biome Map")];
-        //int[,] mMap = world.mapLayers[Array.IndexOf(world.layerNames, "Mountain Map")];
-        //int biomeType = biomeMap[x, y];
-        //int mType = mMap[x, y];
+        string seed = world.localMap.seed;
 
-        //int[,] adjacentBaseTiles = AdjacentTiles(baseMap, x, y);
-        //int[,] adjacentMTiles = AdjacentTiles(mMap, x, y);
+        //Camera Setup
+        Camera.main.orthographicSize = gameManager.worldSize.x / 2f;
+        gameManager.maxCamSize = gameManager.worldSize.y / 2f;
+        Camera.main.transform.position = new Vector3(0, 0, -10f);
 
-        //local = new LocalMap(seed, biomeType, mType, adjacentBaseTiles, adjacentMTiles, width, height);
-        ////world.localMaps[x, y] = local;
-        //return local;
+        //Generate LocalMap if not generated
+        if (world.localMap.lastUpdated < 1)
+        {
+            world.localMap.GenerateLocalMap(world);
+            world.localMap.lastUpdated = 1;
+        }
+
+        BuildBaseMap();
 
     }
 
     public void PreviewMap(LocalMap local)
     {
-        DestroyLocalMap();
+        throw new NotImplementedException();
+        //DestroyLocalMap();
 
-        FresNoise noise = new FresNoise();
+        //FresNoise noise = new FresNoise();
 
 //        worldGen.mainCam.orthographicSize = local.height / 2f;
 //        worldGen.gameManager.maxCamSize = local.height / 2f;
@@ -82,138 +68,62 @@ public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
 //        worldGen.createWorldMenu.gameObject.SetActive(false);
 //        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
 
-        layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
+        //layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
 
-        //int[,] map = [width, height];
-        Tile[,] map = local.baseMap;
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                //map[x, y] = noise.ScaleFloatToInt(local.elevationMap[x,y],local.baseMapNC);
-                float num = (float)map[x, y].id/5f; // (float)map[x, y] / (float)max;
-                Color col = new Color(num, num, num);
-                //SpriteRenderer rend = worldGen.whiteBlock.GetComponent<SpriteRenderer>();
-                //rend.color = col;
+        ////int[,] map = [width, height];
+        //Tile[,] map = local.baseMap;
+        //for (int x = 0; x < width; x++)
+        //{
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        //map[x, y] = noise.ScaleFloatToInt(local.elevationMap[x,y],local.baseMapNC);
+        //        float num = (float)map[x, y].id/5f; // (float)map[x, y] / (float)max;
+        //        Color col = new Color(num, num, num);
+        //        //SpriteRenderer rend = worldGen.whiteBlock.GetComponent<SpriteRenderer>();
+        //        //rend.color = col;
 
-                //GameObject instance = Instantiate(worldGen.whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
+        //        //GameObject instance = Instantiate(worldGen.whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
 
-                //instance.transform.SetParent(layers["BaseMap"]);
-            }
-        }
+        //        //instance.transform.SetParent(layers["BaseMap"]);
+        //    }
+        //}
      }
-    public void buildBaseMap(LocalMap local)
+    public void BuildBaseMap()
     {
-        throw new NotImplementedException();
-        //        DestroyLocalMap();
-        //        this.local = local;
+        //throw new NotImplementedException();
+        //DestroyLocalMap();
 
-        ////        worldGen.mainCam.orthographicSize = local.height / 2f;
-        ////        worldGen.gameManager.maxCamSize = local.height / 2f;
-        ////        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
-        ////
-        ////        worldGen.createWorldMenu.gameObject.SetActive(false);
-        ////        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
+        baseMapEmpty = new GameObject("BaseMap");
+        baseMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
 
-        //        layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
-        //        Tile[,] map = local.baseMap;
+        Vector3 worldBottomLeft = transform.position - Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
 
-        //        for (int x = 0; x < local.width; x++)
-        //        {
-        //            for (int y = 0; y < local.height; y++)
-        //            {
-        //                string sprite = map[x, y].type;
-        //                int num = UnityEngine.Random.Range(0, sprites[sprite].Length);
-        //                GameObject tile = sprites[sprite][num].gameObject;
-        //                GameObject instance = Instantiate(tile, new Vector3(x, y), Quaternion.identity) as GameObject;
-
-        //                instance.transform.SetParent(layers["BaseMap"]);
-        //                instance.AddComponent<LocalTile>();
-        //                //instance.GetComponent<LocalTile>().SetupTile(worldGen.gameManager, x, y, local.baseMap[x,y].type);
-        //            }
-        //        }
-        //        //layers["Biomes"].gameObject.SetActive(false);
-    }
-
-    private int[,] AdjacentTiles(int[,] baseMap, int x, int y)
-    {
-        int[,] adj = new int[3, 3];
-
-        for (int nbrX = x - 1; nbrX <= x + 1; nbrX++)
+        for (int x = 0; x < world.localSizeX; x++)
         {
-            for (int nbrY = y - 1; nbrY <= y + 1; nbrY++)
+            for (int y = 0; y < world.localSizeY; y++)
             {
-                if (IsInMapRange(nbrX, nbrY))
-                {
-                    adj[nbrX + 1-x, nbrY + 1-y] = baseMap[nbrX, nbrY];
-                }
-                else
-                {
-                    adj[nbrX + 1 - x, nbrY + 1 - y] = -1; 
-                }
-
+                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
+                GameObject tile = new GameObject("BiomeTile");
+                tile.transform.position = worldPoint;
+                SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
+                instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMap.baseMap[x,y].type);
+                instance.transform.SetParent(baseMapEmpty.transform);
+                baseMap[x, y] = instance;
             }
         }
-
-        return adj;
-    }
-    private float[,] AdjacentTiles(float[,] baseMap, int x, int y)
-    {
-        float[,] adj = new float[3, 3];
-
-        for (int nbrX = x - 1; nbrX <= x + 1; nbrX++)
-        {
-            for (int nbrY = y - 1; nbrY <= y + 1; nbrY++)
-            {
-                if (IsInMapRange(nbrX, nbrY))
-                {
-                    adj[nbrX + 1 - x, nbrY + 1 - y] = baseMap[nbrX, nbrY];
-                }
-                else
-                {
-                    adj[nbrX + 1 - x, nbrY + 1 - y] = baseMap[x,y];
-                }
-
-            }
-        }
-
-        return adj;
-    }
-    private T[,] AdjacentTiles<T>(T[,] baseMap, int x, int y)
-    {
-        T[,] adj = new T[3, 3];
-
-        for (int nbrX = x - 1; nbrX <= x + 1; nbrX++)
-        {
-            for (int nbrY = y - 1; nbrY <= y + 1; nbrY++)
-            {
-                if (IsInMapRange(nbrX, nbrY))
-                {
-                    adj[nbrX + 1 - x, nbrY + 1 - y] = baseMap[nbrX, nbrY];
-                }
-
-            }
-        }
-
-        return adj;
     }
 
-    public bool IsInMapRange(int x, int y)
-    {
-        if (x >= 0 && x < width && y >= 0 && y < height)
-            return true;
-        else
-            return false;
-    }
+
 
     private void DestroyLocalMap()
     {
-        if (layers != null)
-        {
-            foreach (Transform layer in layers.Values)
-            {
-                Destroy(layer.gameObject);
-            }
-        }
+        throw new NotImplementedException();
+        //if (layers != null)
+        //{
+        //    foreach (Transform layer in layers.Values)
+        //    {
+        //        Destroy(layer.gameObject);
+        //    }
+        //}
     }
 }

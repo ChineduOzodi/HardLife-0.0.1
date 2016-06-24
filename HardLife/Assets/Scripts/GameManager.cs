@@ -22,8 +22,9 @@ public class GameManager : MonoBehaviour
 	public float camMoveSpeed = .75f;
 	public float maxCamSize = 5;
 
-	public WorldGen worldGen;
-	public World world;
+	internal WorldGen worldGen;
+	internal World world;
+    internal LocalMapGen localMapGen;
     
 
     //World Settings
@@ -67,8 +68,8 @@ public class GameManager : MonoBehaviour
         }
         else if (levelInt == 2) //Local Map Play
         {
-            
-            RunLocalMapSetup();
+
+            localMapGen = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapGen>();
         }
     }
 
