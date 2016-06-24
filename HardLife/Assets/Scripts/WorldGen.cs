@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     #region "Declarations"
@@ -53,41 +54,56 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         
 
     }
-	//void OnMouseEnter()
-	//{
-	//	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
-	//	{
-	//		gameManager.SendMessage("SendInfo", coord);
-	//		//print("Found Mouse");
-	//		//print(coord);
-	//		//gameObject.transform.localScale = new Vector3(1.25f, 1.25f);
-	//		gameObject.GetComponent<SpriteRenderer>().color = new Color(.8f, .8f, .8f);
-	//	}
+    //void OnMouseEnter()
+    //{
+    //	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
+    //	{
+    //		gameManager.SendMessage("SendInfo", coord);
+    //		//print("Found Mouse");
+    //		//print(coord);
+    //		//gameObject.transform.localScale = new Vector3(1.25f, 1.25f);
+    //		gameObject.GetComponent<SpriteRenderer>().color = new Color(.8f, .8f, .8f);
+    //	}
 
-	//}
-	//void OnMouseExit()
-	//{
-	//	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
-	//	{
-	//		gameObject.transform.localScale = new Vector3(1, 1);
-	//		gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
-	//	}
+    //}
+    //void OnMouseExit()
+    //{
+    //	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
+    //	{
+    //		gameObject.transform.localScale = new Vector3(1, 1);
+    //		gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+    //	}
 
-	//}
-	//void OnMouseDown()
-	//{
+    //}
+    public void LeftMouseDown()
+    {
+        if (selectedTile != null)
+        {
+            selectedTile.color = new Color(1f, 1f, 1f);
+        }
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
+        biomeMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
+        //biomeMap[coord.x, coord.y].transform.localScale = new Vector3(1, 1);
+        selectedTile = biomeMap[coord.x, coord.y];
+        //ToggleTileSelected();
 
-	//	if (!EventSystem.current.IsPointerOverGameObject())
-	//	{
-	//		gameObject.transform.localScale = new Vector3(1, 1);
-	//		gameObject.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f);
-	//		gameManager.worldGen.layers["Biomes"].BroadcastMessage("ToggleTileSelected");
-	//		gameManager.worldGen.SendMessage("ToggleTileSelected");
-	//		//gameObject.GetComponentInParent<Transform>().BroadcastMessage("ToggleTileSelected");
-	//	}
+        //if (!EventSystem.current.IsPointerOverGameObject())
+        //{
+        //    if (selectedTile != null)
+        //    {
+        //        selectedTile.color = new Color(1f, 1f, 1f);
+        //    }
+        //    Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //    Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
+        //    biomeMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
+        //    //biomeMap[coord.x, coord.y].transform.localScale = new Vector3(1, 1);
+        //    selectedTile = biomeMap[coord.x, coord.y];
+        //    //ToggleTileSelected();
+        //}
 
 
-	//}
+    }
 
     public void CreateWorld()
     {

@@ -5,7 +5,7 @@ public class Grid : MonoBehaviour {
 
     public LayerMask unwalkableMask;
     private Vector2 gridWorldSize;
-    public float nodeRadius = .5f;
+    internal float nodeRadius = .5f;
     public Node[,] grid;
     public List<Node> walkableNodes;
 
@@ -56,7 +56,7 @@ public class Grid : MonoBehaviour {
         float percentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
         float percentY = (worldPosition.y + gridWorldSize.y / 2) / gridWorldSize.y;
         percentX = Mathf.Clamp01(percentX);
-        percentX = Mathf.Clamp01(percentY);
+        percentY = Mathf.Clamp01(percentY);
 
         int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
         int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);

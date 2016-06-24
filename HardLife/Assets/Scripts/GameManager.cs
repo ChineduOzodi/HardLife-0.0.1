@@ -60,11 +60,11 @@ public class GameManager : MonoBehaviour
             //RunMainMenuSetup();
 
         }
-//        else if (levelInt == 1) //World Creation
-//        {
-//            
-//            RunWorldCreationSetup();
-//        }
+        else if (levelInt == 1) //World Creation
+        {
+
+            worldGen = GameObject.FindGameObjectWithTag("WorldGen").GetComponent<WorldGen>();
+        }
         else if (levelInt == 2) //Local Map Play
         {
             
@@ -142,6 +142,14 @@ public class GameManager : MonoBehaviour
             float transY = Input.GetAxis("Vertical") * moveModifier * Time.deltaTime;
 
             Camera.main.transform.Translate(new Vector3(transX, transY));
+
+            if (Input.GetMouseButtonDown(0)) //Mouse Left Click
+            {
+                if (SceneManager.GetActiveScene().name == "world_creation")
+                {
+                    worldGen.LeftMouseDown();
+                }
+            }
         }
 
     }
@@ -160,5 +168,29 @@ public class GameManager : MonoBehaviour
         //    Camera.main.orthographicSize = gridWorldSize.y / 2f;
         //    Camera.main.transform.position = new Vector3(world.width / 2, world.height / 2, -10f);
         //}
+    }
+    public Coord WorldCoordFromWorldPosition(Vector3 worldPosition)
+    {
+        float percentX = (worldPosition.x + worldSize.x / 2) / worldSize.x;
+        float percentY = (worldPosition.y + worldSize.y / 2) / worldSize.y;
+        percentX = Mathf.Clamp01(percentX);
+        percentY = Mathf.Clamp01(percentY);
+
+        int x = Mathf.RoundToInt((world.worldSizeX - 1) * percentX);
+        int y = Mathf.RoundToInt((world.worldSizeY - 1) * percentY);
+        Coord coord = new Coord(x, y);
+        return coord;
+    }
+    public Coord LocalCoordFromWorldPosition(Vector3 worldPosition)
+    {
+        float percentX = (worldPosition.x + localSize.x / 2) / localSize.x;
+        float percentY = (worldPosition.y + localSize.y / 2) / localSize.y;
+        percentX = Mathf.Clamp01(percentX);
+        percentY = Mathf.Clamp01(percentY);
+
+        int x = Mathf.RoundToInt((world.localSizeX - 1) * percentX);
+        int y = Mathf.RoundToInt((world.localSizeY - 1) * percentY);
+        Coord coord = new Coord(x, y);
+        return coord;
     }
 }
