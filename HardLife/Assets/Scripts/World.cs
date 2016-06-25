@@ -12,6 +12,9 @@ public class World{
     public string name;
     internal int saveNum = 1;
 
+    //time info
+    internal Date date = new Date(0);    
+
 	internal Vector2 worldSize;
     internal Vector2 localSize;
     internal float nodeRadius;

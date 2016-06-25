@@ -264,6 +264,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
                 tile.transform.position = worldPoint;
                 SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
                 instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMaps[x, y].biome);
+                gameManager.world.localMaps[x, y].worldPosition = worldPoint;
                 instance.transform.SetParent(biomeEmpty);
                 biomeMap[x, y] = instance;
             }

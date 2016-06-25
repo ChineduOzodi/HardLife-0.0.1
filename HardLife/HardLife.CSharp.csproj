@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.5f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -90,12 +92,14 @@
     <Compile Include="Assets\Scripts\Basic Classes\Coord.cs" />
     <Compile Include="Assets\Scripts\Basic Classes\Dirt.cs" />
     <Compile Include="Assets\Scripts\Basic Classes\Ground.cs" />
+    <Compile Include="Assets\Scripts\Basic Classes\Items.cs" />
+    <Compile Include="Assets\Scripts\Basic Classes\Tree.cs" />
+    <Compile Include="Assets\Scripts\Date.cs" />
     <Compile Include="Assets\Scripts\DayNightCycle.cs" />
     <Compile Include="Assets\Scripts\FresNoise.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GameTime.cs" />
     <Compile Include="Assets\Scripts\Grid.cs" />
-    <Compile Include="Assets\Scripts\Items.cs" />
     <Compile Include="Assets\Scripts\Loader.cs" />
     <Compile Include="Assets\Scripts\LocalMap.cs" />
     <Compile Include="Assets\Scripts\LocalMapGen.cs" />

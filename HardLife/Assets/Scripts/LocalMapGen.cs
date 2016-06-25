@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
+public class LocalMapGen : MonoBehaviour {
 
     World world;
     public LocalMap local;
@@ -33,8 +33,8 @@ public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
     public void CreateLocalMap()
     {
 
-        int x = world.localMap.worldPositionX;
-        int y = world.localMap.worldPositionY;
+        int x = world.localMap.worldMapPositionX;
+        int y = world.localMap.worldMapPositionY;
 
         string seed = world.localMap.seed;
 
@@ -51,43 +51,36 @@ public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
         }
 
         BuildBaseMap();
-
+        BuildItemMap();
     }
 
-    public void PreviewMap(LocalMap local)
+    private void BuildItemMap()
     {
-        throw new NotImplementedException();
-        //DestroyLocalMap();
+        itemMapEmpty = new GameObject("ItemMap");
+        itemMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
 
-        //FresNoise noise = new FresNoise();
+        Vector3 worldBottomLeft = transform.position - Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
 
-//        worldGen.mainCam.orthographicSize = local.height / 2f;
-//        worldGen.gameManager.maxCamSize = local.height / 2f;
-//        worldGen.mainCam.transform.position = new Vector3(local.width / 2, local.height / 2, -10f);
-//
-//        worldGen.createWorldMenu.gameObject.SetActive(false);
-//        worldGen.gameManager.localMapCanvas.gameObject.SetActive(true);
+        for (int x = 0; x < world.localSizeX; x++)
+        {
+            for (int y = 0; y < world.localSizeY; y++)
+            {
+                if (world.localMap.itemMap[x, y] != null)
+                {
+                    Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
+                    GameObject tile = new GameObject("ItemTile");
+                    tile.transform.position = worldPoint;
+                    SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
+                    instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.itemMap[x, y]);
+                    world.localMap.itemMap[x, y].worldPostition = worldPoint;
+                    instance.transform.SetParent(itemMapEmpty.transform);
+                    instance.sortingOrder = world.localMap.itemMap[x, y].stackOrder;
+                    baseMap[x, y] = instance;
+                }  
+            }
+        }
+    }
 
-        //layers["BaseMap"] = new GameObject("LocalBaseMap").transform;
-
-        ////int[,] map = [width, height];
-        //Tile[,] map = local.baseMap;
-        //for (int x = 0; x < width; x++)
-        //{
-        //    for (int y = 0; y < height; y++)
-        //    {
-        //        //map[x, y] = noise.ScaleFloatToInt(local.elevationMap[x,y],local.baseMapNC);
-        //        float num = (float)map[x, y].id/5f; // (float)map[x, y] / (float)max;
-        //        Color col = new Color(num, num, num);
-        //        //SpriteRenderer rend = worldGen.whiteBlock.GetComponent<SpriteRenderer>();
-        //        //rend.color = col;
-
-        //        //GameObject instance = Instantiate(worldGen.whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
-
-        //        //instance.transform.SetParent(layers["BaseMap"]);
-        //    }
-        //}
-     }
     public void BuildBaseMap()
     {
         //throw new NotImplementedException();
@@ -102,11 +95,11 @@ public class LocalMapGen : MonoBehaviour { // TODO fix local map generation
         {
             for (int y = 0; y < world.localSizeY; y++)
             {
-                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
-                GameObject tile = new GameObject("BiomeTile");
+                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
+                GameObject tile = new GameObject("BaseTile");
                 tile.transform.position = worldPoint;
                 SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMap.baseMap[x,y].type);
+                instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.baseMap[x,y].type);
                 instance.transform.SetParent(baseMapEmpty.transform);
                 baseMap[x, y] = instance;
             }

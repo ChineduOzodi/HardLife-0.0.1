@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour
 	public int numAutoSave = 5;
 	public bool setup = false;
 
-	private float zoomSpeed = 15f;
+    internal float gameSpeed = 1;
+
+    private float zoomSpeed = 15f;
 	public float camMoveSpeed = .75f;
 	public float maxCamSize = 5;
 
@@ -35,9 +37,10 @@ public class GameManager : MonoBehaviour
 
 	//Local Settings
 	public Vector2 localSize;
+    
 
 
-	#endregion
+    #endregion
     #region "MonoDev Functions"
     // Use this for initialization
     void Awake()
@@ -150,6 +153,12 @@ public class GameManager : MonoBehaviour
                 {
                     worldGen.LeftMouseDown();
                 }
+            }
+
+            //Update Time
+            if (SceneManager.GetActiveScene().name == "local_map")
+            {
+                world.date.AddTime(Time.deltaTime * gameSpeed);
             }
         }
 

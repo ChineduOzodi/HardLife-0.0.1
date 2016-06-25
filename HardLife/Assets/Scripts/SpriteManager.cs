@@ -52,6 +52,41 @@ public class SpriteManager{
         return pickedSprite;
     }
 
+    public Sprite GetSprite(Items item)
+    {
+        if (item.classType == "Tree")
+        {
+            Tree tree = (Tree)item;
+            string name = item.type.ToLower();
+
+           
+            if (tree.ageText != null)
+                name += "_" + tree.ageText;
+
+            if (tree.fruit > 0)
+            {
+                name += "_" + "fruit";
+            }
+            else name += "_" + "nofruit";
+
+            try
+            {
+                Sprite sprite = sprites[name];
+                return sprite;
+            }
+            catch (KeyNotFoundException)
+            {
+                Sprite sprite = sprites["error"];
+                Debug.Log("Cannot find sprite: " + name);
+                return sprite;
+            }
+        }
+        else
+        {
+            return GetSprite(item.type);
+        }
+    }
+
     private string TextureNames(string name)
     {
         name = name.ToLower();

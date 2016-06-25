@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cca136f1479044d489ca5c07812f5128
-timeCreated: 1466740185
+timeCreated: 1466835106
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -457,7 +457,7 @@ TextureImporter:
     21300900: roguelikeSheet_transparent_450
     21300902: roguelikeSheet_transparent_451
     21300904: roguelikeSheet_transparent_452
-    21300906: roguelikeSheet_transparent_453
+    21300906: ice_0
     21300908: roguelikeSheet_transparent_454
     21300910: roguelikeSheet_transparent_455
     21300912: roguelikeSheet_transparent_456
@@ -513,13 +513,13 @@ TextureImporter:
     21301012: roguelikeSheet_transparent_506
     21301014: roguelikeSheet_transparent_507
     21301016: roguelikeSheet_transparent_508
-    21301018: normaltree_young
+    21301018: normaltree_young_nofruit
     21301020: roguelikeSheet_transparent_510
     21301022: roguelikeSheet_transparent_511
     21301024: roguelikeSheet_transparent_512
     21301026: roguelikeSheet_transparent_513
     21301028: roguelikeSheet_transparent_514
-    21301030: normalbush
+    21301030: normalbush_nofruit
     21301032: roguelikeSheet_transparent_516
     21301034: roguelikeSheet_transparent_517
     21301036: roguelikeSheet_transparent_518
@@ -569,7 +569,7 @@ TextureImporter:
     21301124: roguelikeSheet_transparent_562
     21301126: roguelikeSheet_transparent_563
     21301128: roguelikeSheet_transparent_564
-    21301130: normaltree_old_top
+    21301130: normaltree_old_top_nofruit
     21301132: roguelikeSheet_transparent_566
     21301134: roguelikeSheet_transparent_567
     21301136: roguelikeSheet_transparent_568
@@ -621,9 +621,9 @@ TextureImporter:
     21301228: roguelikeSheet_transparent_614
     21301230: roguelikeSheet_transparent_615
     21301232: roguelikeSheet_transparent_616
-    21301234: roguelikeSheet_transparent_617
+    21301234: mush_0
     21301236: roguelikeSheet_transparent_618
-    21301238: normaltree_old_bottom
+    21301238: normaltree_old_nofruit
     21301240: roguelikeSheet_transparent_620
     21301242: roguelikeSheet_transparent_621
     21301244: roguelikeSheet_transparent_622
@@ -633,7 +633,7 @@ TextureImporter:
     21301252: roguelikeSheet_transparent_626
     21301254: roguelikeSheet_transparent_627
     21301256: tallgrass_1
-    21301258: normaltree_old_bottom_fruit
+    21301258: normaltree_old_fruit
     21301260: roguelikeSheet_transparent_630
     21301262: roguelikeSheet_transparent_631
     21301264: roguelikeSheet_transparent_632
@@ -867,7 +867,7 @@ TextureImporter:
     21301720: roguelikeSheet_transparent_860
     21301722: roguelikeSheet_transparent_861
     21301724: roguelikeSheet_transparent_862
-    21301726: ice_0
+    21301726: stone_0
     21301728: roguelikeSheet_transparent_864
     21301730: roguelikeSheet_transparent_865
     21301732: roguelikeSheet_transparent_866
@@ -1060,7 +1060,7 @@ TextureImporter:
     21302106: roguelikeSheet_transparent_1053
     21302108: roguelikeSheet_transparent_1054
     21302110: roguelikeSheet_transparent_1055
-    21302112: roguelikeSheet_transparent_1056
+    21302112: orangeore_0
     21302114: roguelikeSheet_transparent_1057
     21302116: roguelikeSheet_transparent_1058
     21302118: roguelikeSheet_transparent_1059
@@ -1229,7 +1229,7 @@ TextureImporter:
     21302444: roguelikeSheet_transparent_1222
     21302446: roguelikeSheet_transparent_1223
     21302448: roguelikeSheet_transparent_1224
-    21302450: roguelikeSheet_transparent_1225
+    21302450: purpleore_0
     21302452: roguelikeSheet_transparent_1226
     21302454: roguelikeSheet_transparent_1227
     21302456: roguelikeSheet_transparent_1228
@@ -6737,7 +6737,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_453
+    - name: ice_0
       rect:
         serializedVersion: 2
         x: 187
@@ -7353,15 +7353,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_young
+    - name: normaltree_young_nofruit
       rect:
         serializedVersion: 2
         x: 221
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07369614}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_510
@@ -7419,7 +7419,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normalbush
+    - name: normalbush_nofruit
       rect:
         serializedVersion: 2
         x: 323
@@ -7470,8 +7470,8 @@ TextureImporter:
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.083847046}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: normalbush_fruit
@@ -7481,8 +7481,8 @@ TextureImporter:
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.23609734}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_521
@@ -7969,17 +7969,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_old_top
-      rect:
-        serializedVersion: 2
-        x: 221
-        y: 340
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
     - name: roguelikeSheet_transparent_566
       rect:
         serializedVersion: 2
@@ -8072,17 +8061,6 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 374
-        y: 340
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-    - name: normaltree_old_top_fruit
-      rect:
-        serializedVersion: 2
-        x: 391
         y: 340
         width: 16
         height: 16
@@ -8541,7 +8519,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_617
+    - name: mush_0
       rect:
         serializedVersion: 2
         x: 187
@@ -8563,15 +8541,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_old_bottom
+    - name: normaltree_old_nofruit
       rect:
         serializedVersion: 2
         x: 221
         y: 323
         width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.046998024}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_620
@@ -8673,15 +8651,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_old_bottom_fruit
+    - name: normaltree_old_fruit
       rect:
         serializedVersion: 2
         x: 391
         y: 323
         width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.033097267}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_630
@@ -11247,7 +11225,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: ice_0
+    - name: stone_0
       rect:
         serializedVersion: 2
         x: 544
@@ -13370,7 +13348,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_1056
+    - name: orangeore_0
       rect:
         serializedVersion: 2
         x: 51
@@ -15229,7 +15207,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_1225
+    - name: purpleore_0
       rect:
         serializedVersion: 2
         x: 51
