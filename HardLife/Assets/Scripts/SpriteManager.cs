@@ -52,7 +52,7 @@ public class SpriteManager{
         return pickedSprite;
     }
 
-    public Sprite GetSprite(Items item)
+    public Sprite GetSprite(GObject item)
     {
         if (item.classType == "Tree")
         {

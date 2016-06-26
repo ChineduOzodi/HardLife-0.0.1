@@ -1,12 +1,12 @@
-﻿public class Coord
+﻿public struct Coord
 {
     public int x;
     public int y;
-    public Coord()
-    {
-        x = 0;
-        y = 0;
-    }
+    //public Coord()
+    //{
+    //    x = 0;
+    //    y = 0;
+    //}
     public Coord(int x, int y)
     {
         this.x = x;

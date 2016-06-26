@@ -1,3 +1,3 @@
-﻿public class Road
+﻿public class Road: Path
 {
 }

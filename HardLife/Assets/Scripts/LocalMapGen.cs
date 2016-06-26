@@ -2,18 +2,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class LocalMapGen : MonoBehaviour {
 
+    public Text localMapText;
+
+
     World world;
-    public LocalMap local;
-    public GameManager gameManager;
+    internal LocalMap local;
+    internal GameManager gameManager;
 
     GameObject baseMapEmpty;
     GameObject itemMapEmpty;
 
     SpriteRenderer[,] baseMap;
     SpriteRenderer[,] itemMap;
+    SpriteRenderer selectedTile;
+    private bool tileSelected;
 
     // Use this for initialization
     void Awake () {
@@ -106,6 +113,55 @@ public class LocalMapGen : MonoBehaviour {
         }
     }
 
+    public void LeftMouseDown()
+    {
+
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            if (selectedTile != null)
+            {
+                selectedTile.color = new Color(1f, 1f, 1f);
+            }
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
+            if (itemMap[coord.x, coord.y] != null)
+            {
+                itemMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
+
+                selectedTile = itemMap[coord.x, coord.y];
+
+                //objectInfoText.text = world.localMap.itemMap[coord.x, coord.y].GetInfo()
+            }
+            else
+            {
+                baseMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
+
+                selectedTile = baseMap[coord.x, coord.y];
+
+                //objectInfoText.text = world.localMap.itemMap[coord.x, coord.y].GetInfo()
+            }
+
+        }
+
+
+    }
+
+    void ToggleTileSelected() //Currently doesn't have function
+    {
+
+        //Previously TOggleTileSelected
+        if (tileSelected)
+        {
+            //createLocalMapButton.interactable = false;
+            //tileSelected = false;
+        }
+        else
+        {
+            //createLocalMapButton.interactable = true;
+            tileSelected = true;
+        }
+
+    }
 
 
     private void DestroyLocalMap()

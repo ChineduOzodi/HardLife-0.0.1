@@ -3,31 +3,14 @@ using System.Collections;
 using System;
 
 [Serializable]
-public class Tile {
+public class Tile:GObject {
 
-    public int x;
-    public int y;
     public int id;
-    public string type;
 
-    public Tile(int x, int y, int id)
+    public Tile(int x, int y, int _id)
     {
-        this.x = x;
-        this.y = y;
-        this.id = id;
+        localMapPositionX = x;
+        localMapPositionY = y;
+        id = _id;
     }
-
-    public Tile(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    public Tile()
-    {
-        x = 0;
-        y = 0;
-    }
-
-
 }

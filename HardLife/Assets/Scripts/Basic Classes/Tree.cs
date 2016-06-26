@@ -27,7 +27,12 @@ public class Tree : Items {
             maxAge = 250 * Date.Year;
             matureAge = 25 * Date.Year;
 
-            fruit = Random.Range(0, maxFruit);
+            if (age > matureAge)
+            {
+                fruit = Random.Range(0, maxFruit);
+            }
+            else fruit = 0;
+           
 
             if (age < matureAge)
             {

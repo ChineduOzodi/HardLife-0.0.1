@@ -147,18 +147,22 @@ public class GameManager : MonoBehaviour
 
             Camera.main.transform.Translate(new Vector3(transX, transY));
 
-            if (Input.GetMouseButtonDown(0)) //Mouse Left Click
+            if (SceneManager.GetActiveScene().name == "world_creation")
             {
-                if (SceneManager.GetActiveScene().name == "world_creation")
+                
+                if (Input.GetMouseButtonDown(0)) //Mouse Left Click
                 {
                     worldGen.LeftMouseDown();
                 }
             }
-
-            //Update Time
-            if (SceneManager.GetActiveScene().name == "local_map")
+            else if (SceneManager.GetActiveScene().name == "local_map")
             {
-                world.date.AddTime(Time.deltaTime * gameSpeed);
+                world.date.AddTime(Time.deltaTime * gameSpeed); //Update Time
+
+                if (Input.GetMouseButtonDown(0)) //Mouse Left Click
+                {
+                    worldGen.LeftMouseDown();
+                }
             }
         }
 
