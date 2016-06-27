@@ -34,7 +34,9 @@ public class World{
 	public LocalMap localMap;
     
     public NameGen nameGen = new NameGen();
-	#endregion
+    internal Vector3 worldBottomLeft;
+
+    #endregion
     ///-----initializer(s)
     public World(Vector2 _worldSize, Vector2 _localSize, float _nodeRadius)
     {
@@ -49,6 +51,8 @@ public class World{
         worldSizeY = Mathf.RoundToInt(worldSize.y / nodeDiameter);
         localSizeX = Mathf.RoundToInt(localSize.x / nodeDiameter);
         localSizeY = Mathf.RoundToInt(localSize.y / nodeDiameter);
+
+        worldBottomLeft = Vector3.right * worldSize.x / 2 - Vector3.up *  worldSize.y / 2;
 
         maxLakeSize = (worldSize.x * worldSize.y) / 200;
         maxIslandSize = (worldSize.x * worldSize.y) / 1000;
@@ -124,6 +128,7 @@ public class World{
                 localMaps[x, y] = new LocalMap(x,y,seed);
                 localMaps[x, y].biome = biomeMap[x, y];
                 localMaps[x, y].aveTemp = tempMap[x, y];
+                localMaps[x, y].curTemp = tempMap[x, y];
                 localMaps[x, y].elevation = elevMap[x, y];
                 localMaps[x, y].rain = rainMap[x, y];
                 localMaps[x, y].baseNum = baseMap[x, y];

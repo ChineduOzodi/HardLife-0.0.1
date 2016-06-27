@@ -43,6 +43,8 @@ public class LocalMap { //TODO Add comments to class
     private float[] itemMapNC = { .33f, .66f };
     private float nodeRadius;
     private float nodeDiameter;
+    internal float curTemp;
+    internal Vector3 worldBottomLeft;
 
     public LocalMap(int _worldPositionX, int _worldPositionY, string _seed)
     {
@@ -50,6 +52,8 @@ public class LocalMap { //TODO Add comments to class
         worldMapPositionY = _worldPositionY;
 
         seed = _seed + worldMapPositionX + worldMapPositionY;
+
+        
     }
     public void GenerateLocalMap( World _world)
     {
@@ -62,6 +66,8 @@ public class LocalMap { //TODO Add comments to class
 
         localSizeX = world.localSizeX;
         localSizeY = world.localSizeY;
+
+        worldBottomLeft = Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
 
         // Setup Helper Maps elevation map
         noise = new FresNoise();
@@ -192,28 +198,30 @@ public class LocalMap { //TODO Add comments to class
         for (int x = 0; x < localSizeX; x++)
         {
             for (int y = 0; y < localSizeY; y++)
-            {                
+            {
+                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
+
                 if (biome != "Water") //water local map
                 {
                     if (baseMap[x, y].type == "Grass")
                     {
                         if (random.NextDouble() < treeLikeliness)
                         {
-                            objectMap[x, y] = new Tree("normaltree", new Date(-random.Next(100) * Date.Year),x,y);
+                            objectMap[x, y] = new Tree("normaltree", new Date(-random.Next(100) * Date.Year), worldPoint,x,y);
                         }
                         else if (random.NextDouble() < bushLikeliness)
                         {
-                            objectMap[x, y] = new Tree("normalbush", new Date(-random.Next(24) * Date.Year),x,y);
+                            objectMap[x, y] = new Tree("normalbush", new Date(-random.Next(24) * Date.Year),worldPoint,x,y);
                         }
                         else if (random.NextDouble() < boulderLikeliness)
                         {
-                            objectMap[x, y] = new Items("boulder",x,y);
+                            objectMap[x, y] = new Items("boulder", worldPoint,x,y);
                         }
                         
                     }
                     else if (baseMap[x, y].type == "Rock")
                     {
-                        objectMap[x, y] = new Items("rock",x,y);
+                        objectMap[x, y] = new Items("rock",worldPoint, x,y);
                     }
 
                 }
@@ -232,7 +240,9 @@ public class LocalMap { //TODO Add comments to class
         {
             for (int y = 0; y < localSizeY; y++)
             {
-                baseMap[x, y] = new Tile(x, y, noise.ScaleFloatToInt(elevationMap[x, y], baseMapNC));
+                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
+
+                baseMap[x, y] = new Tile(worldPoint, x, y, noise.ScaleFloatToInt(elevationMap[x, y], baseMapNC));
                 
                 
                 if (biome == "Water") //water local map

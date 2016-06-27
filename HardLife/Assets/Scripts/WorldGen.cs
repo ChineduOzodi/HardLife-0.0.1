@@ -185,7 +185,6 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
         mountEmpty = new GameObject("Mountains").transform;
         mountMap = new SpriteRenderer[gameManager.world.worldSizeX, gameManager.world.worldSizeY];
-        Vector3 worldBottomLeft = transform.position - Vector3.right * gameManager.world.worldSize.x / 2 - Vector3.up * gameManager.world.worldSize.y / 2;
 
         for (int x = 0; x < gameManager.world.worldSizeX; x++)
         {
@@ -193,7 +192,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
             {
                 if (gameManager.world.localMaps[x, y].mountainLevel == "Hills" && gameManager.world.localMaps[x, y].biome != "Water")
                 {
-                    Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
+                    Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
                     GameObject tile = new GameObject("Hill");
                     tile.transform.position = worldPoint;
                     SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
@@ -204,7 +203,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
                 }
                 else if (gameManager.world.localMaps[x, y].mountainLevel == "Mountains" && gameManager.world.localMaps[x, y].biome != "Water")
                 {
-                    Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
+                    Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
                     GameObject tile = new GameObject("Mountain");
                     tile.transform.position = worldPoint;
                     SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
@@ -250,7 +249,6 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     {
         biomeEmpty = new GameObject("Biomes").transform;
         biomeMap = new SpriteRenderer[gameManager.world.worldSizeX, gameManager.world.worldSizeY];
-        Vector3 worldBottomLeft = transform.position - Vector3.right * gameManager.world.worldSize.x / 2 - Vector3.up * gameManager.world.worldSize.y / 2;
         //int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Biome Map")];
 
         //SetupUsedTles
@@ -259,7 +257,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
         {
             for (int y = 0; y < gameManager.world.worldSizeY; y++)
             {                
-                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
+                Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
                 GameObject tile = new GameObject("BiomeTile");
                 tile.transform.position = worldPoint;
                 SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();

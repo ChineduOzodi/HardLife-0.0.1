@@ -27,9 +27,10 @@ public class SpriteManager{
 		return pickedSprites;
 	}
 
-    public Sprite GetSprite(string name, int spriteNum = 0)
+    public Sprite GetSprite(string name)
     {
-        Sprite[] pickedSprites = new Sprite[spriteNum+1];
+        List<Sprite> pickedSprites = new List<Sprite>();
+        int spriteNum = 5;
         name = TextureNames(name);
         name = name.ToLower();
 
@@ -37,17 +38,21 @@ public class SpriteManager{
         {
             try
             {
-                pickedSprites[i] = sprites[name + "_" + i.ToString()];
+                pickedSprites.Add(sprites[name + "_" + i.ToString()]);
             }
             catch ( KeyNotFoundException)
             {
-                pickedSprites[i] = sprites["error"];
-                Debug.Log("Cannot find sprite: " + name + "_" + i.ToString());
+                if (i == 0)
+                {
+                    pickedSprites.Add(sprites["error"]);
+                    Debug.Log("Cannot find sprite: " + name + "_0");
+                }
+                break;
             }
             
         }
 
-        Sprite pickedSprite = pickedSprites[UnityEngine.Random.Range(0, spriteNum)];
+        Sprite pickedSprite = pickedSprites[UnityEngine.Random.Range(0, pickedSprites.Count)];
 
         return pickedSprite;
     }

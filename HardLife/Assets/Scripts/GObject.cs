@@ -8,14 +8,22 @@ public class GObject {
 
     internal string type;
     internal string classType = "GObject";
+    internal bool updateTexture = false;
 
-    internal int stackOrder = 1;
-    bool stackable = false;
+    internal int renderOrder = 1;
+    
 
-    internal float walkSpeedMod;
-    internal float driveSpeedMod;
-    internal float floatSpeedMod;
+    internal float walkSpeedMod = 1;
+    internal float floatSpeedMod = 0;
+    public GObject(string _type, Vector3 _worldPosition, int x, int y)
+    {
+        type = _type;
 
+        worldPostition = _worldPosition;
+        localMapPositionX = x;
+        localMapPositionY = y;
+
+    }
     public virtual string GetInfo()
     {
         return "Class: " + classType;

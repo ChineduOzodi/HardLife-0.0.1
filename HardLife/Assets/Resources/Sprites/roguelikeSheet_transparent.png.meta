@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cca136f1479044d489ca5c07812f5128
-timeCreated: 1466835106
+timeCreated: 1467062179
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -513,18 +513,18 @@ TextureImporter:
     21301012: roguelikeSheet_transparent_506
     21301014: roguelikeSheet_transparent_507
     21301016: roguelikeSheet_transparent_508
-    21301018: normaltree_young_nofruit
-    21301020: roguelikeSheet_transparent_510
-    21301022: roguelikeSheet_transparent_511
+    21301018: oak tree_young_0
+    21301020: oak tree_young_dying_0
+    21301022: oak tree_young_1
     21301024: roguelikeSheet_transparent_512
     21301026: roguelikeSheet_transparent_513
     21301028: roguelikeSheet_transparent_514
-    21301030: normalbush_nofruit
-    21301032: roguelikeSheet_transparent_516
-    21301034: roguelikeSheet_transparent_517
+    21301030: bush_0
+    21301032: bush_dying_0
+    21301034: bush_1
     21301036: roguelikeSheet_transparent_518
-    21301038: normaltree_young_fruit
-    21301040: normalbush_fruit
+    21301038: oak tree_young_fruit_0
+    21301040: bush_fruit_0
     21301042: roguelikeSheet_transparent_521
     21301044: roguelikeSheet_transparent_522
     21301046: normaltree_old_top_winter
@@ -583,7 +583,7 @@ TextureImporter:
     21301152: roguelikeSheet_transparent_576
     21301154: roguelikeSheet_transparent_577
     21301156: roguelikeSheet_transparent_578
-    21301158: normaltree_old_bottom_winter
+    21301158: oak tree_mature_dead_0
     21301160: roguelikeSheet_transparent_580
     21301162: roguelikeSheet_transparent_581
     21301164: roguelikeSheet_transparent_582
@@ -623,9 +623,9 @@ TextureImporter:
     21301232: roguelikeSheet_transparent_616
     21301234: mush_0
     21301236: roguelikeSheet_transparent_618
-    21301238: normaltree_old_nofruit
-    21301240: roguelikeSheet_transparent_620
-    21301242: roguelikeSheet_transparent_621
+    21301238: oak tree_mature_0
+    21301240: oak tree_mature_dying_0
+    21301242: oak tree_mature_1
     21301244: roguelikeSheet_transparent_622
     21301246: roguelikeSheet_transparent_623
     21301248: roguelikeSheet_transparent_624
@@ -633,11 +633,11 @@ TextureImporter:
     21301252: roguelikeSheet_transparent_626
     21301254: roguelikeSheet_transparent_627
     21301256: tallgrass_1
-    21301258: normaltree_old_fruit
+    21301258: oak tree_mature_fruit_0
     21301260: roguelikeSheet_transparent_630
     21301262: roguelikeSheet_transparent_631
     21301264: roguelikeSheet_transparent_632
-    21301266: normaltree_young_winter
+    21301266: oak tree_young_dead_0
     21301268: roguelikeSheet_transparent_634
     21301270: roguelikeSheet_transparent_635
     21301272: roguelikeSheet_transparent_636
@@ -7353,7 +7353,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_young_nofruit
+    - name: oak tree_young_0
       rect:
         serializedVersion: 2
         x: 221
@@ -7364,7 +7364,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.07369614}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_510
+    - name: oak tree_young_dying_0
       rect:
         serializedVersion: 2
         x: 238
@@ -7375,7 +7375,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_511
+    - name: oak tree_young_1
       rect:
         serializedVersion: 2
         x: 255
@@ -7419,7 +7419,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normalbush_nofruit
+    - name: bush_0
       rect:
         serializedVersion: 2
         x: 323
@@ -7430,7 +7430,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_516
+    - name: bush_dying_0
       rect:
         serializedVersion: 2
         x: 340
@@ -7441,7 +7441,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_517
+    - name: bush_1
       rect:
         serializedVersion: 2
         x: 357
@@ -7463,7 +7463,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_young_fruit
+    - name: oak tree_young_fruit_0
       rect:
         serializedVersion: 2
         x: 391
@@ -7474,7 +7474,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.083847046}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normalbush_fruit
+    - name: bush_fruit_0
       rect:
         serializedVersion: 2
         x: 408
@@ -7500,17 +7500,6 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 442
-        y: 357
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-    - name: normaltree_old_top_winter
-      rect:
-        serializedVersion: 2
-        x: 459
         y: 357
         width: 16
         height: 16
@@ -7969,28 +7958,6 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_566
-      rect:
-        serializedVersion: 2
-        x: 238
-        y: 340
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-    - name: roguelikeSheet_transparent_567
-      rect:
-        serializedVersion: 2
-        x: 255
-        y: 340
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
     - name: roguelikeSheet_transparent_568
       rect:
         serializedVersion: 2
@@ -8101,13 +8068,13 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_old_bottom_winter
+    - name: oak tree_mature_dead_0
       rect:
         serializedVersion: 2
         x: 459
         y: 340
         width: 16
-        height: 16
+        height: 33
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -8541,10 +8508,10 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_old_nofruit
+    - name: oak tree_mature_0
       rect:
         serializedVersion: 2
-        x: 221
+        x: 222
         y: 323
         width: 16
         height: 32
@@ -8552,24 +8519,24 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.046998024}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_620
+    - name: oak tree_mature_dying_0
       rect:
         serializedVersion: 2
         x: 238
         y: 323
         width: 16
-        height: 16
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: roguelikeSheet_transparent_621
+    - name: oak tree_mature_1
       rect:
         serializedVersion: 2
         x: 255
         y: 323
         width: 16
-        height: 16
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -8651,7 +8618,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_old_fruit
+    - name: oak tree_mature_fruit_0
       rect:
         serializedVersion: 2
         x: 391
@@ -8695,7 +8662,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-    - name: normaltree_young_winter
+    - name: oak tree_young_dead_0
       rect:
         serializedVersion: 2
         x: 459
@@ -12955,7 +12922,7 @@ TextureImporter:
     - name: roguelikeSheet_transparent_1020
       rect:
         serializedVersion: 2
-        x: 357
+        x: 352
         y: 204
         width: 16
         height: 16

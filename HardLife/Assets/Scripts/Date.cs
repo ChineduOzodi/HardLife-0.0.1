@@ -4,7 +4,7 @@ using UnityEngine;
 public struct Date
 {
     private static int Seasons = 4;
-    private static int Days = 10;
+    private static int Days = 40;
     private static int Hours = 24;
     private static int Minutes = 15;
 
@@ -29,7 +29,6 @@ public struct Date
         year = Mathf.FloorToInt(_time / Year);
         _time = _time % Year;
         season = Mathf.FloorToInt(_time / Season);
-        _time = _time % Season;
         day = Mathf.FloorToInt(_time / Day);
         _time = _time % Day;
         hour = Mathf.FloorToInt(_time / Hour);
@@ -55,15 +54,9 @@ public struct Date
 
                 if (day > Days)
                 {
-                    season += Mathf.FloorToInt(day / Days);
+                    year += Mathf.FloorToInt(day / Days);
                     day = day % Days;
-
-                    if (season > Seasons)
-                    {
-                        year += Mathf.FloorToInt(season / Seasons);
-                        season = season % Seasons;
-
-                    }
+                    season = season % Seasons;
                 }
             }
         }
@@ -80,7 +73,6 @@ public struct Date
         year = Mathf.FloorToInt(_time / Year);
         _time = _time % Year;
         season = Mathf.FloorToInt(_time / Season);
-        _time = _time % Season;
         day = Mathf.FloorToInt(_time / Day);
         _time = _time % Day;
         hour = Mathf.FloorToInt(_time / Hour);
@@ -96,7 +88,6 @@ public struct Date
         float year = Mathf.FloorToInt(_time / Year);
         _time = _time % Year;
         float season = Mathf.FloorToInt(_time / Season);
-        _time = _time % Season;
         float day = Mathf.FloorToInt(_time / Day);
         _time = _time % Day;
         float hour = Mathf.FloorToInt(_time / Hour);

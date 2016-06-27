@@ -2,42 +2,28 @@
 using System.Collections;
 using System;
 
-public class Tree : Plant {
+public class Tree : Bush {
 
-    internal bool isAlive = true;
+    
     internal int maxWood;
-    internal int maxFruit;
-    internal Date maxAge;
-    internal Date matureAge;
-    internal string ageText;
-    internal int fruit;
-    public Tree(string _type, Date _birthTime, int x, int y)
+    
+    internal string ageText = "young";
+    
+    public Tree(string _type, Date _birthTime, Vector3 _worldPosition, int x, int y)
+        :base(_type,_birthTime,_worldPosition, x,y)
     {
-        type = _type;
-        birthTime = _birthTime;
         classType = "Tree";
 
-        localMapPositionX = x;
-        localMapPositionY = y;
-
-        if (type == "normaltree")
+        if (type == "oak tree")
         {
-            stackOrder = 2;
+            renderOrder = 2;
+            minTemp = 5;
             maxFruit = 35;
             maxWood = 75;
-            maxAge = new Date(250 * Date.Year);
-            matureAge = new Date(5 * Date.Year);
-            ageText = "young";
-            
-        }
-        else if (type == "normalbush")
-        {
-            maxFruit = 15;
-            maxWood = 10;
-            maxAge = new Date(25 * Date.Year);
-            matureAge = new Date(5 * Date.Year);
-            fruit = UnityEngine.Random.Range(0, maxFruit);
+            maxStick = 20;
 
+            maxAge = new Date(250 * Date.Year);
+            matureLevel = new Date(3 * Date.Year);
         }
 
     }
@@ -51,13 +37,23 @@ public class Tree : Plant {
     {
         base.UpdateAge(_currentTime);
 
-        if (age < matureAge)
+        
+    }
+
+    internal void UpdateGrowth(float temp) //Hourly Update
+    {
+        if (temp > minTemp)
         {
-            ageText = "young";
+            growthLevel.AddTime( Date.Hour);
+            if (growthLevel > matureLevel)
+            {
+                ageText = "mature";
+                updateTexture = true;
+            }
         }
         else
         {
-            ageText = "old";
+
         }
     }
 }

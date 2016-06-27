@@ -7,10 +7,8 @@ public class Tile:GObject {
 
     public int id;
 
-    public Tile(int x, int y, int _id)
+    public Tile(Vector3 _worldPosition, int x, int y, int _id, string _type = null) : base(_type, _worldPosition, x, y)
     {
-        localMapPositionX = x;
-        localMapPositionY = y;
         id = _id;
     }
 }

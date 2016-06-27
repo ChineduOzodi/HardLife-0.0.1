@@ -28,7 +28,8 @@ public class GameManager : MonoBehaviour
 	internal WorldGen worldGen;
 	internal World world;
     internal LocalMapGen localMapGen;
-    
+
+    string[] theCors = new string[2] { "HourlyUpdate", "DailyUpdate" };    
 
     //World Settings
     public Vector2 worldSize; //Sets the grid size for detecting objects in the world. 
@@ -73,7 +74,7 @@ public class GameManager : MonoBehaviour
         {
 
             localMapGen = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapGen>();
-            StartCoroutine("UpdateAge");
+            StartCoroutine("StartCoroutines",theCors);
         }
     }
 
@@ -169,20 +170,36 @@ public class GameManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(",") && gameSpeed > 1)
                 {
-                    gameSpeed -= 1;
-                    inverseGameSpeed = 1 / gameSpeed;
+                    GameSpeedChange(.5f);
+                    
                 }
-                if (Input.GetKeyDown(".") && gameSpeed < 10)
+                if (Input.GetKeyDown(".") && gameSpeed < 20)
                 {
-                    gameSpeed += 1;
-                    inverseGameSpeed = 1 / gameSpeed;
+                    GameSpeedChange(2);
                 }
             }
         }
 
     }
 
-    IEnumerator UpdateAge()
+
+    private void GameSpeedChange(float v)
+    {
+        gameSpeed = gameSpeed * v;
+        inverseGameSpeed = 1 / gameSpeed;
+        StopAllCoroutines();
+        StartCoroutine("StartCoroutines",theCors);
+    }
+
+    IEnumerator StartCoroutines(string[] coroutines)
+    {
+        foreach(string cor in coroutines)
+        {
+            StartCoroutine(cor);
+            yield return null;
+        }
+    }
+    IEnumerator DailyUpdate()
     {
         for (;;)
         {
@@ -193,7 +210,20 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(Date.Day * inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly
         }
     }
+    IEnumerator HourlyUpdate()
+    {
+        for (;;)
+        {
+            if (!setup)
+            {
 
+                //StartCoroutine("StartCoroutines",theCors);
+                localMapGen.UpdatePlantGrowth();
+                localMapGen.UpdateTemperature(world.localMap);
+            }
+            yield return new WaitForSeconds(Date.Day * inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly
+        }
+    }
     public void ToggleWorldMap()
     {
         //if (!worldGen.createWorldMenu.isActiveAndEnabled)

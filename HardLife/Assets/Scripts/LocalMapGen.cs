@@ -69,22 +69,20 @@ public class LocalMapGen : MonoBehaviour {
         itemMapEmpty = new GameObject("ItemMap");
         objectMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
 
-        Vector3 worldBottomLeft = transform.position - Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
-
         for (int x = 0; x < world.localSizeX; x++)
         {
             for (int y = 0; y < world.localSizeY; y++)
             {
                 if (world.localMap.objectMap[x, y] != null)
                 {
-                    Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
+                    Vector3 worldPoint = local.worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
                     GameObject tile = new GameObject("ItemTile");
                     tile.transform.position = worldPoint;
                     SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
                     instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.objectMap[x, y]);
                     world.localMap.objectMap[x, y].worldPostition = worldPoint;
                     instance.transform.SetParent(itemMapEmpty.transform);
-                    instance.sortingOrder = world.localMap.objectMap[x, y].stackOrder;
+                    instance.sortingOrder = world.localMap.objectMap[x, y].renderOrder;
                     objectMap[x, y] = instance;
                 }  
             }
@@ -99,13 +97,13 @@ public class LocalMapGen : MonoBehaviour {
         baseMapEmpty = new GameObject("BaseMap");
         baseMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
 
-        Vector3 worldBottomLeft = transform.position - Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
+        
 
         for (int x = 0; x < world.localSizeX; x++)
         {
             for (int y = 0; y < world.localSizeY; y++)
             {
-                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
+                Vector3 worldPoint = world.localMap.worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
                 GameObject tile = new GameObject("BaseTile");
                 tile.transform.position = worldPoint;
                 SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
@@ -191,5 +189,36 @@ public class LocalMapGen : MonoBehaviour {
         //        Destroy(layer.gameObject);
         //    }
         //}
+    }
+
+    internal void UpdateTemperature(LocalMap localMap)
+    {
+        int yearTempRange = -5;
+        int dayTempRange = 3;
+
+        localMap.curTemp = localMap.aveTemp -yearTempRange * Mathf.Cos((localMap.world.date.day + 5) / (2 * Mathf.PI))  - dayTempRange * Mathf.Cos((localMap.world.date.hour) * Mathf.PI / 12);
+        foreach (GObject item in local.objectMap)
+        {
+            if (item != null && item.classType == "Tree")
+            {
+                Tree tree = (Tree)item;
+
+                tree.UpdateAge(world.date);
+            }
+        }
+
+    }
+
+    internal void UpdatePlantGrowth()
+    {
+        foreach (GObject item in local.objectMap)
+        {
+            if (item != null && item.classType == "Tree")
+            {
+                Tree tree = (Tree)item;
+
+                tree.UpdateGrowth(world.localMap.curTemp);
+            }
+        }
     }
 }
