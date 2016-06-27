@@ -7,8 +7,6 @@ public class Items : GObject
     internal int stackLimit = 1;
     internal int amount = 1;
 
-    internal float age = 0;
-
     public Items()
     {
 

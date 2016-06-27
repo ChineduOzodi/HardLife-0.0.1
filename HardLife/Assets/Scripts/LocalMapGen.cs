@@ -8,7 +8,8 @@ using UnityEngine.EventSystems;
 public class LocalMapGen : MonoBehaviour {
 
     public Text localMapText;
-
+    public Text objectNameText;
+    public Text objectInfoText;
 
     World world;
     internal LocalMap local;
@@ -18,7 +19,7 @@ public class LocalMapGen : MonoBehaviour {
     GameObject itemMapEmpty;
 
     SpriteRenderer[,] baseMap;
-    SpriteRenderer[,] itemMap;
+    SpriteRenderer[,] objectMap;
     SpriteRenderer selectedTile;
     private bool tileSelected;
 
@@ -27,6 +28,7 @@ public class LocalMapGen : MonoBehaviour {
 
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         world = gameManager.world;
+        local = world.localMap;
 
         CreateLocalMap();
 
@@ -58,13 +60,14 @@ public class LocalMapGen : MonoBehaviour {
         }
 
         BuildBaseMap();
-        BuildItemMap();
+        BuildObjectMap();
+        gameManager.setup = false;
     }
 
-    private void BuildItemMap()
+    private void BuildObjectMap()
     {
         itemMapEmpty = new GameObject("ItemMap");
-        itemMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
+        objectMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
 
         Vector3 worldBottomLeft = transform.position - Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
 
@@ -72,17 +75,17 @@ public class LocalMapGen : MonoBehaviour {
         {
             for (int y = 0; y < world.localSizeY; y++)
             {
-                if (world.localMap.itemMap[x, y] != null)
+                if (world.localMap.objectMap[x, y] != null)
                 {
                     Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
                     GameObject tile = new GameObject("ItemTile");
                     tile.transform.position = worldPoint;
                     SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                    instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.itemMap[x, y]);
-                    world.localMap.itemMap[x, y].worldPostition = worldPoint;
+                    instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.objectMap[x, y]);
+                    world.localMap.objectMap[x, y].worldPostition = worldPoint;
                     instance.transform.SetParent(itemMapEmpty.transform);
-                    instance.sortingOrder = world.localMap.itemMap[x, y].stackOrder;
-                    baseMap[x, y] = instance;
+                    instance.sortingOrder = world.localMap.objectMap[x, y].stackOrder;
+                    objectMap[x, y] = instance;
                 }  
             }
         }
@@ -123,14 +126,15 @@ public class LocalMapGen : MonoBehaviour {
                 selectedTile.color = new Color(1f, 1f, 1f);
             }
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
-            if (itemMap[coord.x, coord.y] != null)
+            Coord coord = gameManager.LocalCoordFromWorldPosition(worldPosition);
+            if (world.localMap.objectMap[coord.x, coord.y] != null)
             {
-                itemMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
+                objectMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
-                selectedTile = itemMap[coord.x, coord.y];
+                selectedTile = objectMap[coord.x, coord.y];
 
-                //objectInfoText.text = world.localMap.itemMap[coord.x, coord.y].GetInfo()
+                objectNameText.text = world.localMap.objectMap[coord.x, coord.y].type.ToUpper();
+                objectInfoText.text = world.localMap.objectMap[coord.x, coord.y].GetInfo();
             }
             else
             {
@@ -138,7 +142,8 @@ public class LocalMapGen : MonoBehaviour {
 
                 selectedTile = baseMap[coord.x, coord.y];
 
-                //objectInfoText.text = world.localMap.itemMap[coord.x, coord.y].GetInfo()
+                objectNameText.text = world.localMap.baseMap[coord.x, coord.y].type.ToUpper();
+                objectInfoText.text = world.localMap.baseMap[coord.x, coord.y].GetInfo();
             }
 
         }
@@ -163,6 +168,18 @@ public class LocalMapGen : MonoBehaviour {
 
     }
 
+    internal void UpdateAge()
+    {
+        foreach (GObject item in local.objectMap)
+        {
+            if (item != null && item.classType  == "Tree")
+            {
+                Tree tree = (Tree)item;
+
+                tree.UpdateAge(world.date);
+            }
+        }
+    }
 
     private void DestroyLocalMap()
     {

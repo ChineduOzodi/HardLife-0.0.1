@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 	public bool setup = false;
 
     internal float gameSpeed = 1;
+    internal float inverseGameSpeed = 1;
 
     private float zoomSpeed = 15f;
 	public float camMoveSpeed = .75f;
@@ -66,13 +67,13 @@ public class GameManager : MonoBehaviour
         }
         else if (levelInt == 1) //World Creation
         {
-
             worldGen = GameObject.FindGameObjectWithTag("WorldGen").GetComponent<WorldGen>();
         }
         else if (levelInt == 2) //Local Map Play
         {
 
             localMapGen = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapGen>();
+            StartCoroutine("UpdateAge");
         }
     }
 
@@ -158,14 +159,39 @@ public class GameManager : MonoBehaviour
             else if (SceneManager.GetActiveScene().name == "local_map")
             {
                 world.date.AddTime(Time.deltaTime * gameSpeed); //Update Time
+                localMapGen.localMapText.text = "<b>"+ world.localMap.region + "</b>\n" + world.date.GetDate();
+
+                
 
                 if (Input.GetMouseButtonDown(0)) //Mouse Left Click
                 {
-                    worldGen.LeftMouseDown();
+                    localMapGen.LeftMouseDown();
+                }
+                if (Input.GetKeyDown(",") && gameSpeed > 1)
+                {
+                    gameSpeed -= 1;
+                    inverseGameSpeed = 1 / gameSpeed;
+                }
+                if (Input.GetKeyDown(".") && gameSpeed < 10)
+                {
+                    gameSpeed += 1;
+                    inverseGameSpeed = 1 / gameSpeed;
                 }
             }
         }
 
+    }
+
+    IEnumerator UpdateAge()
+    {
+        for (;;)
+        {
+            if (!setup)
+            {
+                localMapGen.UpdateAge();
+            }
+            yield return new WaitForSeconds(Date.Day * inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly
+        }
     }
 
     public void ToggleWorldMap()

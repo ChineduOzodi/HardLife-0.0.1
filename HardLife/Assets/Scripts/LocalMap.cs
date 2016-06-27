@@ -31,7 +31,7 @@ public class LocalMap { //TODO Add comments to class
     public float[,] elevationMap;
     public Tile[,] baseMap;
     public Road[,] roadMap;
-    public Items[,] itemMap;
+    public GObject[,] objectMap;
     public Roof[,] roofMap;
     public Items[,] skyMap;
 
@@ -176,13 +176,13 @@ public class LocalMap { //TODO Add comments to class
         elevationMap = heightMap; //Set local elevation map
 
         CreateBaseMap();
-        CreateItemMap();
+        CreateObjectMap();
 
     }
 
-    private void CreateItemMap()
+    private void CreateObjectMap()
     {
-        itemMap = new Items[localSizeX, localSizeY];
+        objectMap = new GObject[localSizeX, localSizeY];
         System.Random random = new System.Random(seed.GetHashCode());
 
         double treeLikeliness = .02; //Probaility of loading items
@@ -199,21 +199,21 @@ public class LocalMap { //TODO Add comments to class
                     {
                         if (random.NextDouble() < treeLikeliness)
                         {
-                            itemMap[x, y] = new Tree("normaltree", random.Next(100) * Date.Year,x,y);
+                            objectMap[x, y] = new Tree("normaltree", new Date(-random.Next(100) * Date.Year),x,y);
                         }
                         else if (random.NextDouble() < bushLikeliness)
                         {
-                            itemMap[x, y] = new Tree("normalbush", random.Next(24) * Date.Year,x,y);
+                            objectMap[x, y] = new Tree("normalbush", new Date(-random.Next(24) * Date.Year),x,y);
                         }
                         else if (random.NextDouble() < boulderLikeliness)
                         {
-                            itemMap[x, y] = new Items("boulder",x,y);
+                            objectMap[x, y] = new Items("boulder",x,y);
                         }
                         
                     }
                     else if (baseMap[x, y].type == "Rock")
                     {
-                        itemMap[x, y] = new Items("rock",x,y);
+                        objectMap[x, y] = new Items("rock",x,y);
                     }
 
                 }

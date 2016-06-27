@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class Tree : Items {
+public class Tree : Plant {
 
     internal bool isAlive = true;
     internal int maxWood;
     internal int maxFruit;
-    internal int maxAge;
-    internal int matureAge;
+    internal Date maxAge;
+    internal Date matureAge;
     internal string ageText;
     internal int fruit;
-    public Tree(string _type, float _age, int x, int y)
+    public Tree(string _type, Date _birthTime, int x, int y)
     {
         type = _type;
-        age = _age;
+        birthTime = _birthTime;
         classType = "Tree";
 
         localMapPositionX = x;
@@ -24,36 +25,39 @@ public class Tree : Items {
             stackOrder = 2;
             maxFruit = 35;
             maxWood = 75;
-            maxAge = 250 * Date.Year;
-            matureAge = 25 * Date.Year;
-
-            if (age > matureAge)
-            {
-                fruit = Random.Range(0, maxFruit);
-            }
-            else fruit = 0;
-           
-
-            if (age < matureAge)
-            {
-                ageText = "young";
-            }
-            else
-            {
-                ageText = "old";
-            }
+            maxAge = new Date(250 * Date.Year);
+            matureAge = new Date(5 * Date.Year);
+            ageText = "young";
             
         }
         else if (type == "normalbush")
         {
             maxFruit = 15;
             maxWood = 10;
-            maxAge = 25 * Date.Year;
-            matureAge = 5 * Date.Year;
-            fruit = Random.Range(0, maxFruit);
+            maxAge = new Date(25 * Date.Year);
+            matureAge = new Date(5 * Date.Year);
+            fruit = UnityEngine.Random.Range(0, maxFruit);
 
         }
 
     }
 
+    public override string GetInfo()
+    {
+        return "Alive: " + isAlive + "\nFruit: " + fruit + "\n"+ base.GetInfo();
+    }
+
+    public override void UpdateAge(Date _currentTime)
+    {
+        base.UpdateAge(_currentTime);
+
+        if (age < matureAge)
+        {
+            ageText = "young";
+        }
+        else
+        {
+            ageText = "old";
+        }
+    }
 }

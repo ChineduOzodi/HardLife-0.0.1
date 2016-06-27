@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-internal struct Date
+public struct Date
 {
     private static int Seasons = 4;
     private static int Days = 10;
@@ -72,8 +72,11 @@ internal struct Date
 
     }
 
-    private void UpdateDate(float _time)
+    internal void UpdateDate(float _time)
     {
+        time = _time;
+        deltaTime = 0;
+
         year = Mathf.FloorToInt(_time / Year);
         _time = _time % Year;
         season = Mathf.FloorToInt(_time / Season);
@@ -86,7 +89,7 @@ internal struct Date
 
     public string GetDate()
     {
-        return year.ToString() + "/" + season.ToString() + "/" + day.ToString() + " " + hour.ToString() + " h";
+        return GetSeason() + ", Day " + (day + 1) + ", Year " + year + " - " + hour + " h " + Mathf.FloorToInt(minute) + " m";
     }
     public string GetDate(float _time)
     {
@@ -100,5 +103,33 @@ internal struct Date
         _time = _time % Hour;
 
         return year.ToString() + "/" + season.ToString() + "/" + day.ToString() + " " + hour.ToString() + " h";
+    }
+
+    private string GetSeason()
+    {
+        string[] seasonNames = new string[4] { "Spring", "Summer", "Fall", "Winter" };
+        return seasonNames[season];
+    }
+
+    public static Date operator -( Date date1, Date date2)
+    {
+        float diff = date1.time - date2.time;
+
+        Date finalDate = new Date(diff);
+
+        return finalDate;
+
+    }
+
+    public static bool operator >(Date date1, Date date2)
+    {
+        return (date1.time > date2.time) ? true:false;
+
+
+    }
+
+    public static bool operator <(Date date1, Date date2)
+    {
+        return (date1.time < date2.time) ? true : false;
     }
 }

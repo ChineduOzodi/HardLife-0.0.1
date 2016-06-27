@@ -7,7 +7,7 @@ public class GObject {
     internal int localMapPositionX, localMapPositionY;
 
     internal string type;
-    internal string classType;
+    internal string classType = "GObject";
 
     internal int stackOrder = 1;
     bool stackable = false;
@@ -15,4 +15,9 @@ public class GObject {
     internal float walkSpeedMod;
     internal float driveSpeedMod;
     internal float floatSpeedMod;
+
+    public virtual string GetInfo()
+    {
+        return "Class: " + classType;
+    }
 }
