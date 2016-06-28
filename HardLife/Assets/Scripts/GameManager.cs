@@ -160,7 +160,7 @@ public class GameManager : MonoBehaviour
             else if (SceneManager.GetActiveScene().name == "local_map")
             {
                 world.date.AddTime(Time.deltaTime * gameSpeed); //Update Time
-                localMapGen.localMapText.text = "<b>"+ world.localMap.region + "</b>\n" + world.date.GetDate();
+                localMapGen.localMapText.text = "<b>"+ world.localMap.region + "</b>\n" + world.date.GetDateTime() + "\nTemperature: " + Math.Round(world.localMap.curTemp, 1) + " C";
 
                 
 
@@ -218,10 +218,22 @@ public class GameManager : MonoBehaviour
             {
 
                 //StartCoroutine("StartCoroutines",theCors);
-                localMapGen.UpdatePlantGrowth();
                 localMapGen.UpdateTemperature(world.localMap);
+                localMapGen.UpdatePlantGrowth();
             }
-            yield return new WaitForSeconds(Date.Day * inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly
+            yield return new WaitForSeconds(Date.Hour * inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly
+        }
+    }
+    IEnumerator MinuteUpdate()
+    {
+        for (;;)
+        {
+            if (!setup)
+            {
+
+                //StartCoroutine("StartCoroutines",theCors);
+            }
+            yield return new WaitForSeconds(inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly
         }
     }
     public void ToggleWorldMap()

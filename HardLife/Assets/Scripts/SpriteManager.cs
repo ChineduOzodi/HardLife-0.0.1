@@ -59,37 +59,32 @@ public class SpriteManager{
 
     public Sprite GetSprite(GObject item)
     {
+        string name = item.type;
+
         if (item.classType == "Tree")
         {
             Tree tree = (Tree)item;
-            string name = item.type.ToLower();
-
            
             if (tree.ageText != null)
                 name += "_" + tree.ageText;
 
+            
             if (tree.fruit > 0)
-            {
-                name += "_" + "fruit";
-            }
-            else name += "_" + "nofruit";
-
-            try
-            {
-                Sprite sprite = sprites[name];
-                return sprite;
-            }
-            catch (KeyNotFoundException)
-            {
-                Sprite sprite = sprites["error"];
-                Debug.Log("Cannot find sprite: " + name);
-                return sprite;
-            }
-        }
-        else
+                name += "_fruit";
+            else if (tree.state != "Normal")
+                name += "_" + tree.state;
+        } else if (item.classType == "Bush")
         {
-            return GetSprite(item.type);
+            Bush bush = (Bush)item;
+
+
+            if (bush.fruit > 0)
+                name += "_fruit";
+            else if (bush.state != "Normal")
+                name += "_dying";
         }
+
+        return GetSprite(name.ToLower());
     }
 
     private string TextureNames(string name)

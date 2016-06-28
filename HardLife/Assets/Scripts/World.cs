@@ -50,9 +50,9 @@ public class World{
         worldSizeX = Mathf.RoundToInt(worldSize.x / nodeDiameter);
         worldSizeY = Mathf.RoundToInt(worldSize.y / nodeDiameter);
         localSizeX = Mathf.RoundToInt(localSize.x / nodeDiameter);
-        localSizeY = Mathf.RoundToInt(localSize.y / nodeDiameter);
+        localSizeY = Mathf.RoundToInt(localSize.y / nodeDiameter); 
 
-        worldBottomLeft = Vector3.right * worldSize.x / 2 - Vector3.up *  worldSize.y / 2;
+        worldBottomLeft = - Vector3.right * worldSize.x / 2 - Vector3.up *  worldSize.y / 2;
 
         maxLakeSize = (worldSize.x * worldSize.y) / 200;
         maxIslandSize = (worldSize.x * worldSize.y) / 1000;

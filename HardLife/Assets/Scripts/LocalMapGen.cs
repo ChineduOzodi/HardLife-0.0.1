@@ -16,7 +16,7 @@ public class LocalMapGen : MonoBehaviour {
     internal GameManager gameManager;
 
     GameObject baseMapEmpty;
-    GameObject itemMapEmpty;
+    GameObject objectMapEmpty;
 
     SpriteRenderer[,] baseMap;
     SpriteRenderer[,] objectMap;
@@ -41,6 +41,7 @@ public class LocalMapGen : MonoBehaviour {
 
     public void CreateLocalMap()
     {
+        DestroyLocalMap();
 
         int x = world.localMap.worldMapPositionX;
         int y = world.localMap.worldMapPositionY;
@@ -66,7 +67,7 @@ public class LocalMapGen : MonoBehaviour {
 
     private void BuildObjectMap()
     {
-        itemMapEmpty = new GameObject("ItemMap");
+        objectMapEmpty = new GameObject("ObjectMap");
         objectMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
 
         for (int x = 0; x < world.localSizeX; x++)
@@ -76,12 +77,12 @@ public class LocalMapGen : MonoBehaviour {
                 if (world.localMap.objectMap[x, y] != null)
                 {
                     Vector3 worldPoint = local.worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
-                    GameObject tile = new GameObject("ItemTile");
+                    GameObject tile = new GameObject(local.objectMap[x, y].type);
                     tile.transform.position = worldPoint;
                     SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
                     instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.objectMap[x, y]);
                     world.localMap.objectMap[x, y].worldPostition = worldPoint;
-                    instance.transform.SetParent(itemMapEmpty.transform);
+                    instance.transform.SetParent(objectMapEmpty.transform);
                     instance.sortingOrder = world.localMap.objectMap[x, y].renderOrder;
                     objectMap[x, y] = instance;
                 }  
@@ -91,8 +92,6 @@ public class LocalMapGen : MonoBehaviour {
 
     public void BuildBaseMap()
     {
-        //throw new NotImplementedException();
-        //DestroyLocalMap();
 
         baseMapEmpty = new GameObject("BaseMap");
         baseMap = new SpriteRenderer[world.localSizeX, world.localSizeY];
@@ -104,7 +103,7 @@ public class LocalMapGen : MonoBehaviour {
             for (int y = 0; y < world.localSizeY; y++)
             {
                 Vector3 worldPoint = world.localMap.worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
-                GameObject tile = new GameObject("BaseTile");
+                GameObject tile = new GameObject(local.baseMap[x, y].type);
                 tile.transform.position = worldPoint;
                 SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
                 instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.baseMap[x,y].type);
@@ -168,44 +167,37 @@ public class LocalMapGen : MonoBehaviour {
 
     internal void UpdateAge()
     {
-        foreach (GObject item in local.objectMap)
-        {
-            if (item != null && item.classType  == "Tree")
-            {
-                Tree tree = (Tree)item;
+        //Currently using update growth to update age
 
-                tree.UpdateAge(world.date);
-            }
-        }
-    }
-
-    private void DestroyLocalMap()
-    {
-        throw new NotImplementedException();
-        //if (layers != null)
+        //foreach (GObject item in local.objectMap)
         //{
-        //    foreach (Transform layer in layers.Values)
+        //    if (item != null && item.classType  == "Tree")
         //    {
-        //        Destroy(layer.gameObject);
+        //        Tree tree = (Tree)item;
+
+        //        tree.UpdateAge(world.date);
         //    }
         //}
     }
 
+    private void DestroyLocalMap()
+    {
+        if (baseMapEmpty != null)
+        {
+            Destroy(baseMapEmpty);
+        }
+        if (objectMapEmpty != null)
+        {
+            Destroy(objectMapEmpty);
+        }
+    }
+
     internal void UpdateTemperature(LocalMap localMap)
     {
-        int yearTempRange = -5;
+        int yearTempRange = 7;
         int dayTempRange = 3;
 
-        localMap.curTemp = localMap.aveTemp -yearTempRange * Mathf.Cos((localMap.world.date.day + 5) / (2 * Mathf.PI))  - dayTempRange * Mathf.Cos((localMap.world.date.hour) * Mathf.PI / 12);
-        foreach (GObject item in local.objectMap)
-        {
-            if (item != null && item.classType == "Tree")
-            {
-                Tree tree = (Tree)item;
-
-                tree.UpdateAge(world.date);
-            }
-        }
+        localMap.curTemp = localMap.aveTemp - yearTempRange * Mathf.Cos(5/(Mathf.PI * 2)) -yearTempRange * Mathf.Cos((localMap.world.date.day + 5) / (2 * Mathf.PI))  - dayTempRange * Mathf.Cos((localMap.world.date.hour) * Mathf.PI / 12);
 
     }
 
@@ -213,11 +205,28 @@ public class LocalMapGen : MonoBehaviour {
     {
         foreach (GObject item in local.objectMap)
         {
-            if (item != null && item.classType == "Tree")
+            if (item != null )
             {
-                Tree tree = (Tree)item;
+                if (item.classType == "Tree")
+                {
+                    Tree tree = (Tree)item;
 
-                tree.UpdateGrowth(world.localMap.curTemp);
+                    tree.UpdateGrowth(world.localMap.curTemp);
+                    tree.UpdateAge(world.date);
+                }
+                else if (item.classType == "Bush")
+                {
+                    Bush bush = (Bush)item;
+
+                    bush.UpdateGrowth(world.localMap.curTemp);
+                    bush.UpdateAge(world.date);
+                }
+
+                if (item.updateTexture)
+                {
+                    objectMap[item.localMapPositionX, item.localMapPositionY].sprite = gameManager.spriteManager.GetSprite(item);
+                    item.updateTexture = false;
+                }
             }
         }
     }

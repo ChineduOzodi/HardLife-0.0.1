@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cca136f1479044d489ca5c07812f5128
-timeCreated: 1467062179
+timeCreated: 1467098142
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -7371,8 +7371,8 @@ TextureImporter:
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.485672, y: 0.14180756}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: oak tree_young_1
@@ -7382,8 +7382,8 @@ TextureImporter:
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.12748146}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_512
@@ -7426,8 +7426,8 @@ TextureImporter:
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.17046356}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: bush_dying_0
@@ -7437,8 +7437,8 @@ TextureImporter:
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5143261, y: 0.17046356}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: bush_1
@@ -7448,8 +7448,8 @@ TextureImporter:
         y: 357
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.485672, y: 0.14180756}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_518
@@ -8075,8 +8075,8 @@ TextureImporter:
         y: 340
         width: 16
         height: 33
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.457016, y: 0.09014245}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_580
@@ -8511,7 +8511,7 @@ TextureImporter:
     - name: oak tree_mature_0
       rect:
         serializedVersion: 2
-        x: 222
+        x: 221
         y: 323
         width: 16
         height: 32
@@ -8526,8 +8526,8 @@ TextureImporter:
         y: 323
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.49999905, y: 0.077334404}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: oak tree_mature_1
@@ -8537,8 +8537,8 @@ TextureImporter:
         y: 323
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04867935}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_622
@@ -8669,8 +8669,8 @@ TextureImporter:
         y: 323
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5286541, y: 0.18479156}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: roguelikeSheet_transparent_634

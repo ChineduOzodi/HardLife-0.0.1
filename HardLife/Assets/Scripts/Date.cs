@@ -56,7 +56,7 @@ public struct Date
                 {
                     year += Mathf.FloorToInt(day / Days);
                     day = day % Days;
-                    season = season % Seasons;
+                    season = day % Seasons;
                 }
             }
         }
@@ -81,20 +81,25 @@ public struct Date
 
     public string GetDate()
     {
-        return GetSeason() + ", Day " + (day + 1) + ", Year " + year + " - " + hour + " h " + Mathf.FloorToInt(minute) + " m";
+        return year + " Year(s), " + (day + 1) + " Day(s)";
     }
-    public string GetDate(float _time)
-    {
-        float year = Mathf.FloorToInt(_time / Year);
-        _time = _time % Year;
-        float season = Mathf.FloorToInt(_time / Season);
-        float day = Mathf.FloorToInt(_time / Day);
-        _time = _time % Day;
-        float hour = Mathf.FloorToInt(_time / Hour);
-        _time = _time % Hour;
 
-        return year.ToString() + "/" + season.ToString() + "/" + day.ToString() + " " + hour.ToString() + " h";
+    public string GetDateTime()
+    {
+        return GetSeason() + " - " + hour.ToString().PadLeft(2, '0') + " h " + Mathf.FloorToInt(minute).ToString().PadLeft(2, '0') + " m\n" + "Day " + (day + 1) + ", Year " + year;
     }
+    //public string GetDate(float _time)
+    //{
+    //    float year = Mathf.FloorToInt(_time / Year);
+    //    _time = _time % Year;
+    //    float season = Mathf.FloorToInt(_time / Season);
+    //    float day = Mathf.FloorToInt(_time / Day);
+    //    _time = _time % Day;
+    //    float hour = Mathf.FloorToInt(_time / Hour);
+    //    _time = _time % Hour;
+
+    //    return year.ToString() + "/" + season.ToString() + "/" + day.ToString() + " " + hour.ToString() + " h";
+    //}
 
     private string GetSeason()
     {
@@ -122,5 +127,14 @@ public struct Date
     public static bool operator <(Date date1, Date date2)
     {
         return (date1.time < date2.time) ? true : false;
+    }
+
+    public static bool operator >=(Date date1, Date date2)
+    {
+        return (date1.time >= date2.time) ? true : false;
+    }
+    public static bool operator <=(Date date1, Date date2)
+    {
+        return (date1.time <= date2.time) ? true : false;
     }
 }

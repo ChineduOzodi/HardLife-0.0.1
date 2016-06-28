@@ -67,7 +67,7 @@ public class LocalMap { //TODO Add comments to class
         localSizeX = world.localSizeX;
         localSizeY = world.localSizeY;
 
-        worldBottomLeft = Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
+        worldBottomLeft = - Vector3.right * world.localSize.x / 2 - Vector3.up * world.localSize.y / 2;
 
         // Setup Helper Maps elevation map
         noise = new FresNoise();
@@ -192,8 +192,14 @@ public class LocalMap { //TODO Add comments to class
         System.Random random = new System.Random(seed.GetHashCode());
 
         double treeLikeliness = .02; //Probaility of loading items
-        double bushLikeliness = .05;
+        double bushLikeliness = .02;
         double boulderLikeliness = .01;
+
+        if (biome == "Jungle")
+        {
+            treeLikeliness = .03;
+            bushLikeliness = .01;
+        }
 
         for (int x = 0; x < localSizeX; x++)
         {
@@ -207,21 +213,21 @@ public class LocalMap { //TODO Add comments to class
                     {
                         if (random.NextDouble() < treeLikeliness)
                         {
-                            objectMap[x, y] = new Tree("normaltree", new Date(-random.Next(100) * Date.Year), worldPoint,x,y);
+                            objectMap[x, y] = new Tree("oak tree", new Date(-random.Next(100) * Date.Year), worldPoint,x,y);
                         }
                         else if (random.NextDouble() < bushLikeliness)
                         {
-                            objectMap[x, y] = new Tree("normalbush", new Date(-random.Next(24) * Date.Year),worldPoint,x,y);
+                            objectMap[x, y] = new Bush("bush", new Date(-random.Next(24) * Date.Year),worldPoint,x,y);
                         }
                         else if (random.NextDouble() < boulderLikeliness)
                         {
-                            objectMap[x, y] = new Items("boulder", worldPoint,x,y);
+                            objectMap[x, y] = new GObject("boulder", worldPoint,x,y);
                         }
                         
                     }
                     else if (baseMap[x, y].type == "Rock")
                     {
-                        objectMap[x, y] = new Items("rock",worldPoint, x,y);
+                        objectMap[x, y] = new GObject("rock",worldPoint, x,y);
                     }
 
                 }
