@@ -12,7 +12,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
     public bool useRandomSeed = true;
     bool tileSelected = false;
     SpriteRenderer selectedTile;
-    internal GameManager gameManager;
+    internal MyGameManager gameManager;
     public Camera mainCam;
 
     Transform biomeEmpty;
@@ -39,7 +39,7 @@ public class WorldGen : MonoBehaviour { //TODO Fix World Generation
 
     void Awake()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>() ;
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MyGameManager>() ;
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         //biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
         

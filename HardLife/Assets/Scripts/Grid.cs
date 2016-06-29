@@ -9,7 +9,7 @@ public class Grid : MonoBehaviour {
     public Node[,] grid;
     public List<Node> walkableNodes;
 
-    protected GameManager gameManager;
+    protected MyGameManager gameManager;
 
     float nodeDiameter;
     public int gridSizeX, gridSizeY;
@@ -17,7 +17,7 @@ public class Grid : MonoBehaviour {
     void Awake()
     {
         //Get info from gameManager
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MyGameManager>();
         gridWorldSize = gameManager.worldSize;
         nodeRadius = gameManager.nodeRadius;
         unwalkableMask = gameManager.unwalkableMask;

@@ -25,6 +25,8 @@ public class Tree : Bush {
             maxLeaves = 40;
             leaves = maxLeaves;
 
+            birthPercent = 3 * birthFactor;
+
             maxAge = new Date(250 * Date.Year);
             matureLevel = new Date(3 * Date.Year);
         }

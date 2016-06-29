@@ -46,6 +46,10 @@ public class LocalMap { //TODO Add comments to class
     internal float curTemp;
     internal Vector3 worldBottomLeft;
 
+    //Stats
+    int treeCount = 0;
+    int bushCount = 0;
+
     public LocalMap(int _worldPositionX, int _worldPositionY, string _seed)
     {
         worldMapPositionX = _worldPositionX;
@@ -183,7 +187,36 @@ public class LocalMap { //TODO Add comments to class
 
         CreateBaseMap();
         CreateObjectMap();
+    }
 
+    internal string CompileStats()
+    {
+        treeCount = 0;
+        bushCount = 0;
+
+        for (int x = 0; x < localSizeX; x++)
+        {
+            for (int y = 0; y < localSizeY; y++)
+            {
+                if (biome != "Water") //water local map
+                {
+                    if (objectMap[x, y] != null)
+                    {
+                        if (objectMap[x, y].type == "oak tree")
+                        {
+                            treeCount++;
+                        }
+                        else if (objectMap[x, y].type == "bush")
+                        {
+                            bushCount++;
+                        }
+
+                    }
+                }
+
+            }
+        }
+        return "Oak Trees: " + treeCount + "\nBushes: " + bushCount;
     }
 
     private void CreateObjectMap()
@@ -317,9 +350,39 @@ public class LocalMap { //TODO Add comments to class
 
         return adj;
     }
+
+    public GObject[,] AdjacentObjects(int x, int y)
+    {
+        GObject[,] adj = new GObject[3, 3];
+
+        for (int nbrX = x - 1; nbrX <= x + 1; nbrX++)
+        {
+            for (int nbrY = y - 1; nbrY <= y + 1; nbrY++)
+            {
+                if (IsInLocalMapRange(nbrX, nbrY))
+                {
+                    adj[nbrX + 1 - x, nbrY + 1 - y] = objectMap[nbrX, nbrY];
+                }
+                else
+                {
+                    adj[nbrX + 1 - x, nbrY + 1 - y] = null;
+                }
+
+            }
+        }
+
+        return adj;
+    }
     private bool IsInWorldMapRange(int x, int y)
     {
         if (x >= 0 && x < world.worldSizeX && y >= 0 && y < world.worldSizeY)
+            return true;
+        else
+            return false;
+    }
+    public bool IsInLocalMapRange(int x, int y)
+    {
+        if (x >= 0 && x < localSizeX && y >= 0 && y < localSizeX)
             return true;
         else
             return false;

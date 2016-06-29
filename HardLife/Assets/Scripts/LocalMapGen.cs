@@ -10,23 +10,27 @@ public class LocalMapGen : MonoBehaviour {
     public Text localMapText;
     public Text objectNameText;
     public Text objectInfoText;
+    public Text statisticsText;
 
     World world;
     internal LocalMap local;
-    internal GameManager gameManager;
+    internal MyGameManager gameManager;
 
     GameObject baseMapEmpty;
     GameObject objectMapEmpty;
 
     SpriteRenderer[,] baseMap;
     SpriteRenderer[,] objectMap;
-    SpriteRenderer selectedTile;
+    internal SpriteRenderer selectedTile;
     private bool tileSelected;
+    private GObject selectedObject;
+
+    internal Queue<SpriteRenderer> objectQueue = new Queue<SpriteRenderer>();
 
     // Use this for initialization
     void Awake () {
 
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MyGameManager>();
         world = gameManager.world;
         local = world.localMap;
 
@@ -36,8 +40,33 @@ public class LocalMapGen : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (!gameManager.setup)
+        {
+            world.date.AddTime(Time.deltaTime * gameManager.gameSpeed); //Update Time
+            localMapText.text = "<b>" + world.localMap.region + "</b>\n" + world.date.GetDateTime() + "\nTemperature: " + Math.Round(world.localMap.curTemp, 1) + " C";
 
-	}
+            if (selectedObject != null)
+            {
+                objectNameText.text = selectedObject.type.ToUpper();
+                objectInfoText.text = selectedObject.GetInfo();
+            }
+
+
+            if (Input.GetMouseButtonDown(0)) //Mouse Left Click
+            {
+                LeftMouseDown();
+            }
+            if (Input.GetKeyDown(",") && gameManager.gameSpeed > 1)
+            {
+                gameManager.GameSpeedChange(.5f);
+
+            }
+            if (Input.GetKeyDown(".") && gameManager.gameSpeed < 20)
+            {
+                gameManager.GameSpeedChange(2);
+            }
+        }
+    }
 
     public void CreateLocalMap()
     {
@@ -76,14 +105,8 @@ public class LocalMapGen : MonoBehaviour {
             {
                 if (world.localMap.objectMap[x, y] != null)
                 {
-                    Vector3 worldPoint = local.worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
-                    GameObject tile = new GameObject(local.objectMap[x, y].type);
-                    tile.transform.position = worldPoint;
-                    SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                    instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.objectMap[x, y]);
-                    world.localMap.objectMap[x, y].worldPostition = worldPoint;
-                    instance.transform.SetParent(objectMapEmpty.transform);
-                    instance.sortingOrder = world.localMap.objectMap[x, y].renderOrder;
+                    SpriteRenderer instance = CreateObject(local.objectMap[x, y], x, y,objectMapEmpty.transform);
+                    instance.sortingOrder = world.localMap.objectMap[x, y].renderOrder + y;
                     objectMap[x, y] = instance;
                 }  
             }
@@ -101,15 +124,35 @@ public class LocalMapGen : MonoBehaviour {
         for (int x = 0; x < world.localSizeX; x++)
         {
             for (int y = 0; y < world.localSizeY; y++)
-            {
-                Vector3 worldPoint = world.localMap.worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
-                GameObject tile = new GameObject(local.baseMap[x, y].type);
-                tile.transform.position = worldPoint;
-                SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                instance.sprite = gameManager.spriteManager.GetSprite(world.localMap.baseMap[x,y].type);
-                instance.transform.SetParent(baseMapEmpty.transform);
-                baseMap[x, y] = instance;
+            {               
+                baseMap[x, y] = CreateObject(local.baseMap[x, y], x, y, baseMapEmpty.transform);
             }
+        }
+    }
+
+    public SpriteRenderer CreateObject(GObject name,int x, int y, Transform parent = null)
+    {
+        Vector3 worldPoint = world.localMap.worldBottomLeft + Vector3.right * (x * world.nodeDiameter + world.nodeRadius) + Vector3.up * (y * world.nodeDiameter + world.nodeRadius);
+
+        if (objectQueue.Count == 0)
+        {
+            GameObject obj = new GameObject(name.type);
+            obj.transform.position = worldPoint;
+            SpriteRenderer instance = obj.AddComponent<SpriteRenderer>();
+            instance.sprite = gameManager.spriteManager.GetSprite(name);
+            if (parent != null)
+                instance.transform.SetParent(baseMapEmpty.transform);
+            return instance;
+        }
+        else
+        {
+            SpriteRenderer instance = objectQueue.Dequeue();
+            instance.transform.position = worldPoint;
+            instance.name = name.type;
+            instance.sprite = gameManager.spriteManager.GetSprite(name);
+            if (parent != null)
+                instance.transform.SetParent(baseMapEmpty.transform);
+            return instance;
         }
     }
 
@@ -129,18 +172,14 @@ public class LocalMapGen : MonoBehaviour {
                 objectMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
                 selectedTile = objectMap[coord.x, coord.y];
-
-                objectNameText.text = world.localMap.objectMap[coord.x, coord.y].type.ToUpper();
-                objectInfoText.text = world.localMap.objectMap[coord.x, coord.y].GetInfo();
+                selectedObject = local.objectMap[coord.x, coord.y];         
             }
             else
             {
                 baseMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
                 selectedTile = baseMap[coord.x, coord.y];
-
-                objectNameText.text = world.localMap.baseMap[coord.x, coord.y].type.ToUpper();
-                objectInfoText.text = world.localMap.baseMap[coord.x, coord.y].GetInfo();
+                selectedObject = local.objectMap[coord.x, coord.y];
             }
 
         }
@@ -207,19 +246,51 @@ public class LocalMapGen : MonoBehaviour {
         {
             if (item != null )
             {
-                if (item.classType == "Tree")
+                if (item.classType == "Tree" || item.classType == "Bush")
                 {
-                    Tree tree = (Tree)item;
+                    Plant plant = (Plant)item;
 
-                    tree.UpdateGrowth(world.localMap.curTemp);
-                    tree.UpdateAge(world.date);
-                }
-                else if (item.classType == "Bush")
-                {
-                    Bush bush = (Bush)item;
+                    plant.UpdateGrowth(world.localMap.curTemp);
+                    plant.UpdateAge(world.date);
 
-                    bush.UpdateGrowth(world.localMap.curTemp);
-                    bush.UpdateAge(world.date);
+                    if (plant.replicate)
+                    {
+                        Vector3 newWorldPosition = plant.worldPostition + new Vector3(plant.replicateLocation.x, plant.replicateLocation.y);
+                        Coord coord = gameManager.LocalCoordFromWorldPosition(newWorldPosition);
+                        bool withinBorder = local.IsInLocalMapRange(coord.x,coord.y);
+
+
+                        if (withinBorder)
+                        {
+                            bool clear = true;
+                            foreach (GObject obj in local.AdjacentObjects(coord.x, coord.y)) //checks for objects
+                            {
+                                if (obj != null && obj.type == plant.type)
+                                {
+                                    clear = false;
+                                }
+                            }
+
+                            if (clear)
+                            {
+                                if (item.classType == "Tree")
+                                {
+                                    Tree newTree = new Tree(plant.type, world.date, newWorldPosition, coord.x, coord.y);
+                                    local.objectMap[coord.x, coord.y] = newTree;
+                                    objectMap[coord.x, coord.y] = CreateObject(newTree, coord.x, coord.y, objectMapEmpty.transform);
+                                }
+                                else if (item.classType == "Bush")
+                                {
+                                    Bush newBush = new Bush(plant.type, world.date, newWorldPosition, coord.x, coord.y);
+                                    local.objectMap[coord.x, coord.y] = newBush;
+                                    objectMap[coord.x, coord.y] = CreateObject(newBush, coord.x, coord.y, objectMapEmpty.transform);
+                                }
+
+                            }
+                        }
+                        
+                        plant.replicate = false;
+                    }
                 }
 
                 if (item.updateTexture)

@@ -52,11 +52,13 @@ public struct Date
                 day += Mathf.FloorToInt(hour / Hours);
                 hour = hour % Hours;
 
+                season = Mathf.FloorToInt(day / 10f);
+
                 if (day > Days)
                 {
                     year += Mathf.FloorToInt(day / Days);
                     day = day % Days;
-                    season = day % Seasons;
+                    
                 }
             }
         }

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 5757bf8776ba743468969e3676352da7
-timeCreated: 1461715101
+timeCreated: 1467163302
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -26,6 +26,9 @@ TextureImporter:
     21300038: ui_button_selected
     21300040: ui_button2_selected
     21300042: ui_frame
+    21300044: ui_circleButton
+    21300046: ui_circleButton_highlighted
+    21300048: ui_circleButton_selected
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -351,6 +354,39 @@ TextureImporter:
         - {x: 49, y: -46}
         - {x: 49, y: 46}
         - {x: 47, y: 48}
+    - name: ui_circleButton
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 449
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: ui_circleButton_highlighted
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 433
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: ui_circleButton_selected
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 417
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
     outline: []
   spritePackingTag: 
   userData: 
