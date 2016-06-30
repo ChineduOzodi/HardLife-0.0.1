@@ -58,6 +58,12 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -70,14 +76,14 @@
     <Reference Include="ConditionalExpression">
       <HintPath>Assets\PlayMaker\ConditionalExpression.dll</HintPath>
     </Reference>
-    <Reference Include="PlayMaker">
-      <HintPath>Assets\Plugins\PlayMaker\PlayMaker.dll</HintPath>
+    <Reference Include="ES2">
+      <HintPath>Assets\Plugins\ES2.dll</HintPath>
     </Reference>
     <Reference Include="MoodkieSecurity">
       <HintPath>Assets\Plugins\MoodkieSecurity.dll</HintPath>
     </Reference>
-    <Reference Include="ES2">
-      <HintPath>Assets\Plugins\ES2.dll</HintPath>
+    <Reference Include="PlayMaker">
+      <HintPath>Assets\Plugins\PlayMaker\PlayMaker.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -182,7 +188,9 @@
     <Compile Include="Assets\Easy Save 2\Examples\Upload and Download a Texture\UploadDownloadTexture.cs" />
     <Compile Include="Assets\Easy Save 2\Types\ES2_AudioClip.cs" />
     <Compile Include="Assets\Game\Controllers\BaseObjectController.cs" />
+    <Compile Include="Assets\Game\Controllers\MainMenuController.cs" />
     <Compile Include="Assets\Game\Models\BaseObjectModel.cs" />
+    <Compile Include="Assets\Game\Models\MainMenuModel.cs" />
     <Compile Include="Assets\Game\Scripts\AIGrid.cs" />
     <Compile Include="Assets\Game\Scripts\Basic Classes\Alive.cs" />
     <Compile Include="Assets\Game\Scripts\Basic Classes\Bush.cs" />
