@@ -74,7 +74,7 @@ public class MyGameManager : MonoBehaviour
         {
 
             localMapGen = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapGen>();
-            //StartCoroutine("StartCoroutines",theCors);
+            StartCoroutine("StartCoroutines",theCors);
         }
     }
 
@@ -166,8 +166,8 @@ public class MyGameManager : MonoBehaviour
     {
         gameSpeed = gameSpeed * v;
         inverseGameSpeed = 1 / gameSpeed;
-        //StopAllCoroutines();
-        //StartCoroutine("StartCoroutines",theCors);
+        StopAllCoroutines();
+        StartCoroutine("StartCoroutines",theCors);
     }
 
     IEnumerator StartCoroutines(string[] coroutines)
@@ -196,7 +196,7 @@ public class MyGameManager : MonoBehaviour
             if (!setup)
             {
 
-                //StartCoroutine("StartCoroutines",theCors);
+                StartCoroutine("StartCoroutines",theCors);
                 localMapGen.UpdateTemperature(world.localMap);
                 localMapGen.UpdatePlantGrowth();
                 if (localMapGen.statisticsText.IsActive())

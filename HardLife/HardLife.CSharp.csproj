@@ -187,6 +187,12 @@
     <Compile Include="Assets\Easy Save 2\Examples\Shared Assets\Scripts\MyExampleScript.cs" />
     <Compile Include="Assets\Easy Save 2\Examples\Upload and Download a Texture\UploadDownloadTexture.cs" />
     <Compile Include="Assets\Easy Save 2\Types\ES2_AudioClip.cs" />
+    <Compile Include="Assets\Graphs\Scripts\Controllers\LineGrahController.cs" />
+    <Compile Include="Assets\Graphs\Scripts\Controllers\ToggleButtonController.cs" />
+    <Compile Include="Assets\Graphs\Scripts\LineGraphTest.cs" />
+    <Compile Include="Assets\Graphs\Scripts\Messages\ToggleMessage.cs" />
+    <Compile Include="Assets\Graphs\Scripts\Models\LineGraphModel.cs" />
+    <Compile Include="Assets\Graphs\Scripts\Models\ToggleButtonModel.cs" />
     <Compile Include="Assets\Hierarchy2\Runtime\Core\VietLabsRT.cs" />
     <Compile Include="Assets\Hierarchy2\Runtime\Hierarchy2RT.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipItems.cs" />
@@ -1001,10 +1007,6 @@
     <Compile Include="Assets\TK2DROOT\tk2d_demo\tk2dDemoCameraController.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d_demo\tk2dDemoReloadController.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d_demo\tk2dDemoRuntimeSpriteController.cs" />
-    <Compile Include="Assets\_Game\Controllers\BaseObjectController.cs" />
-    <Compile Include="Assets\_Game\Controllers\MainMenuController.cs" />
-    <Compile Include="Assets\_Game\Models\BaseObjectModel.cs" />
-    <Compile Include="Assets\_Game\Models\MainMenuModel.cs" />
     <Compile Include="Assets\_Game\Scripts\AIGrid.cs" />
     <Compile Include="Assets\_Game\Scripts\Basic Classes\Alive.cs" />
     <Compile Include="Assets\_Game\Scripts\Basic Classes\Bush.cs" />
@@ -1012,6 +1014,8 @@
     <Compile Include="Assets\_Game\Scripts\Basic Classes\Items.cs" />
     <Compile Include="Assets\_Game\Scripts\Basic Classes\Plant.cs" />
     <Compile Include="Assets\_Game\Scripts\Basic Classes\Tree.cs" />
+    <Compile Include="Assets\_Game\Scripts\Controllers\BaseObjectController.cs" />
+    <Compile Include="Assets\_Game\Scripts\Controllers\MainMenuController.cs" />
     <Compile Include="Assets\_Game\Scripts\Date.cs" />
     <Compile Include="Assets\_Game\Scripts\DayNightCycle.cs" />
     <Compile Include="Assets\_Game\Scripts\FresNoise.cs" />
@@ -1019,6 +1023,8 @@
     <Compile Include="Assets\_Game\Scripts\LocalMap.cs" />
     <Compile Include="Assets\_Game\Scripts\LocalMapGen.cs" />
     <Compile Include="Assets\_Game\Scripts\MapGen.cs" />
+    <Compile Include="Assets\_Game\Scripts\Models\BaseObjectModel.cs" />
+    <Compile Include="Assets\_Game\Scripts\Models\MainMenuModel.cs" />
     <Compile Include="Assets\_Game\Scripts\MyGameManager.cs" />
     <Compile Include="Assets\_Game\Scripts\NameGen.cs" />
     <Compile Include="Assets\_Game\Scripts\NamesStrings.cs" />

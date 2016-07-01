@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 09af16c19d3a14944a95ab49191ccea7
+timeCreated: 1467404052
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - title: {instanceID: 0}
+  - dataNameGroup: {instanceID: 0}
+  - dataPreferenceGroup: {instanceID: 0}
+  - toggeButton: {fileID: 196440, guid: b6cdca31efe468f45ab1c51e4ce8f7ec, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
