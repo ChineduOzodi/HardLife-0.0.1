@@ -524,6 +524,22 @@
     <Compile Include="Assets\TK2DROOT\tk2dUI\Editor\Core\tk2dUIMethodBindingHelper.cs" />
     <Compile Include="Assets\TK2DROOT\tk2dUI\Editor\Core\tk2dUISpriteAnimatorEditor.cs" />
     <Compile Include="Assets\iTween\PlayMaker\Editor\iTweenMoveToActionEditor.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\Common\Utils.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\Common\VersionInfo.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\MarkDownSharp\Escapes.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\MarkDownSharp\MarkDownFileInspector.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\MarkDownSharp\MarkdownGUI.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\MarkDownSharp\MarkdownParser.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\MarkDownSharp\ObjectInspector.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\PlayMaker\Ecosystem\Classes\EcosystemUtils.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\PlayMaker\Ecosystem\Classes\Item.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\PlayMaker\Ecosystem\Classes\ItemDocumentation.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\PlayMaker\Ecosystem\Classes\WebImageManager.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\PlayMaker\Ecosystem\EcosystemBrowser.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\PlayMaker\Ecosystem\Tools\ProjectScanner\ProjectScanner.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\Plugins\EditorCoroutine.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\Plugins\HttpWrapper.cs" />
+    <Compile Include="Assets\net.fabrejean\Editor\Plugins\JSON.cs" />
     <Compile Include="Assets\uIntelliSense\Editor\MenuItems.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -816,6 +832,8 @@
     <None Include="Assets\TK2DROOT\tk2d_demo\democameradata\source\democamerafont.fnt" />
     <None Include="Assets\iTween\ReadMe!\ReadMe!.txt" />
     <None Include="Assets\link.xml" />
+    <None Include="Assets\net.fabrejean\Editor\Common\GuiSkins\README.txt" />
+    <None Include="Assets\net.fabrejean\Editor\Common\GuiSkins\VolcanicGuiSkin\ReadMeForCredits.txt" />
     <None Include="Assets\uIntelliSense\Editor\Resources\uintellisense-data.xml" />
     <None Include="Assets\uIntelliSense\LICENSE.txt" />
   </ItemGroup>
