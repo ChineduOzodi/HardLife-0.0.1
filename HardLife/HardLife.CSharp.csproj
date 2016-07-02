@@ -58,12 +58,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -188,12 +182,14 @@
     <Compile Include="Assets\Easy Save 2\Examples\Upload and Download a Texture\UploadDownloadTexture.cs" />
     <Compile Include="Assets\Easy Save 2\Types\ES2_AudioClip.cs" />
     <Compile Include="Assets\Graphs\Scripts\Controllers\AxisNumberController.cs" />
+    <Compile Include="Assets\Graphs\Scripts\Controllers\BarGraphController.cs" />
     <Compile Include="Assets\Graphs\Scripts\Controllers\GraphNumberController.cs" />
     <Compile Include="Assets\Graphs\Scripts\Controllers\LineGraphController.cs" />
     <Compile Include="Assets\Graphs\Scripts\Controllers\ToggleButtonController.cs" />
     <Compile Include="Assets\Graphs\Scripts\LineGraphTest.cs" />
     <Compile Include="Assets\Graphs\Scripts\Messages\ToggleMessage.cs" />
     <Compile Include="Assets\Graphs\Scripts\Models\AxisNumberModel.cs" />
+    <Compile Include="Assets\Graphs\Scripts\Models\BarGraphModel.cs" />
     <Compile Include="Assets\Graphs\Scripts\Models\GraphNumberModel.cs" />
     <Compile Include="Assets\Graphs\Scripts\Models\LineGraphModel.cs" />
     <Compile Include="Assets\Graphs\Scripts\Models\ToggleButtonModel.cs" />

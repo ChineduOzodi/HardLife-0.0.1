@@ -17,7 +17,7 @@ public class GraphNumberController : Controller<GraphNumberModel> {
     {
         //setup View
         graphNumText = gameObject.GetComponentInChildren<Text>();
-        trans = GetComponent<RectTransform>();
+        trans = gameObject.GetComponent<RectTransform>();
 
         CalculateActualHeight();
 
@@ -40,14 +40,19 @@ public class GraphNumberController : Controller<GraphNumberModel> {
 
     protected override void OnModelChanged()
     {
-        CalculateActualHeight();
+        if (trans != null)
+        {
+            CalculateActualHeight();
 
-        graphNumTransform.preferredWidth = model.width;
+            graphNumTransform.preferredWidth = model.width;
 
-        StopCoroutine("UpdateHeight");
-        StartCoroutine("UpdateHeight");
-        //graphNumTransform.preferredHeight = actualHeight;
-        graphNumText.text = model.label;
+            StopCoroutine("UpdateHeight");
+            StartCoroutine("UpdateHeight");
+            //graphNumTransform.preferredHeight = actualHeight;
+            graphNumText.text = model.label;
+        }
+
+        
     }
 
     protected void CalculateActualHeight()

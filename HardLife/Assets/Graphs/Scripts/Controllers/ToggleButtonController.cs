@@ -13,7 +13,9 @@ public class ToggleButtonController : Controller<ToggleButtonModel> {
     {
         label = gameObject.GetComponentInChildren<Text>();
         toggle = gameObject.GetComponentInChildren<Toggle>();
-        toggle.group = gameObject.GetComponentInParent<ToggleGroup>();
+
+        if (model.addToGroup)
+            toggle.group = gameObject.GetComponentInParent<ToggleGroup>();
 
         transform.localScale = Vector3.one;  //Reset Scale
 
@@ -25,18 +27,14 @@ public class ToggleButtonController : Controller<ToggleButtonModel> {
 
     private void ValueChanged(bool bo)
     {
-        if (bo)
-        {
-            ToggleMessage m = new ToggleMessage();
+        ToggleMessage m = new ToggleMessage();
 
-            m.label = label.text;
-            m.toggleGroupName = model.toggleGroupName;
-            m.isToggled = bo;
-            m.labelID = model.labeID;
+        m.label = label.text;
+        m.toggleGroupName = model.toggleGroupName;
+        m.isToggled = bo;
+        m.labelID = model.labeID;
 
-            Message.Send<ToggleMessage>(m);
-        }
-        
+        Message.Send<ToggleMessage>(m);
     }
 
     protected override void OnModelChanged()
