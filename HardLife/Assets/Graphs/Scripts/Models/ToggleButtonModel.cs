@@ -10,4 +10,6 @@ public class ToggleButtonModel : Model {
     public string toggleGroupName;
 
     public bool isToggled;
+
+    public int labeID;
 }

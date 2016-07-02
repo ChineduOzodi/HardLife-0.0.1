@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using CodeControl;
-
+using System.Collections.Generic;
 
 public class LineGraphModel : Model
 {
@@ -11,15 +11,21 @@ public class LineGraphModel : Model
     //Delcarationts
     public string title;
 
-    public int numPointsToDisplay;
+    
 
     public string[] dataNames;
+    public string[] dataPrefs;
 
-    public string[] dataPreferences;
+    public Dictionary<string,float>[,] data;
 
-    string selectedDataName;
+    public int selectedDataName;
 
-    string selectedDataPreference;
+    public int selectedDataPreference;
+    
+
+    //Saved Models
+
+
 
 
 

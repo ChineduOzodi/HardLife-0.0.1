@@ -32,6 +32,7 @@ public class ToggleButtonController : Controller<ToggleButtonModel> {
             m.label = label.text;
             m.toggleGroupName = model.toggleGroupName;
             m.isToggled = bo;
+            m.labelID = model.labeID;
 
             Message.Send<ToggleMessage>(m);
         }
