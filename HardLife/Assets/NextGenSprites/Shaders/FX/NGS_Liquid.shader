@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 // NextGenSprites (copyright) 2016 Ruben de la Torre, www.studio-delatorre.com
 // Version 1.3.7
 
@@ -88,7 +90,7 @@ Shader "NextGenSprites/FX/Liquid" {
 
 			half2 ScrolledUV(half2 uv, half scrollSpeed, half scrollX, half scrollY)
 			{
-				half4 objPos = mul(_Object2World, half4(0, 0, 0, 1));
+				half4 objPos = mul(unity_ObjectToWorld, half4(0, 0, 0, 1));
 				#if AUTOSCROLL_ON
 					half time = _Time.y * 0.5;
 					return half2(uv.r + (scrollX * (scrollSpeed * time)), uv.g + (scrollY * (scrollSpeed * time)));
@@ -103,9 +105,9 @@ Shader "NextGenSprites/FX/Liquid" {
 				o.vertexColor = v.vertexColor;
 				o.normalDir = UnityObjectToWorldNormal(v.normal);
 				o.normalDir = normalize(o.normalDir);
-				o.tangentDir = normalize(mul(_Object2World, float4(v.tangent.xyz, 0.0)).xyz);
+				o.tangentDir = normalize(mul(unity_ObjectToWorld, float4(v.tangent.xyz, 0.0)).xyz);
 				o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
-				o.posWorld = mul(_Object2World, v.vertex);
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 
 				o.uv0 = ScrolledUV(o.uv0, _Layer0AutoScrollSpeed, _Layer0ScrollingX, _Layer0ScrollingY);
 

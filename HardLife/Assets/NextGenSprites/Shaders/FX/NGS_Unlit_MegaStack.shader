@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 // NextGenSprites (copyright) 2016 Ruben de la Torre, www.studio-delatorre.com
 // Version 1.3.7
 
@@ -218,12 +220,12 @@ Shader "NextGenSprites/FX/MegaStack" {
 
 					o.vertexColor = v.vertexColor * float4(_Color.rgb, _Color.a);
 					o.normalDir = UnityObjectToWorldNormal(v.normal);
-					o.posWorld = mul(_Object2World, v.vertex);
+					o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 					o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 
 					//Tangents for Normal mapping
 					#if CURVATURE_ON
-					o.tangentDir = normalize(mul(_Object2World, float4(v.tangent.xyz, 0.0)).xyz);
+					o.tangentDir = normalize(mul(unity_ObjectToWorld, float4(v.tangent.xyz, 0.0)).xyz);
 					o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
 					#endif
 
@@ -354,7 +356,7 @@ Shader "NextGenSprites/FX/MegaStack" {
 					//Reflection
 					#if REFLECTION_ON
 						half ScrollDamp = 0.05;
-						half4 objPos = mul(_Object2World, half4(0,0,0,1));
+						half4 objPos = mul(unity_ObjectToWorld, half4(0,0,0,1));
 						half3 viewReflectDirection = reflect(-viewDirection, normalDirection);
 						half2 ScrollUV = (half2((_ReflectionScrollingX * objPos.r * ScrollDamp), (ScrollDamp * objPos.g * _ReflectionScrollingY)) + (viewReflectDirection.rg * 0.5 + 0.5));
 						half4 _ReflectionTex_var = tex2Dlod(_ReflectionTex, half4(TRANSFORM_TEX(ScrollUV, _ReflectionTex), 0.0, _ReflectionBlur));

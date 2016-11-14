@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 // NextGenSprites (copyright) 2016 Ruben de la Torre, www.studio-delatorre.com
 // Version 1.3.7
 
@@ -192,7 +194,7 @@ Shader "NextGenSprites/Standard/Multi" {
 				#endif
 
 				o.normalDir = UnityObjectToWorldNormal(v.normal);
-				o.posWorld = mul(_Object2World, v.vertex);
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 
 				//Flip Normals if double sided
@@ -204,7 +206,7 @@ Shader "NextGenSprites/Standard/Multi" {
 
 				//Tangents for Normal mapping
 				#if CURVATURE_ON
-					o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
+					o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
 					o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
 				#endif
 
@@ -327,7 +329,7 @@ Shader "NextGenSprites/Standard/Multi" {
 				//Reflection
 				#if REFLECTION_ON
 					half3 viewReflectDirection = reflect( -viewDirection, normalDirection );
-					half4 objPos = mul (_Object2World, half4(0, 0, 0, 1));
+					half4 objPos = mul (unity_ObjectToWorld, half4(0, 0, 0, 1));
 					half2 ScrollUV = (half2((_ReflectionScrollingX * objPos.r * 0.05), (0.05 * objPos.g * _ReflectionScrollingY)) + (viewReflectDirection.rg * 0.5 + 0.5));
 					half4 _ReflectionTex_var = tex2Dlod(_ReflectionTex, half4(TRANSFORM_TEX(ScrollUV, _ReflectionTex), 0.0, _ReflectionBlur));
 					half4 _ReflectionMask_var = tex2D(_ReflectionMask, TRANSFORM_TEX(i.uv0, _ReflectionMask));
@@ -463,11 +465,11 @@ Shader "NextGenSprites/Standard/Multi" {
 				
 				//Tangents for Normal mapping
 				#if CURVATURE_ON
-					o.tangentDir = normalize(mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz);
+					o.tangentDir = normalize(mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz);
 					o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
 				#endif
 				
-				o.posWorld = mul(_Object2World, v.vertex);
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				TRANSFER_VERTEX_TO_FRAGMENT(o)
 				return o;
@@ -588,7 +590,7 @@ Shader "NextGenSprites/Standard/Multi" {
 				//Reflection
 				#if REFLECTION_ON
 					half3 viewReflectDirection = reflect(-viewDirection, normalDirection);
-					half4 objPos = mul(_Object2World, half4(0, 0, 0, 1));
+					half4 objPos = mul(unity_ObjectToWorld, half4(0, 0, 0, 1));
 					half2 ScrollUV = (half2((_ReflectionScrollingX * objPos.r * 0.05), (0.05 * objPos.g * _ReflectionScrollingY)) + (viewReflectDirection.rg * 0.5 + 0.5));
 					half4 _ReflectionTex_var = tex2Dlod(_ReflectionTex, half4(TRANSFORM_TEX(ScrollUV, _ReflectionTex), 0.0, _ReflectionBlur));
 					half4 _ReflectionMask_var = tex2D(_ReflectionMask, TRANSFORM_TEX(i.uv0, _ReflectionMask));

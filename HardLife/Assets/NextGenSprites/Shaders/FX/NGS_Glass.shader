@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 // NextGenSprites (copyright) 2016 Ruben de la Torre, www.studio-delatorre.com
 // Version 1.3.7
 
@@ -72,9 +74,9 @@ Shader "NextGenSprites/FX/Glass" {
 				o.uv0 = v.texcoord0;
 				o.vertexColor = v.vertexColor;
 				o.normalDir = UnityObjectToWorldNormal(v.normal);
-				o.tangentDir = normalize(mul(_Object2World, float4(v.tangent.xyz, 0.0)).xyz);
+				o.tangentDir = normalize(mul(unity_ObjectToWorld, float4(v.tangent.xyz, 0.0)).xyz);
 				o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
-				o.posWorld = mul(_Object2World, v.vertex);
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 				float3 lightColor = _LightColor0.rgb;
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				#ifdef PIXELSNAP_ON
@@ -186,9 +188,9 @@ Shader "NextGenSprites/FX/Glass" {
 				o.uv0 = v.texcoord0;
 				o.vertexColor = v.vertexColor;
 				o.normalDir = UnityObjectToWorldNormal(v.normal);
-				o.tangentDir = normalize(mul(_Object2World, float4(v.tangent.xyz, 0.0)).xyz);
+				o.tangentDir = normalize(mul(unity_ObjectToWorld, float4(v.tangent.xyz, 0.0)).xyz);
 				o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
-				o.posWorld = mul(_Object2World, v.vertex);
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 				float3 lightColor = _LightColor0.rgb;
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				#ifdef PIXELSNAP_ON

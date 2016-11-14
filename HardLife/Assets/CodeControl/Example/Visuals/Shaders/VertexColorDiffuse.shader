@@ -1,3 +1,6 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
 Shader "Code Control/VertexColorDiffuse" {
     Properties {
         _BaseColor ("BaseColor", Color) = (1,1,1,1)
@@ -39,8 +42,8 @@ Shader "Code Control/VertexColorDiffuse" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.vertexColor = v.vertexColor;
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.normalDir = mul(float4(v.normal,0), unity_WorldToObject).xyz;
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
@@ -103,8 +106,8 @@ Shader "Code Control/VertexColorDiffuse" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.vertexColor = v.vertexColor;
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.normalDir = mul(float4(v.normal,0), unity_WorldToObject).xyz;
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
