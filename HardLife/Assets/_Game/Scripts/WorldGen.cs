@@ -5,329 +5,562 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using CodeControl;
 
-public class WorldGen : MonoBehaviour { //TODO Fix World Generation
-    #region "Declarations"
-    
-    public bool useRandomSeed = true;
-    bool tileSelected = false;
-    SpriteRenderer selectedTile;
-    internal MyGameManager gameManager;
-    public Camera mainCam;
+public struct WorldGen {
 
-    Transform biomeEmpty;
-    Transform mountEmpty;
-
-    SpriteRenderer[,] biomeMap;
-    SpriteRenderer[,] mountMap;
-
-    //UI Setup
-    public Text infoText;
-    public Text worldNameText;
-    public InputField seedInput;
-    public Button createLocalMapButton;
-    
-    //string[] tType = { "Flat", "Hills", "Mountains" };
-    string[] aveRain = { "Little", "Normal", "Lots" };
-    private float tempYearRange = 10;
-
-    //private GameObject[][] biomeSprites;
-    //public Dictionary<string, Transform> layers = new Dictionary<string, Transform> { };
-
-
-    #endregion
-
-    void Awake()
+    public static WorldModel CreateWorld(Vector2 _worldSize, Vector2 _localSize, float _nodeRadius, string seed)
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MyGameManager>() ;
-        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        //biomeSprites = new GameObject[][] { water, ice, grass, jungle, desert };
+        //layerNames = new [] { "Base Map", "Temperature Map", "Rain Map", "Mountain Map", "Biome Map"};
+        //SetLayers(layerNames);
+
+        WorldModel model = new WorldModel();
+
+
+        model.worldSize = _worldSize;
+        model.localSize = _localSize;
+
+        model.worldSizeX = (int)model.worldSize.x;
+        model.worldSizeY = (int)model.worldSize.y;
+
+        model.localSizeX = (int)_localSize.x;
+        model.localSizeY = (int)_localSize.y;
+
+        model.worldBottomLeft = -Vector3.right * model.worldSize.x / 2 - Vector3.up * model.worldSize.y / 2;
+        model.localMaps = new ModelRef<LocalMapModel>[(int) model.worldSize.x, (int)model.worldSize.y];
+
+        float maxLakeSize = (_worldSize.x * _worldSize.y) / 200;
+        float maxIslandSize = (_worldSize.x * _worldSize.y) / 1000;
+
+        GenerateMap(model, maxLakeSize, maxIslandSize, seed);
+
+        return model;
+
         
-
-    }
-    //void OnMouseEnter()
-    //{
-    //	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
-    //	{
-    //		gameManager.SendMessage("SendInfo", coord);
-    //		//print("Found Mouse");
-    //		//print(coord);
-    //		//gameObject.transform.localScale = new Vector3(1.25f, 1.25f);
-    //		gameObject.GetComponent<SpriteRenderer>().color = new Color(.8f, .8f, .8f);
-    //	}
-
-    //}
-    //void OnMouseExit()
-    //{
-    //	if (!tileSelected && !EventSystem.current.IsPointerOverGameObject())
-    //	{
-    //		gameObject.transform.localScale = new Vector3(1, 1);
-    //		gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
-    //	}
-
-    //}
-    public void LeftMouseDown()
-    {
-
-        if (!EventSystem.current.IsPointerOverGameObject())
-        {
-            if (selectedTile != null)
-            {
-                selectedTile.color = new Color(1f, 1f, 1f);
-            }
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
-            biomeMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
-            
-            gameManager.world.localMap = gameManager.world.localMaps[coord.x, coord.y];
-
-            selectedTile = biomeMap[coord.x, coord.y];
-            TileSelected();
-
-            SendInfo(coord);
-
-        }
-
-
     }
 
-    public void CreateWorld()
-    {
-        gameManager.setup = true;
-        DestroyWorld();
+    //--------------Map Generation Functions----------------
 
-        mainCam.orthographicSize = gameManager.worldSize.x / 2f;
-        gameManager.maxCamSize = gameManager.worldSize.y / 2f;
-        mainCam.transform.position = new Vector3(0, 0, -10f);
-
-        gameManager.world = new World(gameManager.worldSize, gameManager.localSize, gameManager.nodeRadius); //new world
-
-        if (useRandomSeed) //determine seed
-        {
-            gameManager.world.seed = Time.time.ToString();
-            seedInput.text = gameManager.world.seed;
-        }
-        else
-        {
-            gameManager.world.seed = seedInput.text;
-        }
-
-        gameManager.world.GenerateMap(gameManager.world.seed);
-        seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
-
-        worldNameText.text = gameManager.world.name;
-        //buildBasicLayers();
-        buildBiome();
-        buildMountains();
-        gameManager.setup = false;
-    }
-    public void loadWorld()
-    {
-
-        mainCam.orthographicSize = gameManager.world.worldSize.x / 2f;
-        gameManager.maxCamSize = gameManager.world.worldSize.y / 2f;
-        mainCam.transform.position = new Vector3(gameManager.world.worldSize.x / 2, gameManager.world.worldSize.y / 2, -10f);
-        seedInput.text = gameManager.world.seed; // just in case GenerateMap changes the gameManager.world.seed
-
-        worldNameText.text = gameManager.world.name;
-        //buildBasicLayers();
-        buildBiome();
-        buildMountains();
-    }
-
-    //public void PreviewWorld(string layerName, int max = 1)
-    //{
-    //    int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, layerName)];
-    //    layers["gameManager.world"] = new GameObject("gameManager.world").transform;
-
-    //    mainCam.orthographicSize = gameManager.world.worldSize.y / 2f;
-    //    mainCam.transform.position = new Vector3(gameManager.world.worldSize.x / 2, gameManager.world.worldSize.y / 2, -10f);
-
-    //    for (int x = 0; x < gameManager.world.worldSize.x; x++)
-    //    {
-    //        for (int y = 0; y < gameManager.world.worldSize.y; y++)
-    //        {
-    //            float num = (float)map[x, y] / (float)max;
-    //            Color col = new Color(num, num, num);
-    //            SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
-    //            rend.color = col;
-
-    //            GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
-
-    //            instance.transform.SetParent(layers["gameManager.world"]);
-    //        }
-    //    }
-
-    //}
     /// <summary>
-    /// Preview Map with the string name
+    /// Generates Map based on layers, there currently needs to be at lease 4 layers
+    ///This includes a Base Map, Temperature Map, Rain Map, and Mountain Map
     /// </summary>
-    /// <param name="name"></param>
-    public void PreviewWorld()
+    private static void GenerateMap(WorldModel model, float maxLakeSize, float maxIslandSize, string seed = null, string name = null)
     {
+        if (seed == null || seed == "")
+        {
+            seed = Time.time.ToString();
+        }
 
-        mainCam.orthographicSize = gameManager.world.worldSize.y / 2f;
-        mainCam.transform.position = Vector2.zero; //new Vector3(gameManager.world.worldSize.x / 2, gameManager.world.worldSize.y / 2, -10f);
+        if (name == null)
+        {
 
-        buildBasicLayers();
-        buildBiome();
-        buildMountains();
+            name = new NameGen().GenerateWorldName(seed);
+        }
+
+        model.seed = seed;
+        model.name = name;
+
+        //SetLayers(layerNames);
+
+        GenerateLayers(model);
+        GenerateRegions(model, maxLakeSize, maxIslandSize);
+
     }
 
-    public void CreateLocalMap()
+    private static void GenerateLayers(WorldModel model)
     {
-        gameManager.setup = true;
-        UnityEngine.SceneManagement.SceneManager.LoadScene("local_map");
-    } 
+        FresNoise noise = new FresNoise();
 
-    private void buildMountains()
-    {
+        //Declarations
 
-        mountEmpty = new GameObject("Mountains").transform;
-        mountMap = new SpriteRenderer[gameManager.world.worldSizeX, gameManager.world.worldSizeY];
+        float mountainScale = 10f;
 
-        for (int x = 0; x < gameManager.world.worldSizeX; x++)
+        float rainScale = 7f;
+
+        float tempScale = 5f;
+
+        //BaseMap Generation
+        int[,] baseMap = RandomFillMap(model, new int[model.worldSizeX, model.worldSizeY]);
+        baseMap = SmoothMap(model,baseMap, 2);
+        baseMap = SmoothMap(model,baseMap, 1);
+
+        //Temperature Map Generation
+        float[,] tempMap = GenerateTempMap(model, noise.CalcNoise(model.worldSizeX, model.worldSizeY, model.seed + "temp", tempScale));
+
+        //Elevation Map Generation
+        float[,] elevMap = noise.CalcNoise(model.worldSizeX, model.worldSizeY, model.seed + "elevation", mountainScale);
+
+        //Rain Map Generation
+        float[,] rainMap = noise.CalcNoise(model.worldSizeX, model.worldSizeY, model.seed + "rain", rainScale);
+
+        //Biome Map
+        string[,] biomeMap = GenerateBiomes(model, baseMap, tempMap, elevMap, rainMap);
+
+        tempMap = GenerateAverageTemp(model, biomeMap, tempMap, elevMap, rainMap);
+
+        for (int x = 0; x < model.worldSizeX; x++)
         {
-            for (int y = 0; y < gameManager.world.worldSizeY; y++)
+            for (int y = 0; y < model.worldSizeY; y++)
             {
-                if (gameManager.world.localMaps[x, y].mountainLevel == "Hills" && gameManager.world.localMaps[x, y].biome != "Water")
+                //Set Local Map Declarations
+                model.localMaps[x, y] = new ModelRef<LocalMapModel>(new LocalMapModel());
+
+                model.localMaps[x, y].Model.world = new ModelRef<WorldModel>(model);
+                model.localMaps[x, y].Model.localSizeX = model.localSizeX;
+                model.localMaps[x, y].Model.localSizeY = model.localSizeY;
+                model.localMaps[x, y].Model.worldMapPositionX = x;
+                model.localMaps[x, y].Model.worldMapPositionY = y;
+                model.localMaps[x, y].Model.seed = model.seed + x + y;
+
+                model.localMaps[x, y].Model.biome = biomeMap[x, y];
+                model.localMaps[x, y].Model.aveTemp = tempMap[x, y];
+                model.localMaps[x, y].Model.curTemp = tempMap[x, y];
+                model.localMaps[x, y].Model.elevation = elevMap[x, y];
+                model.localMaps[x, y].Model.rain = rainMap[x, y];
+                model.localMaps[x, y].Model.baseNum = baseMap[x, y];
+
+                //Set Mounatin Level
+                if (model.localMaps[x, y].Model.elevation < .5)
                 {
-                    Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
-                    GameObject tile = new GameObject("Hill");
-                    tile.transform.position = worldPoint;
-                    SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                    instance.sprite = gameManager.spriteManager.GetSprite("silvercoin");
-                    instance.sortingOrder = 1;
-                    instance.transform.SetParent(mountEmpty);
-                    mountMap[x, y] = instance;
+                    model.localMaps[x, y].Model.mountainLevel = "Flat";
                 }
-                else if (gameManager.world.localMaps[x, y].mountainLevel == "Mountains" && gameManager.world.localMaps[x, y].biome != "Water")
+                else if (model.localMaps[x, y].Model.elevation < .75)
                 {
-                    Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
-                    GameObject tile = new GameObject("Mountain");
-                    tile.transform.position = worldPoint;
-                    SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                    instance.sprite = gameManager.spriteManager.GetSprite("boulder");
-                    instance.sortingOrder = 1;
-                    instance.transform.SetParent(mountEmpty);
-                    mountMap[x, y] = instance;
+                    model.localMaps[x, y].Model.mountainLevel = "Hills";
+                }
+                else
+                {
+                    model.localMaps[x, y].Model.mountainLevel = "Mountains";
                 }
             }
         }
     }
 
-    void SendInfo(Coord coord)
+    private static float[,] GenerateAverageTemp(WorldModel model, string[,] biomeMap, float[,] tempMap, float[,] elevMap, float[,] rainMap)
     {
-        string terrain = gameManager.world.localMaps[coord.x, coord.y].mountainLevel;
-        string rain = gameManager.world.localMaps[coord.x, coord.y].rain.ToString();
-        string info = "Region Name: " + gameManager.world.localMaps[coord.x, coord.y].region;
-        string aveTemp = Mathf.RoundToInt(gameManager.world.localMaps[coord.x, coord.y].aveTemp) + " C (" + (Mathf.RoundToInt(gameManager.world.localMaps[coord.x, coord.y].aveTemp) - tempYearRange) + " - " + (Mathf.RoundToInt(gameManager.world.localMaps[coord.x, coord.y].aveTemp) + tempYearRange) + ")";
-        info += "\nTerrain Type: " + terrain;
-        info += "\nAverage Temperature: " + aveTemp;
-        info += "\nAverage Rain: " + rain + " in";
-        infoText.text = info;
+        //Possible Biome Names: Unknown, Ice, Grass, Desert, Jungle, Water
+        float tempScale = 5;
+        float rainScale = 3;
+        float elevScale = 4;
+        Dictionary<string, float> biomeTemps = new Dictionary<string, float>();
+        biomeTemps.Add("Grass", 15);
+        biomeTemps.Add("Ice", -5);
+        biomeTemps.Add("Jungle", 20);
+        biomeTemps.Add("Desert", 25);
+        biomeTemps.Add("Water", 25);
+
+        float[,] map = new float[model.worldSizeX, model.worldSizeY];
+
+        for (int x = 0; x < model.worldSizeX; x++)
+        {
+            for (int y = 0; y < model.worldSizeY; y++)
+            {
+                map[x, y] = biomeTemps[biomeMap[x, y]] + (tempMap[x, y] * tempScale * 2 - tempScale)
+                - (rainMap[x, y] * rainScale)
+                - (elevMap[x, y] * elevScale);
+            }
+
+        }
+
+        return map;
     }
 
-    void TileSelected()
+    private static string[,] GenerateBiomes(WorldModel model, int[,] baseMap, float[,] tempMap, float[,] elevMap, float[,] rainMap)
     {
+        string[,] map = new string[model.worldSizeX, model.worldSizeY];
 
-        //Previously TOggleTileSelected
-        if (tileSelected)
+        for (int x = 0; x < model.worldSizeX; x++)
         {
-            //createLocalMapButton.interactable = false;
-            //tileSelected = false;
+            for (int y = 0; y < model.worldSizeY; y++)
+            {
+
+                if (baseMap[x, y] == 1)
+                {
+                    map[x, y] = BiomeName(tempMap[x, y], rainMap[x, y], elevMap[x, y]);
+                }
+                else
+                    map[x, y] = "Water";
+
+            }
+        }
+        return map;
+    }
+    /// <summary>
+    /// Returns biome ID based on matrix
+    /// </summary>
+    /// <param name="tileTemp"> int of tile temp from 0 to 2</param>
+    /// <param name="tileRain">int of tile rain amount from 0 to 2</param>
+    /// <returns></returns>
+    private static string BiomeName(float temp, float rain, float elevation)
+    {
+        //Possible Biome Names: Unknown, Ice, Grass, Desert, Jungle
+        string biomeName = "Unknown";
+        float[] mountainNC = { .5f, .75f }; //Mountain noise conversion scale
+        float[] rainNC = { .33f, .66f };
+        float[] tempNC = { .4f, .75f };
+        if (temp < tempNC[0])
+        {
+            if (rain < rainNC[0])
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Ice";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Ice";
+                }
+                else
+                {
+                    biomeName = "Ice";
+                }
+            }
+            else if (rain < rainNC[1])
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Grass";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Ice";
+                }
+                else
+                {
+                    biomeName = "Ice";
+                }
+            }
+            else
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Grass";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Grass";
+                }
+                else
+                {
+                    biomeName = "Ice";
+                }
+            }
+        }
+        else if (temp < tempNC[1])
+        {
+            if (rain < rainNC[0])
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Desert";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Grass";
+                }
+                else
+                {
+                    biomeName = "Grass";
+                }
+            }
+            else if (rain < rainNC[1])
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Grass";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Grass";
+                }
+                else
+                {
+                    biomeName = "Ice";
+                }
+            }
+            else
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Jungle";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Grass";
+                }
+                else
+                {
+                    biomeName = "Ice";
+                }
+            }
         }
         else
         {
-            createLocalMapButton.interactable = true;
-            tileSelected = true;
-        }
-
-    }
-
-    private void buildBiome()
-    {
-        biomeEmpty = new GameObject("Biomes").transform;
-        biomeMap = new SpriteRenderer[gameManager.world.worldSizeX, gameManager.world.worldSizeY];
-        //int[,] map = gameManager.world.mapLayers[Array.IndexOf(gameManager.world.layerNames, "Biome Map")];
-
-        //SetupUsedTles
-
-        for (int x = 0; x < gameManager.world.worldSizeX; x++)
-        {
-            for (int y = 0; y < gameManager.world.worldSizeY; y++)
-            {                
-                Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x * gameManager.world.nodeDiameter + gameManager.world.nodeRadius) + Vector3.up * (y * gameManager.world.nodeDiameter + gameManager.world.nodeRadius);
-                GameObject tile = new GameObject("BiomeTile");
-                tile.transform.position = worldPoint;
-                SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMaps[x, y].biome);
-                gameManager.world.localMaps[x, y].worldPosition = worldPoint;
-                instance.transform.SetParent(biomeEmpty);
-                biomeMap[x, y] = instance;
+            if (rain < rainNC[0])
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Desert";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Desert";
+                }
+                else
+                {
+                    biomeName = "Grass";
+                }
+            }
+            else if (rain < rainNC[1])
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Desert";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Grass";
+                }
+                else
+                {
+                    biomeName = "Grass";
+                }
+            }
+            else
+            {
+                if (elevation < mountainNC[0])
+                {
+                    biomeName = "Jungle";
+                }
+                else if (elevation < mountainNC[1])
+                {
+                    biomeName = "Jungle";
+                }
+                else
+                {
+                    biomeName = "Jungle";
+                }
             }
         }
-        //layers["Biomes"].gameObject.SetActive(false);
+
+        return biomeName;
     }
 
-    private void buildBasicLayers()
+
+
+    private static float[,] GenerateTempMap(WorldModel model, float[,] tempMap)
     {
-        throw new NotImplementedException();
-        //for (int i = 0; i < gameManager.world.layerNames.Length; i++)
-        //{
-        //    int[,] map = gameManager.world.mapLayers[i];
-        //    int max = 2;
+        FresNoise noise = new FresNoise();
+        int max = model.worldSizeY / 2;
+        float[,] map = new float[model.worldSizeX, model.worldSizeY];
+        for (int x = 0; x < model.worldSizeX; x++)
+        {
+            float hCount = 0f;
+            for (int y = 0; y < model.worldSizeY; y++)
+            {
+                if (y <= max)
+                {
+                    float toFloat = hCount / (float)max;
+                    float adjustedFloat = (toFloat + .5f * tempMap[x, y]) / 1.5f;
+                    //int scaledNum = noise.ScaleFloatToInt(adjustedFloat, heightMap);
 
-        //    layers[gameManager.world.layerNames[i]] = new GameObject(gameManager.world.layerNames[i]).transform;
+                    map[x, y] = adjustedFloat;
+                    hCount++;
+                }
+                else
+                {
+                    float toFloat = hCount / (float)max;
+                    float adjustedFloat = (toFloat + .5f * tempMap[x, y]) / 1.5f;
+                    //int scaledNum = noise.ScaleFloatToInt(adjustedFloat, heightMap);
 
-        //    for (int x = 0; x < gameManager.world.worldSize.x; x++)
-        //    {
-        //        for (int y = 0; y < gameManager.world.worldSize.y; y++)
-        //        {
-        //            float num = (float)map[x, y] / (float)max;
-        //            Color col = new Color(num, num, num);
-        //            SpriteRenderer rend = whiteBlock.GetComponent<SpriteRenderer>();
-        //            rend.color = col;
+                    map[x, y] = adjustedFloat;
+                    hCount--;
+                }
+            }
+        }
 
-        //            GameObject instance = Instantiate(whiteBlock, new Vector3(x, y), Quaternion.identity) as GameObject;
+        return map;
+    }
+    #region "Region Functions"
+    private static void GenerateRegions(WorldModel model, float maxLakeSize, float maxIslandSize)
+    {
+        //throw new NotImplementedException();
+        //Generate Land and Island Regions
+        List<Region> regions = GetRegions(model, 1);
+        regions.AddRange(GetRegions(model, 0));
 
-        //            instance.transform.SetParent(layers[gameManager.world.layerNames[i]]);
-        //        }
-        //    }
+        foreach (Region region in regions)
+        {
+            if (region.tileType == 1)
+            {
+                if (region.tiles.Count <= maxIslandSize)
+                {
+                    region.name += " Island";
+                }
 
-        //    layers[gameManager.world.layerNames[i]].gameObject.SetActive(false);
+            }
+            else if (region.tileType == 0)
+            {
+                if (region.tiles.Count <= maxLakeSize)
+                {
+                    region.name = "Lake " + region.name;
+                }
+                else
+                    region.name += " Ocean";
+            }
 
-        //}
+            foreach (Coord tile in region.tiles)
+            {
+                model.localMaps[tile.x, tile.y].Model.region = region.name;
+            }
+
+        }
+
+    }
+    static List<Coord> GetRegionTiles(WorldModel model, int startX, int StartY)
+    {
+        List<Coord> tiles = new List<Coord>();
+        int[,] mapFlags = new int[model.worldSizeX, model.worldSizeY];
+        int tileType = model.localMaps[startX, StartY].Model.baseNum;
+
+        string tileSeed = model.seed + startX + StartY;
+
+        Queue<Coord> queue = new Queue<Coord>();
+        queue.Enqueue(new Coord(startX, StartY));
+        mapFlags[startX, StartY] = 1; //Flaged as part of region
+
+        while (queue.Count > 0)
+        {
+            Coord tile = queue.Dequeue();
+            tiles.Add(tile);
+
+            for (int x = tile.x - 1; x <= tile.x + 1; x++)
+            {
+                for (int y = tile.y - 1; y <= tile.y + 1; y++)
+                {
+                    if (IsInMapRange(model,x, y)) //&& (x == tile.x || y == tile.y))
+                    {
+                        if (mapFlags[x, y] == 0 && model.localMaps[x, y].Model.baseNum == tileType)
+                        {
+                            mapFlags[x, y] = 1;
+                            queue.Enqueue(new Coord(x, y));
+                        }
+                    }
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+    static List<Region> GetRegions(WorldModel model, int tileType)
+    {
+        List<Region> regions = new List<Region>();
+        int[,] mapFlags = new int[model.worldSizeX, model.worldSizeY];
+        for (int x = 0; x < model.worldSizeX; x++)
+        {
+            for (int y = 0; y < model.worldSizeY; y++)
+            {
+                if (mapFlags[x, y] == 0 && model.localMaps[x, y].Model.baseNum == tileType)
+                {
+                    string regSeed = model.seed + x + y;
+                    string newRegionName = new NameGen().GenerateRegionName(regSeed);
+                    Region newRegion = new Region(GetRegionTiles(model, x, y), newRegionName, tileType);
+                    regions.Add(newRegion);
+
+                    foreach (Coord tile in newRegion.tiles)
+                    {
+                        mapFlags[tile.x, tile.y] = 1;
+                    }
+                }
+            }
+        }
+
+        return regions;
+    }
+    #endregion
+    ///----------Helper Functions
+    ///
+
+    public static bool IsInMapRange(WorldModel model, int x, int y)
+    {
+        if (x >= 0 && x < model.worldSizeX && y >= 0 && y < model.worldSizeY)
+            return true;
+        else
+            return false;
+    }
+
+    internal static int[,] RandomFillMap(WorldModel model, int[,] baseMap, int randomFillPercent = 53)
+    {
+
+        System.Random randNum = new System.Random(model.seed.GetHashCode());
+
+        for (int x = 0; x < model.worldSizeX; x++)
+        {
+            for (int y = 0; y < model.worldSizeY; y++)
+            {
+                if (x == 0 || x == model.worldSizeX - 1 || y == 0 || y == model.worldSizeY - 1)
+                    baseMap[x, y] = 0;
+                else
+                    baseMap[x, y] = (randNum.Next(0, 100) < randomFillPercent) ? 1 : 0;
+            }
+        }
+
+        return baseMap;
+    }
+
+    public static int[,] SmoothMap(WorldModel model, int[,] baseMap, int lDist)
+    {
+        for (int y = 0; y < model.worldSizeY; y++)
+        {
+            for (int x = 0; x < model.worldSizeX; x++)
+            {
+                int nbrWaterTiles = GetSurroundingWaterCount(model, baseMap, x, y, lDist);
+                double powX = lDist * 2f + 1;
+                int tileCount = (int)Math.Pow(powX, 2) / 2;
+                if (nbrWaterTiles > tileCount + 1)
+                    baseMap[x, y] = 0;
+                else if (nbrWaterTiles < tileCount - 1)
+                    baseMap[x, y] = 1;
+            }
+        }
+
+        return baseMap;
+    }
+    /// <summary>
+    /// returns the number of surrounding water (int 0) tiles there are around a lDist radius of int from an int array
+    /// </summary>
+    /// <param name="baseMap">map with ints</param>
+    /// <param name="gridX">position x to check</param>
+    /// <param name="gridY">position y to check</param>
+    /// <param name="lDist">distance from x,y to check</param>
+    /// <returns></returns>
+    static int GetSurroundingWaterCount(WorldModel model, int[,] baseMap, int gridX, int gridY, int lDist)
+    {
+        int waterCount = 0;
+        for (int nbrX = gridX - lDist; nbrX <= gridX + lDist; nbrX++)
+        {
+            for (int nbrY = gridY - lDist; nbrY <= gridY + lDist; nbrY++)
+            {
+                if (IsInMapRange(model, nbrX, nbrY))
+                {
+                    if (nbrX != gridX || nbrY != gridY)
+                    {
+                        if (baseMap[nbrX, nbrY] == 0)
+                            waterCount++;
+                    }
+                }
+                else
+                {
+                    waterCount++;
+                }
+
+            }
+        }
+
+        return waterCount;
     }
     
-    public void DestroyWorld()
-    {
-
-        if (biomeEmpty != null)
-        {
-            Destroy(biomeEmpty.gameObject);
-        }
-        if (mountEmpty != null)
-        {
-            Destroy(mountEmpty.gameObject);
-        }
-
-
-    }
-
-    public void ToggleRandomSeed()
-    {
-        if (useRandomSeed)
-        {
-            useRandomSeed = false;
-            seedInput.interactable = true;
-        }
-        else
-        {
-            useRandomSeed = true;
-            seedInput.interactable = false;
-        }
-            
-    }
 
 }

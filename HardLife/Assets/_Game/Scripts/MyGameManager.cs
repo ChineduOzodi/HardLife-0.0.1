@@ -5,6 +5,7 @@ using System;
 using UnityEngine.Events;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using CodeControl;
 
 public class MyGameManager : MonoBehaviour
 {
@@ -12,22 +13,20 @@ public class MyGameManager : MonoBehaviour
 
 	//GameManager Set-up
 	public static MyGameManager instance = null;
+
     internal SpriteManager spriteManager;
+    public bool setup = false; //used to pause the game if transitioning or still loading things
+
+    //Save information
     string savePath;
 	public int numAutoSave = 5;
-	public bool setup = false;
+    public WorldModel world;
 
+    //Game Information
     internal float gameSpeed = 1;
-    internal float inverseGameSpeed = 1;
+    internal float inverseGameSpeed = 1; //used to speed up calculations in script
 
-    private float zoomSpeed = 15f;
-	public float camMoveSpeed = .75f;
-	public float maxCamSize = 5;
-
-	internal WorldGen worldGen;
-    [HideInInspector]
-	public World world;
-    internal LocalMapGen localMapGen;
+	
 
     string[] theCors = new string[2] { "HourlyUpdate", "DailyUpdate" };    
 
@@ -40,10 +39,7 @@ public class MyGameManager : MonoBehaviour
 	//Local Settings
 	public Vector2 localSize;
     
-
-
     #endregion
-    #region "MonoDev Functions"
     // Use this for initialization
     void Awake()
     {
@@ -59,31 +55,29 @@ public class MyGameManager : MonoBehaviour
         setup = false;
     }
 
-    void OnLevelWasLoaded(int levelInt)
-    {
-        if (levelInt == 0) //Main Menu
-        {
-            //RunMainMenuSetup();
+    //void OnLevelWasLoaded(int levelInt)
+    //{
+    //    if (levelInt == 0) //Main Menu
+    //    {
+    //        //RunMainMenuSetup();
 
-        }
-        else if (levelInt == 1) //World Creation
-        {
-            worldGen = GameObject.FindGameObjectWithTag("WorldGen").GetComponent<WorldGen>();
-        }
-        else if (levelInt == 2) //Local Map Play
-        {
+    //    }
+    //    else if (levelInt == 1) //World Creation
+    //    {
+    //        //worldGen = GameObject.FindGameObjectWithTag("WorldGen").GetComponent<WorldGen>();
+    //    }
+    //    else if (levelInt == 2) //Local Map Play
+    //    {
 
-            localMapGen = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapGen>();
-            StartCoroutine("StartCoroutines",theCors);
-        }
-    }
+    //        //localMapGen = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapGen>();
+    //        //StartCoroutine("StartCoroutines",theCors);
+    //    }
+    //}
 
-    private void RunLocalMapSetup()
-    {
-        throw new NotImplementedException();
-    }
-
-    #endregion
+    //private void RunLocalMapSetup()
+    //{
+    //    throw new NotImplementedException();
+    //}
 
   //  public void CreateWorld()
   //  {
@@ -118,11 +112,8 @@ public class MyGameManager : MonoBehaviour
         {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(savePath, FileMode.Open);
-            world = (World)bf.Deserialize(file);
+            world = (WorldModel)bf.Deserialize(file);
             file.Close();
-
-            worldGen.loadWorld();
-
         }
     }
 
@@ -134,27 +125,25 @@ public class MyGameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        float moveModifier = camMoveSpeed * Camera.main.orthographicSize;
-        Camera.main.orthographicSize += Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
-
-        if (Camera.main.orthographicSize < 4)
-            Camera.main.orthographicSize = 4;
-        else if (Camera.main.orthographicSize > maxCamSize)
-            Camera.main.orthographicSize = maxCamSize;
         if (!setup)
         {
-            float transX = Input.GetAxis("Horizontal") * moveModifier * Time.deltaTime;
-            float transY = Input.GetAxis("Vertical") * moveModifier * Time.deltaTime;
+            //Game Speed Update
+            if (Input.GetKeyDown(",") && gameSpeed > 1)
+            {
+                GameSpeedChange(.5f);
 
-            Camera.main.transform.Translate(new Vector3(transX, transY));
+            }
+            if (Input.GetKeyDown(".") && gameSpeed < 20)
+            {
+                GameSpeedChange(2);
+            }
 
             if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "world_creation")
             {
                 
                 if (Input.GetMouseButtonDown(0)) //Mouse Left Click
                 {
-                    worldGen.LeftMouseDown();
+                    //worldGen.LeftMouseDown();
                 }
             }
         }
@@ -167,14 +156,14 @@ public class MyGameManager : MonoBehaviour
         gameSpeed = gameSpeed * v;
         inverseGameSpeed = 1 / gameSpeed;
         StopAllCoroutines();
-        StartCoroutine("StartCoroutines",theCors);
+        //StartCoroutine("StartCoroutines",theCors);
     }
 
     IEnumerator StartCoroutines(string[] coroutines)
     {
         foreach(string cor in coroutines)
         {
-            StartCoroutine(cor);
+            //StartCoroutine(cor);
             yield return null;
         }
     }
@@ -184,7 +173,7 @@ public class MyGameManager : MonoBehaviour
         {
             if (!setup)
             {
-                localMapGen.UpdateAge();
+                //localMapGen.UpdateAge();
             }
             yield return new WaitForSeconds(Date.Day * inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly
         }
@@ -196,13 +185,13 @@ public class MyGameManager : MonoBehaviour
             if (!setup)
             {
 
-                StartCoroutine("StartCoroutines",theCors);
-                localMapGen.UpdateTemperature(world.localMap);
-                localMapGen.UpdatePlantGrowth();
-                if (localMapGen.statisticsText.IsActive())
-                {
-                    localMapGen.statisticsText.text = world.localMap.CompileStats();
-                }
+                //StartCoroutine("StartCoroutines",theCors);
+                ////localMapGen.UpdateTemperature(world.localMap);
+                ////localMapGen.UpdatePlantGrowth();
+                ////if (localMapGen.statisticsText.IsActive())
+                //{
+                //    localMapGen.statisticsText.text = world.localMap.CompileStats();
+                //}
 
             }
             yield return new WaitForSeconds(Date.Hour * inverseGameSpeed); //TODO: Check to make sure ti is updateing correctly

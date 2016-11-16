@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class Date
+public struct Date
 {
     private static int Seasons = 4;
     private static int Days = 40;
