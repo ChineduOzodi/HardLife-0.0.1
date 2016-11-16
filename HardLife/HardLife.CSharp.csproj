@@ -79,11 +79,11 @@
     <Reference Include="PlayMaker">
       <HintPath>Assets\Plugins\PlayMaker\PlayMaker.dll</HintPath>
     </Reference>
-    <Reference Include="RAINMetaform">
-      <HintPath>Assets\RAIN\RAINMetaform.dll</HintPath>
-    </Reference>
     <Reference Include="RAIN">
       <HintPath>Assets\RAIN\RAIN.dll</HintPath>
+    </Reference>
+    <Reference Include="RAINMetaform">
+      <HintPath>Assets\RAIN\RAINMetaform.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -909,6 +909,7 @@
     <Compile Include="Assets\_Game\Scripts\SpriteManager.cs" />
     <Compile Include="Assets\_Game\Scripts\UI\DragPanel.cs" />
     <Compile Include="Assets\_Game\Scripts\UI\FocusPanel.cs" />
+    <Compile Include="Assets\_Game\Scripts\UI\InfoPanel.cs" />
     <Compile Include="Assets\_Game\Scripts\UI\ResizePanel.cs" />
     <Compile Include="Assets\_Game\Scripts\UI\TogglePanelButton.cs" />
     <Compile Include="Assets\_Game\Scripts\WorldCreationManager.cs" />

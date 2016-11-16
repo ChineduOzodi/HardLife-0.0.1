@@ -7,7 +7,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class LocalMapController : MonoBehaviour {
-    
+
+    public GameObject infoBoxPrefab;
 
     public Text localMapText;
     public Text objectNameText;
@@ -17,6 +18,10 @@ public class LocalMapController : MonoBehaviour {
     WorldModel world;
     internal LocalMapModel model;
     internal MyGameManager gameManager;
+
+    PlayMakerFSM updateFSM;
+    public int hour;
+    public int day;
 
     GameObject baseMapEmpty;
     GameObject objectMapEmpty;
@@ -35,7 +40,9 @@ public class LocalMapController : MonoBehaviour {
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MyGameManager>();
         world = gameManager.world;
         model = world.currentLocalMap.Model;
-
+        updateFSM = GetComponent<PlayMakerFSM>();
+        hour = world.date.hour;
+        day = world.date.day;
         CreateLocalMap();
     }
 
@@ -57,6 +64,20 @@ public class LocalMapController : MonoBehaviour {
             if (Input.GetMouseButtonDown(0)) //Mouse Left Click
             {
                 LeftMouseDown();
+            }
+
+            //Create Update Events for each day and each hour
+
+            if (world.date.day != day)
+            {
+                day = world.date.day;
+                updateFSM.SendEvent("DayUpdate");
+
+            }
+            else if (world.date.hour != hour)
+            {
+                hour = world.date.hour;
+                updateFSM.SendEvent("HourUpdate");
             }
 
         }
@@ -210,12 +231,12 @@ public class LocalMapController : MonoBehaviour {
         }
     }
 
-    internal void UpdateTemperature(LocalMapModel localMap)
+    internal void UpdateTemperature()
     {
         int yearTempRange = 7;
         int dayTempRange = 3;
 
-        localMap.curTemp = localMap.aveTemp - yearTempRange * Mathf.Cos(5 / (Mathf.PI * 2)) - yearTempRange * Mathf.Cos((world.date.day + 5) / (2 * Mathf.PI)) - dayTempRange * Mathf.Cos((world.date.hour) * Mathf.PI / 12);
+        model.curTemp = model.aveTemp - yearTempRange * Mathf.Cos(5 / (Mathf.PI * 2)) - yearTempRange * Mathf.Cos((world.date.day + 5) / (2 * Mathf.PI)) - dayTempRange * Mathf.Cos((world.date.hour) * Mathf.PI / 12);
 
     }
 
@@ -279,5 +300,35 @@ public class LocalMapController : MonoBehaviour {
                 }
             }
         }
+    }
+
+    internal string CompileStats()
+    {
+        int treeCount = 0;
+        int bushCount = 0;
+
+        for (int x = 0; x < model.localSizeX; x++)
+        {
+            for (int y = 0; y < model.localSizeY; y++)
+            {
+                if (model.biome != "Water") //water local map
+                {
+                    if (model.objectMap[x, y] != null)
+                    {
+                        if (model.objectMap[x, y].type == "oak tree")
+                        {
+                            treeCount++;
+                        }
+                        else if (model.objectMap[x, y].type == "bush")
+                        {
+                            bushCount++;
+                        }
+
+                    }
+                }
+
+            }
+        }
+        return "Oak Trees: " + treeCount + "\nBushes: " + bushCount;
     }
 }

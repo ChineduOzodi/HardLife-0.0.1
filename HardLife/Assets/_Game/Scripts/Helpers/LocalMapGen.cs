@@ -136,35 +136,7 @@ public struct LocalMapGen {
         CreateObjectMap(model);
     }
 
-    internal static string CompileStats(LocalMapModel model)
-    {
-        int treeCount = 0;
-        int bushCount = 0;
-
-        for (int x = 0; x < model.localSizeX; x++)
-        {
-            for (int y = 0; y < model.localSizeY; y++)
-            {
-                if (model.biome != "Water") //water local map
-                {
-                    if (model.objectMap[x, y] != null)
-                    {
-                        if (model.objectMap[x, y].type == "oak tree")
-                        {
-                            treeCount++;
-                        }
-                        else if (model.objectMap[x, y].type == "bush")
-                        {
-                            bushCount++;
-                        }
-
-                    }
-                }
-
-            }
-        }
-        return "Oak Trees: " + treeCount + "\nBushes: " + bushCount;
-    }
+    
 
     private static void CreateObjectMap(LocalMapModel model)
     {
