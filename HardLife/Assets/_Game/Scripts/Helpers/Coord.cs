@@ -1,4 +1,5 @@
-﻿public struct Coord
+﻿using UnityEngine;
+public struct Coord
 {
     public int x;
     public int y;
@@ -11,5 +12,12 @@
     {
         this.x = x;
         this.y = y;
+    }
+
+    public static Coord Vector3ToCoord(Vector3 vect)
+    {
+        Coord coord = new Coord((int) vect.x, (int) vect.y);
+
+        return coord;
     }
 }
