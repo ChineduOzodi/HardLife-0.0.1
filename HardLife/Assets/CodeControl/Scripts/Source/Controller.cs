@@ -109,8 +109,14 @@ namespace CodeControl {
                 Debug.LogError("Can't instantiate controller '" + typeof(T) + "' because the controller component on the given object is missing.");
                 return null;
             }
-
-            controller.transform.parent = parent;
+            if (controller.GetComponent<RectTransform>() != null)
+            {
+                controller.transform.SetParent(parent, false);
+            }
+            else
+            {
+                controller.transform.parent = parent;
+            }
             controller.transform.localPosition = Vector3.zero;
 
             controller.Initialize(model);
@@ -138,7 +144,8 @@ namespace CodeControl {
         protected T model { get; private set; }
 
         internal override void Initialize(Model model) {
-            if (model.GetType() != typeof(T)) {
+            if (model.GetType() != typeof(T) && !(model is T))
+            {
                 Debug.LogError("Failed to initialize controller '" + GetType() + "' with model type '" + model.GetType() + "'");
                 return;
             }

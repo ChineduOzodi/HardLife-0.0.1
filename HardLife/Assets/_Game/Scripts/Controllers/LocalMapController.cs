@@ -8,11 +8,7 @@ using UnityEngine.EventSystems;
 
 public class LocalMapController : MonoBehaviour {
 
-    public GameObject infoBoxPrefab;
-
     public Text localMapText;
-    public Text objectNameText;
-    public Text objectInfoText;
     public Text statisticsText;
 
     WorldModel world;
@@ -52,12 +48,11 @@ public class LocalMapController : MonoBehaviour {
         if (!gameManager.setup)
         {
             world.date.AddTime(Time.deltaTime * gameManager.gameSpeed); //Update Time
-            localMapText.text = "<b>" + model.region + "</b>\n" + world.date.GetDateTime() + "\nTemperature: " + Math.Round(model.curTemp, 1) + " C";
+            localMapText.text = "<b>" + model.region + "</b>  ||  " + world.date.GetDateTime() + "  ||  Temperature: " + Math.Round(model.curTemp, 1) + " C";
 
             if (selectedObject != null)
             {
-                objectNameText.text = selectedObject.type.ToUpper();
-                objectInfoText.text = selectedObject.GetInfo();
+                
             }
 
 
@@ -154,6 +149,7 @@ public class LocalMapController : MonoBehaviour {
             {
                 selectedTile.color = new Color(1f, 1f, 1f);
             }
+
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Coord coord = gameManager.LocalCoordFromWorldPosition(worldPosition);
             if (model.objectMap[coord.x, coord.y] != null)
@@ -162,6 +158,10 @@ public class LocalMapController : MonoBehaviour {
 
                 selectedTile = objectMap[coord.x, coord.y];
                 selectedObject = model.objectMap[coord.x, coord.y];
+
+                InfoPanel obj = Controller.Instantiate<InfoPanel>("ui/infobox", selectedObject, transform);
+
+                obj.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(selectedObject.worldPostition);
             }
             else
             {
@@ -170,6 +170,8 @@ public class LocalMapController : MonoBehaviour {
                 selectedTile = baseMap[coord.x, coord.y];
                 selectedObject = model.objectMap[coord.x, coord.y];
             }
+
+            
 
         }
 
@@ -242,16 +244,16 @@ public class LocalMapController : MonoBehaviour {
 
     internal void UpdatePlantGrowth()
     {
-        foreach (BaseObjectModel item in model.objectMap)
+        foreach (var item in model.objectMap)
         {
             if (item != null)
             {
                 if (item.classType == "Tree" || item.classType == "Bush")
                 {
-                    Plant plant = (Plant)item;
+                    PlantModel plant = (PlantModel)item;                              
 
-                    plant.UpdateGrowth(model.curTemp);
-                    plant.UpdateAge(world.date);
+                    CreateObjectModel.UpdateGrowth(plant, model.curTemp);
+                    CreateObjectModel.UpdateAge(plant, world.date);
 
                     if (plant.replicate)
                     {

@@ -21,8 +21,6 @@ public class LocalMapModel: Model { //TODO Add comments to class
     internal float rain;
     internal float aveTemp;
 
-    bool hasShores = false;
-
     internal float lastUpdated = 0f;
 
     //Local Map Variables
@@ -31,16 +29,11 @@ public class LocalMapModel: Model { //TODO Add comments to class
     public float mountainScale = .2f;
     
     public float[,] elevationMap;
-    public Tile[,] baseMap;
+    public TileModel[,] baseMap;
     public Road[,] roadMap;
-    public BaseObjectModel[,] objectMap;
-    public Roof[,] roofMap;
-    public Items[,] skyMap;
-
-    private float[,] heightMapHelper1;
-    private float[,] heightMapVerticalHelper;
-    private FresNoise noise;
-
+    public ModelRef<BaseObjectModel>[,] objectMap;
+    public ModelRef<RoofModel>[,] roofMap;
+    public ModelRef<ItemsModel>[,] skyMap;
     
     internal float curTemp;
     internal Vector3 worldBottomLeft;
