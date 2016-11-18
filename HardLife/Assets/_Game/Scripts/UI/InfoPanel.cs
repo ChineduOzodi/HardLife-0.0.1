@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using CodeControl;
+using System;
 
-public class InfoPanel : MonoBehaviour {
+public class InfoPanel : Controller<BaseObjectModel> {
 
     public Text objectNameText;
     public Text objectInfoText;
 
-    // Use this for initialization
-    public void SetTitle(string title)
+    protected override void OnInitialize()
     {
-        objectNameText.text = title;
+        objectNameText.text = model.type.ToUpper();
+        objectInfoText.text = CreateObjectModel.GetInfo(model);
     }
-    public void SetInfoText(string text)
+
+    void Update()
     {
-        objectInfoText.text = text;
+        objectInfoText.text = CreateObjectModel.GetInfo(model);
     }
 }

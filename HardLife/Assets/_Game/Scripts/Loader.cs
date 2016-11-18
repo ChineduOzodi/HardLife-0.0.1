@@ -11,7 +11,6 @@ public class Loader : MonoBehaviour
     // Use this for initialization
     public void Awake()
     {
-
         if (MyGameManager.instance == null)
             Instantiate(gameManager);
 

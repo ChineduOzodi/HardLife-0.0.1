@@ -29,7 +29,16 @@ public class DragPanel : MonoBehaviour, IPointerDownHandler, IDragHandler
     public void OnDrag(PointerEventData data)
     {
         if (panelRectTransform == null)
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                canvasRectTransform = canvas.transform as RectTransform;
+                panelRectTransform = transform.parent as RectTransform;
+            }
             return;
+        }
+            
 
         Vector2 pointerPostion = ClampToWindow(data);
 
