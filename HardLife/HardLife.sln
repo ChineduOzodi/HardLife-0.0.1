@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardLife.CSharp.Plugins", "HardLife.CSharp.Plugins.csproj", "{1349CC5C-D901-621B-82CF-82C1E70AD2D1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardLife.CSharp", "HardLife.CSharp.csproj", "{A93DFC73-64F9-68E3-5595-7735CE5E303B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardLife.CSharp.Editor", "HardLife.CSharp.Editor.csproj", "{F95A7F6C-2EA4-DE1F-7E5D-021F1E8ACADA}"
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1349CC5C-D901-621B-82CF-82C1E70AD2D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1349CC5C-D901-621B-82CF-82C1E70AD2D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1349CC5C-D901-621B-82CF-82C1E70AD2D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1349CC5C-D901-621B-82CF-82C1E70AD2D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A93DFC73-64F9-68E3-5595-7735CE5E303B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A93DFC73-64F9-68E3-5595-7735CE5E303B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A93DFC73-64F9-68E3-5595-7735CE5E303B}.Release|Any CPU.ActiveCfg = Release|Any CPU

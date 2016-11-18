@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<LevelModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>7fbb0de4-cab9-4840-8b45-ca48fef4e477</Id>
+  <Turrets>
+    <Id>aef4a697-b554-4b71-a6f7-bf0656b4ed7f</Id>
+    <Id>72112402-0432-491e-ac9a-3609c8902f47</Id>
+    <Id>a65e9a6c-4adb-4adf-a9db-72324a56aa24</Id>
+  </Turrets>
+</LevelModel>
