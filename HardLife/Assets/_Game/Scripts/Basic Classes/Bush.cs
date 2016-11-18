@@ -19,7 +19,7 @@ public class Bush : Plant
             maxLeaves = 20;
             leaves = maxLeaves;
             birthPercent = 2 * birthFactor;
-
+            walkSpeedMod = .5f;
             minTemp = 5;
 
             maxAge = new Date(25 * Date.Year);

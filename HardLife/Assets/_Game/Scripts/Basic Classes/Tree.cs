@@ -21,7 +21,7 @@ public class Tree : Bush {
             maxFruit = 35;
             maxWood = 75;
             maxStick = 20;
-
+            walkSpeedMod = .1f;
             maxLeaves = 40;
             leaves = maxLeaves;
 

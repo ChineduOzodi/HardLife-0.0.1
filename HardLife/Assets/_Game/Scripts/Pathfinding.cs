@@ -19,7 +19,7 @@ public class Pathfinding : MonoBehaviour
 
     void Update()
     {
-        FindLocalPath(Coord.Vector3ToCoord(seeker.position), Coord.Vector3ToCoord(target.position));
+        FindLocalPath(Coord.Vector3ToCoord(seeker.position - localMap.worldBottomLeft), Coord.Vector3ToCoord(target.position - localMap.worldBottomLeft));
         
     }
 
