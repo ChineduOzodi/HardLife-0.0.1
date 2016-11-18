@@ -888,7 +888,6 @@
     <Compile Include="Assets\_Game\Scripts\Controllers\LocalMapController.cs" />
     <Compile Include="Assets\_Game\Scripts\Controllers\MainMenuController.cs" />
     <Compile Include="Assets\_Game\Scripts\DayNightCycle.cs" />
-    <Compile Include="Assets\_Game\Scripts\Helpers\AIGrid.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Date.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\FresNoise.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\LocalMapGen.cs" />
@@ -903,6 +902,7 @@
     <Compile Include="Assets\_Game\Scripts\MyGameManager.cs" />
     <Compile Include="Assets\_Game\Scripts\NamesStrings.cs" />
     <Compile Include="Assets\_Game\Scripts\Node.cs" />
+    <Compile Include="Assets\_Game\Scripts\Pathfinding.cs" />
     <Compile Include="Assets\_Game\Scripts\Region.cs" />
     <Compile Include="Assets\_Game\Scripts\Road.cs" />
     <Compile Include="Assets\_Game\Scripts\Roof.cs" />
