@@ -6,10 +6,10 @@ public class Node
     public Coord coord;
     public Node parent;
 
-    public int gCost; //cost from node position to the start node
-    public int hCost; //cost from the node position to the target node
+    public float gCost; //cost from node position to the start node
+    public float hCost; //cost from the node position to the target node
 
-    public int fCost
+    public float fCost
     {
         get { return gCost + hCost; }
     }
@@ -22,19 +22,19 @@ public class Node
     public static Node NodeFromPosition(Coord pos, LocalMapModel model)
     {
         float walkSpeed = 1;
-        Vector3 worldPosition = model.baseMap[pos.x, pos.y].worldPostition;
+        Vector3 worldPosition = model.baseMap[pos.x, pos.y].Model.worldPostition;
 
         //Get correct walk speed modification
-        walkSpeed *= model.baseMap[pos.x, pos.y].walkSpeedMod;
+        walkSpeed *= model.baseMap[pos.x, pos.y].Model.walkSpeedMod;
         if (model.objectMap[pos.x, pos.y] != null)
         {
-            walkSpeed *= model.objectMap[pos.x, pos.y].walkSpeedMod;
+            walkSpeed *= model.objectMap[pos.x, pos.y].Model.walkSpeedMod;
         }
         if (model.roadMap != null)
         {
             if (model.roadMap[pos.x, pos.y] != null)
             {
-                walkSpeed *= model.roadMap[pos.x, pos.y].walkSpeedMod;
+                walkSpeed *= model.roadMap[pos.x, pos.y].Model.walkSpeedMod;
             }
         }
         

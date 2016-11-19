@@ -11,7 +11,7 @@ public class InfoPanel : Controller<BaseObjectModel> {
 
     protected override void OnInitialize()
     {
-        objectNameText.text = model.type.ToUpper();
+        objectNameText.text = model.name.ToUpper();
         objectInfoText.text = CreateObjectModel.GetInfo(model);
     }
 

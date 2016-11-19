@@ -29,8 +29,8 @@ public class LocalMapModel: Model { //TODO Add comments to class
     public float mountainScale = .2f;
     
     public float[,] elevationMap;
-    public TileModel[,] baseMap;
-    public Road[,] roadMap;
+    public ModelRef<TileModel>[,] baseMap;
+    public ModelRef<RoadModel>[,] roadMap;
     public ModelRef<BaseObjectModel>[,] objectMap;
     public ModelRef<RoofModel>[,] roofMap;
     public ModelRef<ItemsModel>[,] skyMap;

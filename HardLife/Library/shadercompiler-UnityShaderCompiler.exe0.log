@@ -1,100 +1,16 @@
 Base path: E:/Program Files/Unity/Editor/Data
 Cmd: getPlatforms
 Cmd: preprocess
-  insize=2804 outsize=556 ok=1
+  insize=1185 outsize=407 ok=1
 Cmd: preprocess
-  insize=1571 outsize=395 ok=1
+  insize=1601 outsize=192 ok=1
 Cmd: preprocess
-  insize=2823 outsize=557 ok=1
+  insize=1159 outsize=381 ok=1
 Cmd: preprocess
-  insize=13827 outsize=3545 ok=1
+  insize=137 outsize=137 ok=1
 Cmd: preprocess
-  insize=19247 outsize=3201 ok=1
+  insize=1048 outsize=208 ok=1
 Cmd: preprocess
-  insize=1542 outsize=400 ok=1
+  insize=766 outsize=215 ok=1
 Cmd: preprocess
-  insize=13065 outsize=3325 ok=1
-Cmd: preprocess
-  insize=2280 outsize=478 ok=1
-Cmd: preprocess
-  insize=6662 outsize=2863 ok=1
-Cmd: preprocess
-  insize=17145 outsize=4980 ok=1
-Cmd: preprocess
-  insize=2195 outsize=478 ok=1
-Cmd: preprocess
-  insize=12549 outsize=4262 ok=1
-Cmd: preprocess
-  insize=8045 outsize=1707 ok=1
-Cmd: preprocess
-  insize=1759 outsize=411 ok=1
-Cmd: preprocess
-  insize=26335 outsize=4568 ok=1
-Cmd: preprocess
-  insize=21065 outsize=3684 ok=1
-Cmd: preprocess
-  insize=1732 outsize=400 ok=1
-Cmd: preprocess
-  insize=6837 outsize=2128 ok=1
-Cmd: preprocess
-  insize=45022 outsize=7059 ok=1
-Cmd: preprocess
-  insize=5405 outsize=1060 ok=1
-Cmd: preprocess
-  insize=4581 outsize=595 ok=1
-Cmd: preprocess
-  insize=18432 outsize=4122 ok=1
-Cmd: preprocess
-  insize=2809 outsize=560 ok=1
-Cmd: preprocess
-  insize=26396 outsize=6237 ok=1
-Cmd: preprocess
-  insize=2827 outsize=560 ok=1
-Cmd: preprocess
-  insize=10301 outsize=4779 ok=1
-Cmd: preprocess
-  insize=1551 outsize=402 ok=1
-Cmd: preprocess
-  insize=2316 outsize=482 ok=1
-Cmd: preprocess
-  insize=22142 outsize=3778 ok=1
-Cmd: preprocess
-  insize=1330 outsize=404 ok=1
-Cmd: preprocess
-  insize=8553 outsize=1505 ok=1
-Cmd: preprocess
-  insize=2825 outsize=557 ok=1
-Cmd: preprocess
-  insize=2826 outsize=561 ok=1
-Cmd: preprocess
-  insize=2121 outsize=482 ok=1
-Cmd: preprocess
-  insize=17424 outsize=4311 ok=1
-Cmd: preprocess
-  insize=2829 outsize=561 ok=1
-Cmd: preprocess
-  insize=26155 outsize=4562 ok=1
-Cmd: preprocess
-  insize=6280 outsize=1571 ok=1
-Cmd: preprocess
-  insize=7905 outsize=5878 ok=1
-Cmd: preprocess
-  insize=1441 outsize=406 ok=1
-Cmd: preprocess
-  insize=1458 outsize=410 ok=1
-Cmd: preprocess
-  insize=2834 outsize=564 ok=1
-Cmd: preprocess
-  insize=25358 outsize=5312 ok=1
-Cmd: preprocess
-  insize=12608 outsize=5518 ok=1
-Cmd: preprocess
-  insize=1769 outsize=400 ok=1
-Cmd: preprocess
-  insize=13115 outsize=3340 ok=1
-Cmd: preprocess
-  insize=1405 outsize=398 ok=1
-Cmd: preprocess
-  insize=17306 outsize=4304 ok=1
-Cmd: preprocess
-  insize=1402 outsize=413 ok=1
+  insize=787 outsize=189 ok=1

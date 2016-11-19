@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using CodeControl;
 
 public struct LocalMapGen {
 
@@ -140,7 +141,7 @@ public struct LocalMapGen {
 
     private static void CreateObjectMap(LocalMapModel model)
     {
-        model.objectMap = new BaseObjectModel[model.localSizeX, model.localSizeY];
+        model.objectMap = new ModelRef<BaseObjectModel>[model.localSizeX, model.localSizeY];
         System.Random random = new System.Random(model.seed.GetHashCode());
 
         double treeLikeliness = .02; //Probaility of loading items
@@ -161,27 +162,41 @@ public struct LocalMapGen {
 
                 if (model.biome != "Water") //water local map
                 {
-                    if (model.baseMap[x, y].type == "Grass")
+                    if (model.baseMap[x, y].Model.name == "Grass")
                     {
                         if (random.NextDouble() < treeLikeliness)
                         {
-                            model.objectMap[x, y] = new Tree("oak tree", new Date(-random.Next(100) * Date.Year), worldPoint, x, y);
+                            TreeModel treeModel = new TreeModel();
+                            treeModel.localMap = new ModelRef<LocalMapModel>(model);
+                            CreateObjectModel.SetTreeModel(treeModel, "oak tree", new Date(-random.Next(100) * Date.Year), worldPoint, x, y);
+                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(treeModel);
                         }
                         else if (random.NextDouble() < bushLikeliness)
                         {
-                            model.objectMap[x, y] = new Bush("bush", new Date(-random.Next(24) * Date.Year), worldPoint, x, y);
+                            TreeModel treeModel = new TreeModel();
+                            treeModel.localMap = new ModelRef<LocalMapModel>(model);
+                            CreateObjectModel.SetTreeModel(treeModel, "bush", new Date(-random.Next(24) * Date.Year), worldPoint, x, y);
+                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(treeModel);
                         }
                         else if (random.NextDouble() < boulderLikeliness)
                         {
-                            model.objectMap[x, y] = new BaseObjectModel("boulder", worldPoint, x, y);
+                            BaseObjectModel otherModel = new BaseObjectModel();
+                            otherModel.localMap = new ModelRef<LocalMapModel>(model);
+                            CreateObjectModel.SetBaseObjectModel(otherModel, "boulder", worldPoint, x, y);
+                            otherModel.walkSpeedMod = .2f;
+                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(otherModel);
+
                         }
+                        else if (model.baseMap[x, y].Model.name == "Rock")
+                        {
+                            BaseObjectModel otherModel = new BaseObjectModel();
+                            otherModel.localMap = new ModelRef<LocalMapModel>(model);
+                            otherModel.walkSpeedMod = 0;
+                            CreateObjectModel.SetBaseObjectModel(otherModel, "rock", worldPoint, x, y);
+                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(otherModel);
 
+                        }
                     }
-                    else if (model.baseMap[x, y].type == "Rock")
-                    {
-                        model.objectMap[x, y] = new BaseObjectModel("rock", worldPoint, x, y);
-                    }
-
                 }
 
             }
@@ -192,7 +207,7 @@ public struct LocalMapGen {
 
     private static void CreateBaseMap(LocalMapModel model, FresNoise noise, bool hasShores)
     {
-        model.baseMap = new Tile[model.localSizeX, model.localSizeY];
+        model.baseMap = new ModelRef<TileModel>[model.localSizeX, model.localSizeY];
 
         for (int x = 0; x < model.localSizeX; x++)
         {
@@ -200,45 +215,45 @@ public struct LocalMapGen {
             {
                 Vector3 worldPoint = model.worldBottomLeft + Vector3.right * (x + .5f) + Vector3.up * (y + .5f);
 
-                model.baseMap[x, y] = new Tile(worldPoint, x, y, noise.ScaleFloatToInt(model.elevationMap[x, y], baseMapNC));
+                model.baseMap[x, y] = new ModelRef<TileModel>( CreateObjectModel.CreateTileModel(worldPoint, x, y, noise.ScaleFloatToInt(model.elevationMap[x, y], baseMapNC)));
 
 
                 if (model.biome == "Water") //water local map
                 {
-                    model.baseMap[x, y].type = "Water";
+                    model.baseMap[x, y].Model.name = "Water";
                 }
-                else if (model.baseMap[x, y].id >= 4)
+                else if (model.baseMap[x, y].Model.id >= 4)
                 {
-                    model.baseMap[x, y].type = "Rock";
+                    model.baseMap[x, y].Model.name = "Rock";
                 }
                 else if (model.biome == "Ice")
                 {
 
-                    model.baseMap[x, y].type = "Ice";
+                    model.baseMap[x, y].Model.name = "Ice";
                 }
                 else if (model.biome == "Grass")
                 {
 
-                    model.baseMap[x, y].type = "Grass";
+                    model.baseMap[x, y].Model.name = "Grass";
                 }
                 else if (model.biome == "Jungle")
                 {
 
-                    model.baseMap[x, y].type = "Grass";
+                    model.baseMap[x, y].Model.name = "Grass";
                 }
                 else if (model.biome == "Desert")
                 {
 
-                    model.baseMap[x, y].type = "Sand";
+                    model.baseMap[x, y].Model.name = "Sand";
                 }
 
-                if (hasShores && model.baseMap[x, y].id == 0)
+                if (hasShores && model.baseMap[x, y].Model.id == 0)
                 {
-                    model.baseMap[x, y].type = "Water";
+                    model.baseMap[x, y].Model.name = "Water";
                 }
-                else if (hasShores && model.baseMap[x, y].id == 1 && model.biome != "Ice" && model.biome != "Water" && model.biome != "Desert")
+                else if (hasShores && model.baseMap[x, y].Model.id == 1 && model.biome != "Ice" && model.biome != "Water" && model.biome != "Desert")
                 {
-                    model.baseMap[x, y].type = "Sand";
+                    model.baseMap[x, y].Model.name = "Sand";
                 }
 
             }
@@ -280,13 +295,12 @@ public struct LocalMapGen {
             {
                 if (IsInLocalMapRange(model, nbrX, nbrY))
                 {
-                    adj[nbrX + 1 - x, nbrY + 1 - y] = model.objectMap[nbrX, nbrY];
+                    if (model.objectMap[nbrX, nbrY] != null)
+                    {
+                        adj[nbrX + 1 - x, nbrY + 1 - y] = model.objectMap[nbrX, nbrY].Model;
+                    }
+                    
                 }
-                else
-                {
-                    adj[nbrX + 1 - x, nbrY + 1 - y] = null;
-                }
-
             }
         }
 

@@ -7,5 +7,4 @@ public class TreeModel : PlantModel {
     internal int maxStick;
     internal int maxWood;
     
-    
 }

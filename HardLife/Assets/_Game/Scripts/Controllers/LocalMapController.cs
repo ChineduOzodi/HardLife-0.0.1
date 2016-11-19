@@ -115,8 +115,19 @@ public class LocalMapController : MonoBehaviour {
             {
                 if (model.objectMap[x, y] != null)
                 {
-                    SpriteRenderer instance = CreateObject(model.objectMap[x, y], x, y, objectMapEmpty.transform);
-                    instance.sortingOrder = model.objectMap[x, y].renderOrder + y;
+                    SpriteRenderer instance;
+                    if (model.objectMap[x, y].Model.name == "oak tree")
+                    {
+                        instance = Controller.Instantiate<TreeController>("oak_tree", model.objectMap[x, y].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
+                    }
+                    else if (model.objectMap[x, y].Model.name == "bush")
+                    {
+                        instance = Controller.Instantiate<TreeController>("bush", model.objectMap[x, y].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
+                    }
+                    else
+                        instance = CreateObject(model.objectMap[x, y].Model, x, y, objectMapEmpty.transform);
+                    instance.sortingOrder = model.objectMap[x, y].Model.renderOrder + y;
+                    instance.transform.position = model.objectMap[x, y].Model.worldPostition;
                     objectMap[x, y] = instance;
                 }
             }
@@ -135,7 +146,7 @@ public class LocalMapController : MonoBehaviour {
         {
             for (int y = 0; y < world.localSizeY; y++)
             {
-                baseMap[x, y] = CreateObject(model.baseMap[x, y], x, y, baseMapEmpty.transform);
+                baseMap[x, y] = CreateObject(model.baseMap[x, y].Model, x, y, baseMapEmpty.transform);
             }
         }
     }
@@ -157,7 +168,7 @@ public class LocalMapController : MonoBehaviour {
                 objectMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
                 selectedTile = objectMap[coord.x, coord.y];
-                selectedObject = model.objectMap[coord.x, coord.y];
+                selectedObject = model.objectMap[coord.x, coord.y].Model;
 
                 InfoPanel obj = Controller.Instantiate<InfoPanel>("ui/infobox", selectedObject, transform);
 
@@ -168,7 +179,7 @@ public class LocalMapController : MonoBehaviour {
                 baseMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
                 selectedTile = baseMap[coord.x, coord.y];
-                selectedObject = model.objectMap[coord.x, coord.y];
+                selectedObject = null;
             }
 
             
@@ -184,7 +195,7 @@ public class LocalMapController : MonoBehaviour {
 
         if (objectQueue.Count == 0)
         {
-            GameObject obj = new GameObject(name.type);
+            GameObject obj = new GameObject(name.type.ToString());
             obj.transform.position = worldPoint;
             SpriteRenderer instance = obj.AddComponent<SpriteRenderer>();
             instance.sprite = gameManager.spriteManager.GetSprite(name);
@@ -196,7 +207,7 @@ public class LocalMapController : MonoBehaviour {
         {
             SpriteRenderer instance = objectQueue.Dequeue();
             instance.transform.position = worldPoint;
-            instance.name = name.type;
+            instance.name = name.type.ToString();
             instance.sprite = gameManager.spriteManager.GetSprite(name);
             if (parent != null)
                 instance.transform.SetParent(baseMapEmpty.transform);
@@ -241,96 +252,5 @@ public class LocalMapController : MonoBehaviour {
         model.curTemp = model.aveTemp - yearTempRange * Mathf.Cos(5 / (Mathf.PI * 2)) - yearTempRange * Mathf.Cos((world.date.day + 5) / (2 * Mathf.PI)) - dayTempRange * Mathf.Cos((world.date.hour) * Mathf.PI / 12);
 
     }
-
-    internal void UpdatePlantGrowth()
-    {
-        foreach (var item in model.objectMap)
-        {
-            if (item != null)
-            {
-                if (item.classType == "Tree" || item.classType == "Bush")
-                {
-                    PlantModel plant = (PlantModel)item;                              
-
-                    CreateObjectModel.UpdateGrowth(plant, model.curTemp);
-                    CreateObjectModel.UpdateAge(plant, world.date);
-
-                    if (plant.replicate)
-                    {
-                        Vector3 newWorldPosition = plant.worldPostition + new Vector3(plant.replicateLocation.x, plant.replicateLocation.y);
-                        Coord coord = gameManager.LocalCoordFromWorldPosition(newWorldPosition);
-                        bool withinBorder = LocalMapGen.IsInLocalMapRange(model, coord.x, coord.y);
-
-
-                        if (withinBorder)
-                        {
-                            bool clear = true;
-                            foreach (BaseObjectModel obj in LocalMapGen.AdjacentObjects(model, coord.x, coord.y)) //checks for objects
-                            {
-                                if (obj != null && obj.type == plant.type)
-                                {
-                                    clear = false;
-                                }
-                            }
-
-                            if (clear)
-                            {
-                                if (item.classType == "Tree")
-                                {
-                                    Tree newTree = new Tree(plant.type, world.date, newWorldPosition, coord.x, coord.y);
-                                    model.objectMap[coord.x, coord.y] = newTree;
-                                    objectMap[coord.x, coord.y] = CreateObject(newTree, coord.x, coord.y, objectMapEmpty.transform);
-                                }
-                                else if (item.classType == "Bush")
-                                {
-                                    Bush newBush = new Bush(plant.type, world.date, newWorldPosition, coord.x, coord.y);
-                                    model.objectMap[coord.x, coord.y] = newBush;
-                                    objectMap[coord.x, coord.y] = CreateObject(newBush, coord.x, coord.y, objectMapEmpty.transform);
-                                }
-
-                            }
-                        }
-
-                        plant.replicate = false;
-                    }
-                }
-
-                if (item.updateTexture)
-                {
-                    objectMap[item.localMapPositionX, item.localMapPositionY].sprite = gameManager.spriteManager.GetSprite(item);
-                    item.updateTexture = false;
-                }
-            }
-        }
-    }
-
-    internal string CompileStats()
-    {
-        int treeCount = 0;
-        int bushCount = 0;
-
-        for (int x = 0; x < model.localSizeX; x++)
-        {
-            for (int y = 0; y < model.localSizeY; y++)
-            {
-                if (model.biome != "Water") //water local map
-                {
-                    if (model.objectMap[x, y] != null)
-                    {
-                        if (model.objectMap[x, y].type == "oak tree")
-                        {
-                            treeCount++;
-                        }
-                        else if (model.objectMap[x, y].type == "bush")
-                        {
-                            bushCount++;
-                        }
-
-                    }
-                }
-
-            }
-        }
-        return "Oak Trees: " + treeCount + "\nBushes: " + bushCount;
-    }
+    
 }

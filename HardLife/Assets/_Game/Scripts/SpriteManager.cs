@@ -59,30 +59,7 @@ public class SpriteManager{
 
     public Sprite GetSprite(BaseObjectModel item)
     {
-        string name = item.type;
-
-        if (item.classType == "Tree")
-        {
-            Tree tree = (Tree)item;
-           
-            if (tree.ageText != null)
-                name += "_" + tree.ageText;
-
-            
-            if (tree.fruit > 0)
-                name += "_fruit";
-            else if (tree.state != "Normal")
-                name += "_" + tree.state;
-        } else if (item.classType == "Bush")
-        {
-            Bush bush = (Bush)item;
-
-
-            if (bush.fruit > 0)
-                name += "_fruit";
-            else if (bush.state != "Normal")
-                name += "_dying";
-        }
+        string name = item.name;
 
         return GetSprite(name.ToLower());
     }

@@ -8,7 +8,7 @@ public class BaseObjectController : Controller<BaseObjectModel> {
 	// Use this for initialization
     protected override void OnInitialize()
     {
-        throw new NotImplementedException();
+
     }
 
     // Update is called once per frame

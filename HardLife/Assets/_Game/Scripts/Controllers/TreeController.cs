@@ -5,20 +5,50 @@ using System;
 
 public class TreeController : Controller<TreeModel> {
 
+    internal int hour = 0;
+    internal int day = 0;
+
+    public Sprite child;
+    public Sprite childFall;
+    public Sprite childWinter;
+    public Sprite young;
+    public Sprite youngFall;
+    public Sprite youngWinter;
+    public Sprite matureNoFruit;
+    public Sprite matureFruit;
+    public Sprite matureFall;
+    public Sprite matureWinter;
+    public Sprite old;
+    public Sprite oldFall;
+    public Sprite oldWinter;
+
+    internal MyGameManager gameManager;
+    internal SpriteRenderer objectSprite;
+
     protected override void OnInitialize()
     {
-        Message.AddListener("Update Growth", UpdateGrowth);
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MyGameManager>();
+        objectSprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update () {
+        
+        if (model.localMap.Model.world.Model.date.hour != hour)
+        {
+            CreateObjectModel.UpdateAge(model, model.localMap.Model.world.Model.date);
+            UpdateGrowth();
+            ReplicatePlant();
+        }
+
+        if (model.updateTexture)
+            SetSprite();
 	
 	}
 
-    public static void UpdateGrowth() //Hourly Update
+    public void UpdateGrowth() //Hourly Update
     {
-
-        if (model.localMap.Model.curTemp < model.minTemp)
+        if ( model.localMap.Model.curTemp < model.minTemp)
         {
             model.growthRate = 0;
 
@@ -30,15 +60,15 @@ public class TreeController : Controller<TreeModel> {
             {
                 if (model.leaves > 0)
                     model.leaves -= UnityEngine.Random.Range(0, 2);
-                if (model.state == "Normal")
+                if (model.state == State.Healthy)
                 {
-                    model.state = "Dying";
+                    model.state = State.Browning;
                     model.leaves = model.maxLeaves / 2;
                     model.updateTexture = true;
                 }
-                else if (model.leaves < 1 && model.state == "Dying")
+                else if (model.leaves < 1 && model.state == State.Browning)
                 {
-                    model.state = "Dead";
+                    model.state = State.NoLeaves;
                     model.updateTexture = true;
                 }
             }
@@ -51,14 +81,14 @@ public class TreeController : Controller<TreeModel> {
             if (model.leaves < model.maxLeaves)
                 model.leaves += UnityEngine.Random.Range(0, 2);
 
-            if (model.state == "Dying" && model.leaves == model.maxLeaves)
+            if (model.state == State.Browning && model.leaves == model.maxLeaves)
             {
-                model.state = "Normal";
+                model.state = State.Healthy;
                 model.updateTexture = true;
             }
-            else if (model.state == "Dead" && model.leaves == model.maxLeaves)
+            else if (model.state == State.NoLeaves && model.leaves == model.maxLeaves)
             {
-                model.state = "Normal";
+                model.state = State.Healthy;
                 model.updateTexture = true;
             }
 
@@ -91,18 +121,110 @@ public class TreeController : Controller<TreeModel> {
                         }
                     }
                 }
-
-
-
             }
         }
 
-        //Tree Specific Part
-        if (model.age > new Date(5 * Date.Year) && model.ageText == "Young")
+        //Update growth stage
+
+        if (model.age > model.youngAge && model.growthStage == GrowthStage.Child)
         {
-            model.ageText = "Mature";
+            model.growthStage = GrowthStage.Young;
+            model.updateTexture = true;
+        }
+        else if (model.age > model.matureAge && model.growthStage == GrowthStage.Young)
+        {
+            model.growthStage = GrowthStage.Mature;
+            model.updateTexture = true;
+        }
+        else if (model.age > model.oldAge && model.growthStage == GrowthStage.Mature)
+        {
+            model.growthStage = GrowthStage.Old;
             model.updateTexture = true;
         }
     }
 
+    internal void ReplicatePlant()
+    {
+
+        if (model.replicate)
+        {
+            model.replicate = false;
+            Vector3 newWorldPosition = model.worldPostition + new Vector3(model.replicateLocation.x, model.replicateLocation.y);
+            Coord coord = gameManager.LocalCoordFromWorldPosition(newWorldPosition);
+            bool withinBorder = LocalMapGen.IsInLocalMapRange(model.localMap.Model, coord.x, coord.y);
+
+
+            if (withinBorder)
+            {
+                bool clear = true;
+                foreach (BaseObjectModel obj in LocalMapGen.AdjacentObjects(model.localMap.Model, coord.x, coord.y)) //checks for objects
+                {
+                    if (obj != null && obj.type == model.type)
+                    {
+                        clear = false;
+                    }
+                }
+
+                if (clear)
+                {
+                    print("Should replicate");
+
+                }
+            }
+        }
+
+        if (model.updateTexture)
+        {
+            SetSprite();
+            model.updateTexture = false;
+        }
+    }
+
+    private void SetSprite()
+    {
+        if (model.growthStage == GrowthStage.Child)
+        {
+            if (model.state == State.Browning)
+            {
+                objectSprite.sprite = childFall;
+            }
+            else if (model.state == State.NoLeaves)
+            {
+                objectSprite.sprite = childWinter;
+            }
+            else
+                objectSprite.sprite = child;
+        }
+        else if (model.growthStage == GrowthStage.Young)
+        {
+            if (model.state == State.Browning)
+            {
+                objectSprite.sprite = youngFall;
+            }
+            else if (model.state == State.NoLeaves)
+            {
+                objectSprite.sprite = youngWinter;
+            }
+            else
+                objectSprite.sprite = young;
+        }
+        else if (model.growthStage == GrowthStage.Mature)
+        {
+            if (model.state == State.Browning)
+            {
+                objectSprite.sprite = matureFall;
+            }
+            else if (model.state == State.NoLeaves)
+            {
+                objectSprite.sprite = matureWinter;
+            }
+            else if (model.fruit == model.maxFruit)
+            {
+                objectSprite.sprite = matureFruit;
+            }
+            else
+                objectSprite.sprite = matureNoFruit;
+        }
+
+    }
 }

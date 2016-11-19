@@ -11,39 +11,40 @@ public struct CreateObjectModel {
         return model;
     }
 
-    public TreeModel SetTreeModel(TreeModel model, string _type, Date _birthTime, Vector3 _worldPosition, int x, int y)
+    public static TreeModel SetTreeModel(TreeModel model, string name, Date _birthTime, Vector3 _worldPosition, int x, int y)
     {
-        model.classType = "Tree";
+        model.type = ObjectType.Tree ;
 
-        SetPlantModel(model, _type, _birthTime, _worldPosition, x, y);
+        SetPlantModel(model, name, _birthTime, _worldPosition, x, y);
 
-        if (model.type == "oak tree")
+        if (model.name == "oak tree")
         {
             model.renderOrder = 2;
             model.minTemp = 5;
             model.maxFruit = 35;
             model.maxWood = 75;
             model.maxStick = 20;
-
+            model.walkSpeedMod = .1f;
             model.maxLeaves = 40;
             model.leaves = model.maxLeaves;
 
             model.birthPercent = 3 * model.birthFactor;
 
-            model.maxAge = new Date(250 * Date.Year);
+            model.oldAge = new Date(250 * Date.Year);
             model.matureLevel = new Date(3 * Date.Year);
         }
-        else if (model.type == "bush")
+        else if (model.name == "bush")
         {
             model.maxFruit = 15;
             model.maxStick = 10;
             model.maxLeaves = 20;
+            model.walkSpeedMod = .5f;
             model.leaves = model.maxLeaves;
             model.birthPercent = 2 * model.birthFactor;
 
             model.minTemp = 5;
 
-            model.maxAge = new Date(25 * Date.Year);
+            model.oldAge = new Date(25 * Date.Year);
             model.matureLevel = new Date(20 * Date.Day);
         }
 
@@ -53,12 +54,12 @@ public struct CreateObjectModel {
         return model;
     }
 
-    public PlantModel SetPlantModel (PlantModel model, string _type, Date _birthTime, Vector3 _worldPosition, int x, int y)
+    public static PlantModel SetPlantModel (PlantModel model, string _type, Date _birthTime, Vector3 _worldPosition, int x, int y)
     {
         SetAliveModel(model, _type, _birthTime, _worldPosition, x, y);
         return model;
     }
-    public AliveModel SetAliveModel(AliveModel model, string _type, Date _birthTime, Vector3 _worldPosition, int x, int y)
+    public static AliveModel SetAliveModel(AliveModel model, string _type, Date _birthTime, Vector3 _worldPosition, int x, int y)
     {
         SetBaseObjectModel(model, _type, _worldPosition, x, y);
         model.birthTime = _birthTime;
@@ -66,7 +67,7 @@ public struct CreateObjectModel {
         return model;
     }
 
-    public TileModel CreateTileModel(Vector3 _worldPosition, int x, int y, int _id, string _type = null)
+    public static TileModel CreateTileModel(Vector3 _worldPosition, int x, int y, int _id, string _type = null)
     {
         TileModel model = new TileModel();
 
@@ -78,8 +79,8 @@ public struct CreateObjectModel {
     }
     public static BaseObjectModel SetBaseObjectModel(BaseObjectModel model, string _type, Vector3 _worldPosition, int x, int y)
     {
-        model.type = _type;
-
+        model.name = _type;
+        model.updateTexture = true;
         model.worldPostition = _worldPosition;
         model.localMapPositionX = x;
         model.localMapPositionY = y;
@@ -102,7 +103,7 @@ public struct CreateObjectModel {
     }
     public static string GetInfo(BaseObjectModel model)
     {
-        return "Class: " + model.classType;
+        return "Class: " + model.type.ToString();
     }
 
     public static void UpdateAge(AliveModel model, Date _currentTime)

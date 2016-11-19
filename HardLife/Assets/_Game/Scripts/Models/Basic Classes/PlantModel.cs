@@ -17,5 +17,5 @@ public class PlantModel: AliveModel
     internal float minTemp;
     internal Date growthLevel = new Date(0);
     internal Date matureLevel;
-    internal string state = "Normal";
+    internal State state = State.Healthy;
 }

@@ -880,16 +880,15 @@
     <Compile Include="Assets\_Game\Scripts\CameraControl.cs" />
     <Compile Include="Assets\_Game\Scripts\Controllers\BaseObjectController.cs" />
     <Compile Include="Assets\_Game\Scripts\Controllers\LocalMapController.cs" />
-    <Compile Include="Assets\_Game\Scripts\Controllers\MainMenuController.cs" />
     <Compile Include="Assets\_Game\Scripts\Controllers\TreeController.cs" />
     <Compile Include="Assets\_Game\Scripts\DayNightCycle.cs" />
-    <Compile Include="Assets\_Game\Scripts\Helpers\AIGrid.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Coord.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\CreateObjectModel.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Date.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\FresNoise.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\LocalMapGen.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\NameGen.cs" />
+    <Compile Include="Assets\_Game\Scripts\Helpers\Types.cs" />
     <Compile Include="Assets\_Game\Scripts\Loader.cs" />
     <Compile Include="Assets\_Game\Scripts\MapGen.cs" />
     <Compile Include="Assets\_Game\Scripts\Models\Basic Classes\AliveModel.cs" />
@@ -904,6 +903,7 @@
     <Compile Include="Assets\_Game\Scripts\MyGameManager.cs" />
     <Compile Include="Assets\_Game\Scripts\NamesStrings.cs" />
     <Compile Include="Assets\_Game\Scripts\Node.cs" />
+    <Compile Include="Assets\_Game\Scripts\Pathfinding.cs" />
     <Compile Include="Assets\_Game\Scripts\Region.cs" />
     <Compile Include="Assets\_Game\Scripts\Road.cs" />
     <Compile Include="Assets\_Game\Scripts\Roof.cs" />

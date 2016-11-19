@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class Pathfinding : MonoBehaviour
 {
     public Transform seeker, target;
-
+    internal LineRenderer line;
     LocalMapModel localMap;
     Node[,] grid;
     List<Node> path;
@@ -14,6 +14,7 @@ public class Pathfinding : MonoBehaviour
     {
         localMap = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapController>().model;
         grid = new Node[localMap.localSizeX, localMap.localSizeY];
+        line = GetComponent<LineRenderer>();
 
     }
 
@@ -23,30 +24,36 @@ public class Pathfinding : MonoBehaviour
         
     }
 
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawCube(transform.position, new Vector3(10, 10));
+    //void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawCube(transform.position, new Vector3(10, 10));
+    //    int i = 0;
+    //    if (path != null)
+            
 
-        if (grid != null)
-        {
-            foreach (Node n in grid)
-            {
-                if (n != null)
-                {
-                    Gizmos.color = (n.walkSpeed != 0) ? Color.white : Color.red;
-                    if (path != null)
-                    {
-                        if (path.Contains(n))
-                            Gizmos.color = Color.black;
-                    }
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one);
-                }
+    //    if (grid != null)
+    //    {
+    //        foreach (Node n in grid)
+    //        {
+    //            if (n != null)
+    //            {
+    //                Gizmos.color = new Color((float)n.fCost / 10000f, 1, 1, .8f);
+    //                if (path != null)
+    //                {
+    //                    if (path.Contains(n))
+    //                    {
+    //                        Gizmos.color = new Color(0,0,0,.8f);
+    //                    }
+                            
+    //                }
+    //                Gizmos.DrawCube(n.worldPosition, Vector3.one);
+    //            }
                 
 
-            }
-        }
-    }
+    //        }
+    //    }
+    //}
     public void FindLocalPath(Coord startPos, Coord targetPos)
     {
         Node startNode = Node.NodeFromPosition(startPos, localMap);
@@ -89,7 +96,7 @@ public class Pathfinding : MonoBehaviour
                     continue;
                 }
 
-                int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor) * (int)(currentNode.walkSpeed * 100);
+                float newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor) / (currentNode.walkSpeed);
                 if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
                 {
                     neighbor.gCost = newMovementCostToNeighbor;
@@ -119,6 +126,12 @@ public class Pathfinding : MonoBehaviour
         }
 
         path.Reverse();
+
+        line.SetVertexCount(path.Count);
+        for (int i = 0; i < path.Count; i++)
+        {
+            line.SetPosition(i, path[i].worldPosition);
+        }
     }
     int GetDistance(Node nodeA, Node nodeB)
     {
