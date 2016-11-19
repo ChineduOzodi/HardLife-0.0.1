@@ -886,6 +886,7 @@
     <Compile Include="Assets\_Game\Scripts\Helpers\CreateObjectModel.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Date.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\FresNoise.cs" />
+    <Compile Include="Assets\_Game\Scripts\Helpers\Heap.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\LocalMapGen.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\NameGen.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Types.cs" />
@@ -903,6 +904,7 @@
     <Compile Include="Assets\_Game\Scripts\MyGameManager.cs" />
     <Compile Include="Assets\_Game\Scripts\NamesStrings.cs" />
     <Compile Include="Assets\_Game\Scripts\Node.cs" />
+    <Compile Include="Assets\_Game\Scripts\PathRequestManager.cs" />
     <Compile Include="Assets\_Game\Scripts\Pathfinding.cs" />
     <Compile Include="Assets\_Game\Scripts\Region.cs" />
     <Compile Include="Assets\_Game\Scripts\Road.cs" />
@@ -913,6 +915,7 @@
     <Compile Include="Assets\_Game\Scripts\UI\InfoPanel.cs" />
     <Compile Include="Assets\_Game\Scripts\UI\ResizePanel.cs" />
     <Compile Include="Assets\_Game\Scripts\UI\TogglePanelButton.cs" />
+    <Compile Include="Assets\_Game\Scripts\Unit.cs" />
     <Compile Include="Assets\_Game\Scripts\WorldCreationManager.cs" />
     <Compile Include="Assets\_Game\Scripts\WorldGen.cs" />
     <Compile Include="Assets\iTween\iTween.cs" />

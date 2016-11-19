@@ -1,61 +1,67 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System;
+
 public class Pathfinding : MonoBehaviour
 {
-    public Transform seeker, target;
-    internal LineRenderer line;
+
+    public bool displayGizmos = false;
+    PathRequestManager requestManager;
+    
     LocalMapModel localMap;
     Node[,] grid;
     List<Node> path;
+
+    public int maxLocalSize
+    {
+        get
+        {
+            return localMap.localSizeX * localMap.localSizeY;
+        }
+    }
 
     // Use this for initialization
     void Awake()
     {
         localMap = GameObject.FindGameObjectWithTag("LocalGen").GetComponent<LocalMapController>().model;
         grid = new Node[localMap.localSizeX, localMap.localSizeY];
-        line = GetComponent<LineRenderer>();
+        requestManager = GetComponent<PathRequestManager>();
 
     }
 
-    void Update()
+    internal void StartFindPath(Coord startPos, Coord targetPos)
     {
-        FindLocalPath(Coord.Vector3ToCoord(seeker.position - localMap.worldBottomLeft), Coord.Vector3ToCoord(target.position - localMap.worldBottomLeft));
-        
+        StartCoroutine(FindLocalPath(startPos, targetPos));
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.blue;
-    //    Gizmos.DrawCube(transform.position, new Vector3(10, 10));
-    //    int i = 0;
-    //    if (path != null)
-            
-
-    //    if (grid != null)
-    //    {
-    //        foreach (Node n in grid)
-    //        {
-    //            if (n != null)
-    //            {
-    //                Gizmos.color = new Color((float)n.fCost / 10000f, 1, 1, .8f);
-    //                if (path != null)
-    //                {
-    //                    if (path.Contains(n))
-    //                    {
-    //                        Gizmos.color = new Color(0,0,0,.8f);
-    //                    }
-                            
-    //                }
-    //                Gizmos.DrawCube(n.worldPosition, Vector3.one);
-    //            }
-                
-
-    //        }
-    //    }
-    //}
-    public void FindLocalPath(Coord startPos, Coord targetPos)
+    void OnDrawGizmos()
     {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawCube(transform.position, new Vector3(10, 10));
+        if (grid != null && displayGizmos)
+        {
+            foreach (Node n in grid)
+            {
+                if (n != null)
+                {
+                    Gizmos.color = new Color(n.fCost / 100f, 1, 1, .8f);
+                    Gizmos.DrawCube(n.worldPosition, Vector3.one);
+                }
+
+
+            }
+        }
+    }
+    IEnumerator FindLocalPath(Coord startPos, Coord targetPos)
+    {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
+        Node[] waypoints = new Node[0];
+        bool pathSuccess = false;
+
         Node startNode = Node.NodeFromPosition(startPos, localMap);
         Node targetNode = Node.NodeFromPosition(targetPos, localMap);
 
@@ -66,57 +72,66 @@ public class Pathfinding : MonoBehaviour
         grid[startPos.x, startPos.y] = startNode;
         grid[targetPos.x, targetPos.y] = targetNode;
 
-        List<Node> openSet = new List<Node>();
-        HashSet<Node> closedSet = new HashSet<Node>();
-        openSet.Add(startNode);
-
-        while(openSet.Count > 0)
+        if (startNode.walkSpeed > 0 && targetNode.walkSpeed > 0)
         {
-            Node currentNode = openSet[0];
-            for (int i = 1; i < openSet.Count; i++)
+            Heap<Node> openSet = new Heap<Node>(maxLocalSize);
+            HashSet<Node> closedSet = new HashSet<Node>();
+            openSet.Add(startNode);
+
+            while (openSet.Count > 0)
             {
-                if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
+                Node currentNode = openSet.RemoveFirst();
+
+                closedSet.Add(currentNode);
+
+                if (currentNode == targetNode)
                 {
-                    currentNode = openSet[i];
-                }
-            }
-            openSet.Remove(currentNode);
-            closedSet.Add(currentNode);
-
-            if(currentNode == targetNode)
-            {
-                RetracePath(grid[startPos.x, startPos.y], grid[targetPos.x, targetPos.y]);
-                return;
-            }
-
-            foreach (Node neighbor in GetNeighbors(currentNode)){
-
-                if (neighbor.walkSpeed == 0 || closedSet.Contains(neighbor))
-                {
-                    continue;
+                    sw.Stop();
+                    print("Path found:" + sw.ElapsedMilliseconds + " ms");
+                    pathSuccess = true;
+                    break;
                 }
 
-                float newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor) / (currentNode.walkSpeed);
-                if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
+                foreach (Node neighbor in GetNeighbors(currentNode))
                 {
-                    neighbor.gCost = newMovementCostToNeighbor;
-                    neighbor.hCost = GetDistance(neighbor, targetNode);
-                    neighbor.parent = currentNode;
 
-                    if (!openSet.Contains(neighbor))
+                    if (neighbor.walkSpeed == 0 || closedSet.Contains(neighbor))
                     {
-                        openSet.Add(neighbor);
+                        continue;
                     }
+
+                    float newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor) / (currentNode.walkSpeed);
+                    if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
+                    {
+                        neighbor.gCost = newMovementCostToNeighbor;
+                        neighbor.hCost = GetDistance(neighbor, targetNode);
+                        neighbor.parent = currentNode;
+
+                        if (!openSet.Contains(neighbor))
+                        {
+                            openSet.Add(neighbor);
+                        }
+                        else
+                            openSet.UpdateItem(neighbor);
+                    }
+
                 }
 
             }
-
         }
+
+        yield return null;
+        if (pathSuccess)
+        {
+            waypoints = RetracePath(grid[startPos.x, startPos.y], grid[targetPos.x, targetPos.y]);
+        }
+        requestManager.FinishedProcessingPath(waypoints, pathSuccess);
     }
 
-    void RetracePath(Node startNode, Node endNode)
+    Node[] RetracePath(Node startNode, Node endNode)
     {
         path = new List<Node>();
+        Node[] waypoints;
         Node currentNode = endNode;
 
         while(currentNode != startNode)
@@ -124,14 +139,29 @@ public class Pathfinding : MonoBehaviour
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
+        waypoints = SimplifyPath(path);
+        Array.Reverse(waypoints);
 
-        path.Reverse();
+        return waypoints;
+    }
 
-        line.SetVertexCount(path.Count);
-        for (int i = 0; i < path.Count; i++)
+    Node[] SimplifyPath(List<Node> path)
+    {
+        List<Node> waypoints = new List<Node>();
+
+        Coord directionOld = Coord.zero;
+
+        for (int i = 1; i < path.Count; i++)
         {
-            line.SetPosition(i, path[i].worldPosition);
+            Coord directionNew = path[i - 1].coord - path[i].coord;
+
+            if (directionNew != directionOld)
+            {
+                waypoints.Add(path[i]);
+            }
+            directionOld = directionNew;
         }
+        return waypoints.ToArray();
     }
     int GetDistance(Node nodeA, Node nodeB)
     {

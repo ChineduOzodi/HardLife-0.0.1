@@ -108,18 +108,18 @@ public class TreeController : Controller<TreeModel> {
                         model.fruit += UnityEngine.Random.Range(0, 2);
                     }
 
-                    if (!model.replicate)
-                    {
-                        model.replicate = (model.birthPercent * (model.fruit / (float)model.maxFruit) > UnityEngine.Random.Range(0f, 1f)) ? true : false; //Replication decision based on birthpercent, fruit count, and luck
-                        if (model.replicate)
-                        {
-                            model.replicateLocation = UnityEngine.Random.insideUnitCircle * 3;
-                            if (Vector2.SqrMagnitude(model.replicateLocation) < Vector2.SqrMagnitude(Vector2.one))
-                            {
-                                model.replicate = false;
-                            }
-                        }
-                    }
+                    //if (!model.replicate)
+                    //{
+                    //    model.replicate = (model.birthPercent * (model.fruit / (float)model.maxFruit) > UnityEngine.Random.Range(0f, 1f)) ? true : false; //Replication decision based on birthpercent, fruit count, and luck
+                    //    if (model.replicate)
+                    //    {
+                    //        model.replicateLocation = UnityEngine.Random.insideUnitCircle * 3;
+                    //        if (Vector2.SqrMagnitude(model.replicateLocation) < Vector2.SqrMagnitude(Vector2.one))
+                    //        {
+                    //            model.replicate = false;
+                    //        }
+                    //    }
+                    //}
                 }
             }
         }

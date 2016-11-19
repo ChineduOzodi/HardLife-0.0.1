@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-public class Node
+﻿using System;
+using UnityEngine;
+public class Node : IHeapItem<Node>
 {
     public float walkSpeed;
     public Vector3 worldPosition;
@@ -8,10 +9,24 @@ public class Node
 
     public float gCost; //cost from node position to the start node
     public float hCost; //cost from the node position to the target node
+    int heapIndex;
 
     public float fCost
     {
         get { return gCost + hCost; }
+    }
+
+    public int HeapIndex
+    {
+        get
+        {
+            return heapIndex;
+        }
+
+        set
+        {
+            heapIndex = value;
+        }
     }
 
     public Node(float _walkSpeed, Vector3 _worldPosition)
@@ -42,5 +57,15 @@ public class Node
 
         node.coord = pos; //set position
         return node;
+    }
+
+    public int CompareTo(Node nodeToCompare)
+    {
+        int compare = fCost.CompareTo(nodeToCompare.fCost);
+        if (compare == 0)
+        {
+            compare = hCost.CompareTo(nodeToCompare.hCost);
+        }
+        return -compare;
     }
 }

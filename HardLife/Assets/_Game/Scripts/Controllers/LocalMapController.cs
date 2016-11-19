@@ -170,7 +170,7 @@ public class LocalMapController : MonoBehaviour {
                 selectedTile = objectMap[coord.x, coord.y];
                 selectedObject = model.objectMap[coord.x, coord.y].Model;
 
-                InfoPanel obj = Controller.Instantiate<InfoPanel>("ui/infobox", selectedObject, transform);
+                InfoPanel obj = Controller.Instantiate<InfoPanel>("ui/infobox", selectedObject, transform.parent);
 
                 obj.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(selectedObject.worldPostition);
             }

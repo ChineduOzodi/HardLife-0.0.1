@@ -10,7 +10,7 @@ public class DragPanel : MonoBehaviour, IPointerDownHandler, IDragHandler
     private RectTransform canvasRectTransform;
     private RectTransform panelRectTransform;
 
-    void Awake()
+    void Start()
     {
         Canvas canvas = GetComponentInParent<Canvas>();
         if (canvas != null)
