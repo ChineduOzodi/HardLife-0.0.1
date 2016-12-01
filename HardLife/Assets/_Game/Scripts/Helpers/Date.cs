@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
+[Serializable]
 public struct Date
 {
     private static int Seasons = 4;

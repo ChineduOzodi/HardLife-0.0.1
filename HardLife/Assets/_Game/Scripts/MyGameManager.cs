@@ -85,27 +85,7 @@ public class MyGameManager : MonoBehaviour
   //      UnityEngine.SceneManagement.SceneManager.LoadScene ("world_creation");
   //  }
 
-    public void Save()
-    {
-        try
-        {
-            //savePath = Application.persistentDataPath + "/World/" + worldGen.world.worldName + "_Auto Save.sav";//"worldGen.world.saveNum"
-        }
-        catch (DirectoryNotFoundException)
-        {
-            // Directory.CreateDirectory(Application.persistentDataPath + "/World/");
-            //savePath = Application.persistentDataPath + "/World/" + worldGen.world.worldName + "_Auto Save.sav";//"worldGen.world.saveNum"
-        }
-        BinaryFormatter bf = new BinaryFormatter();
-
-        FileStream file = File.Create(savePath);
-
-        bf.Serialize(file, world);
-        file.Close();
-        world.saveNum++;
-        if (world.saveNum > numAutoSave)
-            world.saveNum = 1;
-    }
+    
     public void Load()
     {
         if (File.Exists(savePath))

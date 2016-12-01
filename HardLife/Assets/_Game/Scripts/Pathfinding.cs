@@ -10,6 +10,7 @@ public class Pathfinding : MonoBehaviour
     public bool displayGizmos = false;
     PathRequestManager requestManager;
     
+    
     LocalMapModel localMap;
     Node[,] grid;
     List<Node> path;

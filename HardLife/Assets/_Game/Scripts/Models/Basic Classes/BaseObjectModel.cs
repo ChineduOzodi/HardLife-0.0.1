@@ -4,18 +4,18 @@ using CodeControl;
 
 public class BaseObjectModel : Model {
 
-    internal string name;
-    internal ModelRef<LocalMapModel> localMap;
-    internal Vector3 worldPostition;
-    internal int localMapPositionX, localMapPositionY;
+    public string name;
+    public ModelRef<LocalMapModel> localMap;
+    public Vector3 worldPostition;
+    public int localMapPositionX, localMapPositionY;
 
 
-    internal ObjectType type;
-    internal bool updateTexture;
-    internal int renderOrder = 1;
+    public ObjectType type;
+    public bool updateTexture;
+    public int renderOrder = 1;
     
-    internal float walkSpeedMod = 1;
-    internal float floatSpeedMod = 0;
+    public float walkSpeedMod = 1;
+    public float floatSpeedMod = 0;
     
     
 }

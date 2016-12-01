@@ -71,4 +71,19 @@ public struct Coord
 
         return test;
     }
+
+    public override bool Equals(object obj)
+    {
+        return ((Coord)obj == this);
+    }
+
+    public override int GetHashCode()
+    {
+        return ("x" + x +"y" + y).GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return "x: " + x + " y: " + y;
+    }
 }

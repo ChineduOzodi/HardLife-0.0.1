@@ -882,6 +882,7 @@
     <Compile Include="Assets\_Game\Scripts\Controllers\LocalMapController.cs" />
     <Compile Include="Assets\_Game\Scripts\Controllers\TreeController.cs" />
     <Compile Include="Assets\_Game\Scripts\DayNightCycle.cs" />
+    <Compile Include="Assets\_Game\Scripts\Helpers\ArrayHelper.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Coord.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\CreateObjectModel.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Date.cs" />
@@ -890,6 +891,7 @@
     <Compile Include="Assets\_Game\Scripts\Helpers\LocalMapGen.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\NameGen.cs" />
     <Compile Include="Assets\_Game\Scripts\Helpers\Types.cs" />
+    <Compile Include="Assets\_Game\Scripts\LoadSave.cs" />
     <Compile Include="Assets\_Game\Scripts\Loader.cs" />
     <Compile Include="Assets\_Game\Scripts\MapGen.cs" />
     <Compile Include="Assets\_Game\Scripts\Models\Basic Classes\AliveModel.cs" />

@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class LocalMapController : MonoBehaviour {
 
@@ -113,22 +115,24 @@ public class LocalMapController : MonoBehaviour {
         {
             for (int y = 0; y < world.localSizeY; y++)
             {
-                if (model.objectMap[x, y] != null)
+                int index = ArrayHelper.ElementIndex(x, y, world.localSizeY);
+
+                if (model.objectMap[index] != null)
                 {
                     SpriteRenderer instance;
-                    if (model.objectMap[x, y].Model.name == "oak tree")
+                    if (model.objectMap[index].Model.name == "oak tree")
                     {
-                        instance = Controller.Instantiate<TreeController>("oak_tree", model.objectMap[x, y].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
+                        instance = Controller.Instantiate<TreeController>("oak_tree", model.objectMap[index].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
                     }
-                    else if (model.objectMap[x, y].Model.name == "bush")
+                    else if (model.objectMap[index].Model.name == "bush")
                     {
-                        instance = Controller.Instantiate<TreeController>("bush", model.objectMap[x, y].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
+                        instance = Controller.Instantiate<TreeController>("bush", model.objectMap[index].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
                     }
                     else
-                        instance = CreateObject(model.objectMap[x, y].Model, x, y, objectMapEmpty.transform);
-                    instance.sortingOrder = model.objectMap[x, y].Model.renderOrder + y;
-                    instance.transform.position = model.objectMap[x, y].Model.worldPostition;
-                    objectMap[x, y] = instance;
+                        instance = CreateObject(model.objectMap[index].Model, x,y, objectMapEmpty.transform);
+                    instance.sortingOrder = model.objectMap[index].Model.renderOrder + y;
+                    instance.transform.position = model.objectMap[index].Model.worldPostition;
+                    objectMap[x,y] = instance;
                 }
             }
         }
@@ -146,7 +150,8 @@ public class LocalMapController : MonoBehaviour {
         {
             for (int y = 0; y < world.localSizeY; y++)
             {
-                baseMap[x, y] = CreateObject(model.baseMap[x, y].Model, x, y, baseMapEmpty.transform);
+                int index = ArrayHelper.ElementIndex(x, y, world.localSizeY);
+                baseMap[x,y] = CreateObject(model.baseMap[index].Model, x,y, baseMapEmpty.transform);
             }
         }
     }
@@ -163,12 +168,12 @@ public class LocalMapController : MonoBehaviour {
 
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Coord coord = gameManager.LocalCoordFromWorldPosition(worldPosition);
-            if (model.objectMap[coord.x, coord.y] != null)
+            if (model.objectMap[ArrayHelper.ElementIndex(coord.x, coord.y,world.localSizeY)] != null)
             {
                 objectMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
                 selectedTile = objectMap[coord.x, coord.y];
-                selectedObject = model.objectMap[coord.x, coord.y].Model;
+                selectedObject = model.objectMap[ArrayHelper.ElementIndex(coord.x, coord.y,world.localSizeY)].Model;
 
                 InfoPanel obj = Controller.Instantiate<InfoPanel>("ui/infobox", selectedObject, transform.parent);
 
@@ -252,5 +257,27 @@ public class LocalMapController : MonoBehaviour {
         model.curTemp = model.aveTemp - yearTempRange * Mathf.Cos(5 / (Mathf.PI * 2)) - yearTempRange * Mathf.Cos((world.date.day + 5) / (2 * Mathf.PI)) - dayTempRange * Mathf.Cos((world.date.hour) * Mathf.PI / 12);
 
     }
-    
+
+    public void Save()
+    {
+        //try
+        //{
+        //    savePath = Application.persistentDataPath + "/World/" + localMap.world.worldName + "_Auto Save.sav";//"worldGen.world.saveNum"
+        //}
+        //catch (DirectoryNotFoundException)
+        //{
+        //    Directory.CreateDirectory(Application.persistentDataPath + "/World/");
+        //    savePath = Application.persistentDataPath + "/World/" + worldGen.world.worldName + "_Auto Save.sav";//"worldGen.world.saveNum"
+        //}
+
+        string savePath = "Saves";
+        WorldModel world = new WorldModel();
+        world.name = "Hello";
+        world.localSizeX = 200;
+        world.localSizeY = 200;
+        world.worldSize = new Vector2(200, 120);
+        world.currentLocalMap = new ModelRef<LocalMapModel>(model);
+        Model.Save(savePath, model);
+    }
+
 }

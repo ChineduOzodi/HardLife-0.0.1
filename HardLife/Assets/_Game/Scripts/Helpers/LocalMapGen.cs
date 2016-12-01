@@ -131,7 +131,7 @@ public struct LocalMapGen {
         #endregion
         heightMap = MapScaler(model.localSizeX, model.localSizeY, heightMap);
 
-        model.elevationMap = heightMap; //Set local elevation map
+        model.elevationMap = ArrayHelper.TwoDToOneD(heightMap); //Set local elevation map
 
         CreateBaseMap(model, noise, hasShores);
         CreateObjectMap(model);
@@ -141,7 +141,7 @@ public struct LocalMapGen {
 
     private static void CreateObjectMap(LocalMapModel model)
     {
-        model.objectMap = new ModelRef<BaseObjectModel>[model.localSizeX, model.localSizeY];
+        model.objectMap = new ModelRef<BaseObjectModel>[model.localSizeX * model.localSizeY];
         System.Random random = new System.Random(model.seed.GetHashCode());
 
         double treeLikeliness = .02; //Probaility of loading items
@@ -159,24 +159,25 @@ public struct LocalMapGen {
             for (int y = 0; y < model.localSizeY; y++)
             {
                 Vector3 worldPoint = model.worldBottomLeft + Vector3.right * (x + .5f) + Vector3.up * (y + .5f);
+                int index = ArrayHelper.ElementIndex(x, y, model.localSizeY);
 
                 if (model.biome != "Water") //water local map
                 {
-                    if (model.baseMap[x, y].Model.name == "Grass")
+                    if (model.baseMap[index].Model.name == "Grass")
                     {
                         if (random.NextDouble() < treeLikeliness)
                         {
                             TreeModel treeModel = new TreeModel();
                             treeModel.localMap = new ModelRef<LocalMapModel>(model);
-                            CreateObjectModel.SetTreeModel(treeModel, "oak tree", new Date(-random.Next(100) * Date.Year), worldPoint, x, y);
-                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(treeModel);
+                            CreateObjectModel.SetTreeModel(treeModel, "oak tree", new Date(-random.Next(100) * Date.Year), worldPoint, x,y);
+                            model.objectMap[index] = new ModelRef<BaseObjectModel>(treeModel);
                         }
                         else if (random.NextDouble() < bushLikeliness)
                         {
                             TreeModel treeModel = new TreeModel();
                             treeModel.localMap = new ModelRef<LocalMapModel>(model);
                             CreateObjectModel.SetTreeModel(treeModel, "bush", new Date(-random.Next(24) * Date.Year), worldPoint, x, y);
-                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(treeModel);
+                            model.objectMap[index] = new ModelRef<BaseObjectModel>(treeModel);
                         }
                         else if (random.NextDouble() < boulderLikeliness)
                         {
@@ -184,16 +185,16 @@ public struct LocalMapGen {
                             otherModel.localMap = new ModelRef<LocalMapModel>(model);
                             CreateObjectModel.SetBaseObjectModel(otherModel, "boulder", worldPoint, x, y);
                             otherModel.walkSpeedMod = .2f;
-                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(otherModel);
+                            model.objectMap[index] = new ModelRef<BaseObjectModel>(otherModel);
 
                         }
-                        else if (model.baseMap[x, y].Model.name == "Rock")
+                        else if (model.baseMap[index].Model.name == "Rock")
                         {
                             BaseObjectModel otherModel = new BaseObjectModel();
                             otherModel.localMap = new ModelRef<LocalMapModel>(model);
                             otherModel.walkSpeedMod = 0;
                             CreateObjectModel.SetBaseObjectModel(otherModel, "rock", worldPoint, x, y);
-                            model.objectMap[x, y] = new ModelRef<BaseObjectModel>(otherModel);
+                            model.objectMap[index] = new ModelRef<BaseObjectModel>(otherModel);
 
                         }
                     }
@@ -207,53 +208,53 @@ public struct LocalMapGen {
 
     private static void CreateBaseMap(LocalMapModel model, FresNoise noise, bool hasShores)
     {
-        model.baseMap = new ModelRef<TileModel>[model.localSizeX, model.localSizeY];
+        model.baseMap = new ModelRef<TileModel>[model.localSizeX * model.localSizeY];
 
         for (int x = 0; x < model.localSizeX; x++)
         {
             for (int y = 0; y < model.localSizeY; y++)
             {
                 Vector3 worldPoint = model.worldBottomLeft + Vector3.right * (x + .5f) + Vector3.up * (y + .5f);
-
-                model.baseMap[x, y] = new ModelRef<TileModel>( CreateObjectModel.CreateTileModel(worldPoint, x, y, noise.ScaleFloatToInt(model.elevationMap[x, y], baseMapNC)));
+                int index = ArrayHelper.ElementIndex(x, y, model.localSizeY);
+                model.baseMap[index] = new ModelRef<TileModel>( CreateObjectModel.CreateTileModel(worldPoint, x, y, noise.ScaleFloatToInt(model.elevationMap[index], baseMapNC)));
 
 
                 if (model.biome == "Water") //water local map
                 {
-                    model.baseMap[x, y].Model.name = "Water";
+                    model.baseMap[index].Model.name = "Water";
                 }
-                else if (model.baseMap[x, y].Model.id >= 4)
+                else if (model.baseMap[index].Model.id >= 4)
                 {
-                    model.baseMap[x, y].Model.name = "Rock";
+                    model.baseMap[index].Model.name = "Rock";
                 }
                 else if (model.biome == "Ice")
                 {
 
-                    model.baseMap[x, y].Model.name = "Ice";
+                    model.baseMap[index].Model.name = "Ice";
                 }
                 else if (model.biome == "Grass")
                 {
 
-                    model.baseMap[x, y].Model.name = "Grass";
+                    model.baseMap[index].Model.name = "Grass";
                 }
                 else if (model.biome == "Jungle")
                 {
 
-                    model.baseMap[x, y].Model.name = "Grass";
+                    model.baseMap[index].Model.name = "Grass";
                 }
                 else if (model.biome == "Desert")
                 {
 
-                    model.baseMap[x, y].Model.name = "Sand";
+                    model.baseMap[index].Model.name = "Sand";
                 }
 
-                if (hasShores && model.baseMap[x, y].Model.id == 0)
+                if (hasShores && model.baseMap[index].Model.id == 0)
                 {
-                    model.baseMap[x, y].Model.name = "Water";
+                    model.baseMap[index].Model.name = "Water";
                 }
-                else if (hasShores && model.baseMap[x, y].Model.id == 1 && model.biome != "Ice" && model.biome != "Water" && model.biome != "Desert")
+                else if (hasShores && model.baseMap[index].Model.id == 1 && model.biome != "Ice" && model.biome != "Water" && model.biome != "Desert")
                 {
-                    model.baseMap[x, y].Model.name = "Sand";
+                    model.baseMap[index].Model.name = "Sand";
                 }
 
             }
@@ -272,7 +273,7 @@ public struct LocalMapGen {
             {
                 if (IsInWorldMapRange(model.world.Model, nbrX, nbrY))
                 {
-                    adj[nbrX + 1 - model.worldMapPositionX, nbrY + 1 - model.worldMapPositionY] = model.world.Model.localMaps[nbrX, nbrY].Model;
+                    adj[nbrX + 1 - model.worldMapPositionX, nbrY + 1 - model.worldMapPositionY] = model.world.Model.localMaps[ArrayHelper.ElementIndex(nbrX, nbrY,model.worldMapPositionY)].Model;
                 }
                 else
                 {
@@ -295,9 +296,9 @@ public struct LocalMapGen {
             {
                 if (IsInLocalMapRange(model, nbrX, nbrY))
                 {
-                    if (model.objectMap[nbrX, nbrY] != null)
+                    if (model.objectMap[ArrayHelper.ElementIndex(nbrX, nbrY,model.localSizeY)] != null)
                     {
-                        adj[nbrX + 1 - x, nbrY + 1 - y] = model.objectMap[nbrX, nbrY].Model;
+                        adj[nbrX + 1 - x, nbrY + 1 - y] = model.objectMap[ArrayHelper.ElementIndex(nbrX, nbrY,model.localSizeY)].Model;
                     }
                     
                 }
