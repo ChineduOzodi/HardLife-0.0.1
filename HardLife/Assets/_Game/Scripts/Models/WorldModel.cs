@@ -23,9 +23,9 @@ public class WorldModel: Model{
     public int worldSizeX, worldSizeY, localSizeX, localSizeY;
 
     //[Range(0,100)]
-    //public int waterFillPercent = 75; //THis is in case you wnat to use the elvation Map to determine land and water instead of baseMap
+    //public int waterFillPercent = 75; //This is in case you wnat to use the elvation Map to determine land and water instead of baseMap
 
-    public ModelRef<LocalMapModel>[] localMaps;
+    public ModelRefs<LocalMapModel> localMaps;
 	public ModelRef<LocalMapModel> currentLocalMap;
 
     internal Vector3 worldBottomLeft;
