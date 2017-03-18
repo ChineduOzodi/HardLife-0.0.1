@@ -27,7 +27,7 @@ public struct WorldGen {
         model.localSizeY = (int)_localSize.y;
 
         model.worldBottomLeft = -Vector3.right * model.worldSize.x / 2 - Vector3.up * model.worldSize.y / 2;
-        model.localMaps = new ModelRef<LocalMapModel>[(int) model.worldSize.x * (int)model.worldSize.y];
+        model.localMaps = new ModelRefs<LocalMapModel>();
 
         float maxLakeSize = (_worldSize.x * _worldSize.y) / 200;
         float maxIslandSize = (_worldSize.x * _worldSize.y) / 1000;
@@ -107,34 +107,36 @@ public struct WorldGen {
 
                 int index = ArrayHelper.ElementIndex(x, y, model.worldSizeY);
 
-                model.localMaps[index] = new ModelRef<LocalMapModel>(new LocalMapModel());
+                LocalMapModel newLocalMap = new LocalMapModel();
 
-                model.localMaps[index].Model.world = new ModelRef<WorldModel>(model);
-                model.localMaps[index].Model.localSizeX = model.localSizeX;
-                model.localMaps[index].Model.localSizeY = model.localSizeY;
-                model.localMaps[index].Model.worldMapPositionX = x;
-                model.localMaps[index].Model.worldMapPositionY = y;
-                model.localMaps[index].Model.seed = model.seed + x + y;
+                model.localMaps.Add(newLocalMap);
 
-                model.localMaps[index].Model.biome = biomeMap[x, y];
-                model.localMaps[index].Model.aveTemp = tempMap[x, y];
-                model.localMaps[index].Model.curTemp = tempMap[x, y];
-                model.localMaps[index].Model.elevation = elevMap[x, y];
-                model.localMaps[index].Model.rain = rainMap[x, y];
-                model.localMaps[index].Model.baseNum = baseMap[x, y];
+                newLocalMap.world = new ModelRef<WorldModel>(model);
+                newLocalMap.localSizeX = model.localSizeX;
+                newLocalMap.localSizeY = model.localSizeY;
+                newLocalMap.worldMapPositionX = x;
+                newLocalMap.worldMapPositionY = y;
+                newLocalMap.seed = model.seed + x + y;
+
+                newLocalMap.biome = biomeMap[x, y];
+                newLocalMap.aveTemp = tempMap[x, y];
+                newLocalMap.curTemp = tempMap[x, y];
+                newLocalMap.elevation = elevMap[x, y];
+                newLocalMap.rain = rainMap[x, y];
+                newLocalMap.baseNum = baseMap[x, y];
 
                 //Set Mounatin Level
-                if (model.localMaps[index].Model.elevation < .5)
+                if (newLocalMap.elevation < .5)
                 {
-                    model.localMaps[index].Model.mountainLevel = "Flat";
+                    newLocalMap.mountainLevel = "Flat";
                 }
-                else if (model.localMaps[index].Model.elevation < .75)
+                else if (newLocalMap.elevation < .75)
                 {
-                    model.localMaps[index].Model.mountainLevel = "Hills";
+                    newLocalMap.mountainLevel = "Hills";
                 }
                 else
                 {
-                    model.localMaps[index].Model.mountainLevel = "Mountains";
+                    newLocalMap.mountainLevel = "Mountains";
                 }
             }
         }
@@ -415,7 +417,7 @@ public struct WorldGen {
 
             foreach (Coord tile in region.tiles)
             {
-                model.localMaps[ArrayHelper.ElementIndex(tile.x, tile.y,model.worldSizeY)].Model.region = region.name;
+                model.localMaps[ArrayHelper.ElementIndex(tile.x, tile.y,model.worldSizeY)].region = region.name;
             }
 
         }
@@ -425,7 +427,7 @@ public struct WorldGen {
     {
         List<Coord> tiles = new List<Coord>();
         int[,] mapFlags = new int[model.worldSizeX, model.worldSizeY];
-        int tileType = model.localMaps[ArrayHelper.ElementIndex(startX, StartY,model.worldSizeY)].Model.baseNum;
+        int tileType = model.localMaps[ArrayHelper.ElementIndex(startX, StartY,model.worldSizeY)].baseNum;
 
         string tileSeed = model.seed + startX + StartY;
 
@@ -446,7 +448,7 @@ public struct WorldGen {
                     {
                         int index = ArrayHelper.ElementIndex(x, y, model.worldSizeY);
 
-                        if (mapFlags[x, y] == 0 && model.localMaps[index].Model.baseNum == tileType)
+                        if (mapFlags[x, y] == 0 && model.localMaps[index].baseNum == tileType)
                         {
                             mapFlags[x, y] = 1;
                             queue.Enqueue(new Coord(x, y));
@@ -469,7 +471,7 @@ public struct WorldGen {
             {
                 int index = ArrayHelper.ElementIndex(x, y, model.worldSizeY);
 
-                if (mapFlags[x, y] == 0 && model.localMaps[index].Model.baseNum == tileType)
+                if (mapFlags[x, y] == 0 && model.localMaps[index].baseNum == tileType)
                 {
                     string regSeed = model.seed + x + y;
                     string newRegionName = new NameGen().GenerateRegionName(regSeed);

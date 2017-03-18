@@ -73,8 +73,8 @@ public static class TextureX {
         var changed = false;
         var importer = (TextureImporter)AssetImporter.GetAtPath(path);
 
-        if (importer.textureType != TextureImporterType.Advanced) {
-            importer.textureType = TextureImporterType.Advanced;
+        if (importer.textureType != TextureImporterType.Default) {
+            importer.textureType = TextureImporterType.Default;
             changed = true;
         }
 

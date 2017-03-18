@@ -1,10 +1,15 @@
 fileFormatVersion: 2
 guid: 7822149b96f56d34ba9a3099f23ac512
-timeCreated: 1479233843
+timeCreated: 1489817816
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - localMapText: {instanceID: 0}
+  - statisticsText: {instanceID: 0}
+  - oakTree: {fileID: 1000013671992346, guid: 762d3b96d1388c744a485e21943fe08d, type: 2}
+  - bush: {fileID: 1000013671992346, guid: 0bdd263f8b3b8c643b86c43785eb8190, type: 2}
+  - infoBox: {fileID: 1000011593721248, guid: 822636c84acad2e4782c363e3211fccc, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

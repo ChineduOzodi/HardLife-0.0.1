@@ -3,7 +3,7 @@ using System.Collections;
 using CodeControl;
 using System;
 
-public class TreeController : Controller<TreeModel> {
+public class TreeController : MonoBehaviour {
 
     internal int hour = 0;
     internal int day = 0;
@@ -24,8 +24,9 @@ public class TreeController : Controller<TreeModel> {
 
     internal MyGameManager gameManager;
     internal SpriteRenderer objectSprite;
+    internal TreeModel model;
 
-    protected override void OnInitialize()
+    void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MyGameManager>();
         objectSprite = GetComponent<SpriteRenderer>();
@@ -34,15 +35,19 @@ public class TreeController : Controller<TreeModel> {
     // Update is called once per frame
     void Update () {
         
-        if (model.localMap.Model.world.Model.date.hour != hour)
+        if (model != null)
         {
-            CreateObjectModel.UpdateAge(model, model.localMap.Model.world.Model.date);
-            UpdateGrowth();
-            ReplicatePlant();
-        }
+            if (model.localMap.Model.world.Model.date.hour != hour)
+            {
+                CreateObjectModel.UpdateAge(model, model.localMap.Model.world.Model.date);
+                UpdateGrowth();
+                ReplicatePlant();
+            }
 
-        if (model.updateTexture)
-            SetSprite();
+            if (model.updateTexture)
+                SetSprite();
+        }
+        
 	
 	}
 

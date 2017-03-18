@@ -13,6 +13,10 @@ public class LocalMapController : MonoBehaviour {
     public Text localMapText;
     public Text statisticsText;
 
+    public GameObject oakTree;
+    public GameObject bush;
+    public GameObject infoBox;
+
     WorldModel world;
     internal LocalMapModel model;
     internal MyGameManager gameManager;
@@ -120,18 +124,16 @@ public class LocalMapController : MonoBehaviour {
                 if (model.objectMap[index] != null)
                 {
                     SpriteRenderer instance;
-                    if (model.objectMap[index].Model.name == "oak tree")
+                    if (model.objectMap[index].name == "oak tree" || model.objectMap[index].name == "bush")
                     {
-                        instance = Controller.Instantiate<TreeController>("oak_tree", model.objectMap[index].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
-                    }
-                    else if (model.objectMap[index].Model.name == "bush")
-                    {
-                        instance = Controller.Instantiate<TreeController>("bush", model.objectMap[index].Model, objectMapEmpty.transform).GetComponent<SpriteRenderer>();
+                        TreeController tree = Instantiate(oakTree, objectMapEmpty.transform).GetComponent<TreeController>();
+                        tree.model = (TreeModel)model.objectMap[index];
+                        instance = tree.GetComponent<SpriteRenderer>();
                     }
                     else
-                        instance = CreateObject(model.objectMap[index].Model, x,y, objectMapEmpty.transform);
-                    instance.sortingOrder = model.objectMap[index].Model.renderOrder + y;
-                    instance.transform.position = model.objectMap[index].Model.worldPostition;
+                        instance = CreateObject(model.objectMap[index], x,y, objectMapEmpty.transform);
+                    instance.sortingOrder = model.objectMap[index].renderOrder + y;
+                    instance.transform.position = model.objectMap[index].worldPostition;
                     objectMap[x,y] = instance;
                 }
             }
@@ -151,7 +153,7 @@ public class LocalMapController : MonoBehaviour {
             for (int y = 0; y < world.localSizeY; y++)
             {
                 int index = ArrayHelper.ElementIndex(x, y, world.localSizeY);
-                baseMap[x,y] = CreateObject(model.baseMap[index].Model, x,y, baseMapEmpty.transform);
+                baseMap[x,y] = CreateObject(model.baseMap[index], x,y, baseMapEmpty.transform);
             }
         }
     }
@@ -173,9 +175,9 @@ public class LocalMapController : MonoBehaviour {
                 objectMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
                 selectedTile = objectMap[coord.x, coord.y];
-                selectedObject = model.objectMap[ArrayHelper.ElementIndex(coord.x, coord.y,world.localSizeY)].Model;
+                selectedObject = model.objectMap[ArrayHelper.ElementIndex(coord.x, coord.y,world.localSizeY)];
 
-                InfoPanel obj = Controller.Instantiate<InfoPanel>("ui/infobox", selectedObject, transform.parent);
+                InfoPanel obj = Instantiate(infoBox, transform.parent).GetComponent<InfoPanel>();
 
                 obj.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(selectedObject.worldPostition);
             }

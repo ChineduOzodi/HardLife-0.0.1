@@ -93,7 +93,7 @@ public class WorldCreationManager : MonoBehaviour {
             Coord coord = gameManager.WorldCoordFromWorldPosition(worldPosition);
             biomeMap[coord.x, coord.y].color = new Color(.5f, .5f, .5f);
 
-            _model.currentLocalMap = _model.localMaps[ArrayHelper.ElementIndex(coord.x, coord.y,gameManager.world.worldSizeY)];
+            _model.currentLocalMap = new ModelRef<LocalMapModel>( _model.localMaps[ArrayHelper.ElementIndex(coord.x, coord.y,gameManager.world.worldSizeY)]);
 
             selectedTile = biomeMap[coord.x, coord.y];
             TileSelected();
@@ -207,7 +207,7 @@ public class WorldCreationManager : MonoBehaviour {
             for (int y = 0; y < gameManager.world.worldSizeY; y++)
             {
                 int index = ArrayHelper.ElementIndex(x, y, gameManager.world.worldSizeY);
-                if (gameManager.world.localMaps[index].Model.mountainLevel == "Hills" && gameManager.world.localMaps[index].Model.biome != "Water")
+                if (gameManager.world.localMaps[index].mountainLevel == "Hills" && gameManager.world.localMaps[index].biome != "Water")
                 {
                     Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x + .5f) + Vector3.up * (y + .5f);
                     GameObject tile = new GameObject("Hill");
@@ -218,7 +218,7 @@ public class WorldCreationManager : MonoBehaviour {
                     instance.transform.SetParent(mountEmpty);
                     mountMap[x, y] = instance;
                 }
-                else if (gameManager.world.localMaps[index].Model.mountainLevel == "Mountains" && gameManager.world.localMaps[index].Model.biome != "Water")
+                else if (gameManager.world.localMaps[index].mountainLevel == "Mountains" && gameManager.world.localMaps[index].biome != "Water")
                 {
                     Vector3 worldPoint = gameManager.world.worldBottomLeft + Vector3.right * (x + .5f) + Vector3.up * (y + .5f);
                     GameObject tile = new GameObject("Mountain");
@@ -237,10 +237,10 @@ public class WorldCreationManager : MonoBehaviour {
     {
         int index = ArrayHelper.ElementIndex(coord.x, coord.y, gameManager.world.worldSizeY);
 
-        string terrain = gameManager.world.localMaps[index].Model.mountainLevel;
-        string rain = gameManager.world.localMaps[index].Model.rain.ToString();
-        string info = "Region Name: " + gameManager.world.localMaps[index].Model.region;
-        string aveTemp = Mathf.RoundToInt(gameManager.world.localMaps[index].Model.aveTemp) + " C (" + (Mathf.RoundToInt(gameManager.world.localMaps[index].Model.aveTemp) - tempYearRange) + " - " + (Mathf.RoundToInt(gameManager.world.localMaps[index].Model.aveTemp) + tempYearRange) + ")";
+        string terrain = gameManager.world.localMaps[index].mountainLevel;
+        string rain = gameManager.world.localMaps[index].rain.ToString();
+        string info = "Region Name: " + gameManager.world.localMaps[index].region;
+        string aveTemp = Mathf.RoundToInt(gameManager.world.localMaps[index].aveTemp) + " C (" + (Mathf.RoundToInt(gameManager.world.localMaps[index].aveTemp) - tempYearRange) + " - " + (Mathf.RoundToInt(gameManager.world.localMaps[index].aveTemp) + tempYearRange) + ")";
         info += "\nTerrain Type: " + terrain;
         info += "\nAverage Temperature: " + aveTemp;
         info += "\nAverage Rain: " + rain + " in";
@@ -282,8 +282,8 @@ public class WorldCreationManager : MonoBehaviour {
                 GameObject tile = new GameObject("BiomeTile");
                 tile.transform.position = worldPoint;
                 SpriteRenderer instance = tile.AddComponent<SpriteRenderer>();
-                instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMaps[index].Model.biome);
-                gameManager.world.localMaps[index].Model.worldPosition = worldPoint;
+                instance.sprite = gameManager.spriteManager.GetSprite(gameManager.world.localMaps[index].biome);
+                gameManager.world.localMaps[index].worldPosition = worldPoint;
                 instance.transform.SetParent(biomeEmpty);
                 biomeMap[x, y] = instance;
             }

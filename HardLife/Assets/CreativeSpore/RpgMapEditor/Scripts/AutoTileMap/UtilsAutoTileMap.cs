@@ -279,7 +279,7 @@ namespace CreativeSpore.RpgMapEditor
 					textureImporter.wrapMode = TextureWrapMode.Clamp;
 					textureImporter.filterMode = FilterMode.Point;
 					textureImporter.textureFormat = TextureImporterFormat.ARGB32;
-                    textureImporter.textureType = TextureImporterType.Advanced;
+                    textureImporter.textureType = TextureImporterType.Default;
 					textureImporter.maxTextureSize = AutoTileset.k_MaxTextureSize;                    
 					AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate); 
 				}

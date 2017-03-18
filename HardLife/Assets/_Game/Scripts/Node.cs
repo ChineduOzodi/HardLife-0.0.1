@@ -37,19 +37,19 @@ public class Node : IHeapItem<Node>
     public static Node NodeFromPosition(Coord pos, LocalMapModel model)
     {
         float walkSpeed = 1;
-        Vector3 worldPosition = model.baseMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].Model.worldPostition;
+        Vector3 worldPosition = model.baseMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].worldPostition;
 
         //Get correct walk speed modification
-        walkSpeed *= model.baseMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].Model.walkSpeedMod;
+        walkSpeed *= model.baseMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].walkSpeedMod;
         if (model.objectMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)] != null)
         {
-            walkSpeed *= model.objectMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].Model.walkSpeedMod;
+            walkSpeed *= model.objectMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].walkSpeedMod;
         }
         if (model.roadMap != null)
         {
             if (model.roadMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)] != null)
             {
-                walkSpeed *= model.roadMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].Model.walkSpeedMod;
+                walkSpeed *= model.roadMap[ArrayHelper.ElementIndex(pos.x, pos.y,model.localSizeX)].walkSpeedMod;
             }
         }
         
