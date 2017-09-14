@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 // NextGenSprites (copyright) 2016 Ruben de la Torre, www.studio-delatorre.com
@@ -221,7 +223,7 @@ Shader "NextGenSprites/FX/MegaStack" {
 					o.vertexColor = v.vertexColor * float4(_Color.rgb, _Color.a);
 					o.normalDir = UnityObjectToWorldNormal(v.normal);
 					o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-					o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+					o.pos = UnityObjectToClipPos(v.vertex);
 
 					//Tangents for Normal mapping
 					#if CURVATURE_ON
@@ -424,7 +426,7 @@ Shader "NextGenSprites/FX/MegaStack" {
 					#endif
 
 					o.vertexColor = v.vertexColor * float4(_Color.rgb, _Color.a);
-					o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+					o.pos = UnityObjectToClipPos(v.vertex);
 					TRANSFER_SHADOW_CASTER(o)
 					return o;
 				}

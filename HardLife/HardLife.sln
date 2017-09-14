@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardLife", "HardLife.csproj", "{0426954F-BF20-A799-4A1F-97053DC7A55E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardLife.Editor", "HardLife.Editor.csproj", "{59E5F16C-AB9C-CDDF-0A31-B961E91A3483}"

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 // NextGenSprites (copyright) 2016 Ruben de la Torre, www.studio-delatorre.com
@@ -196,7 +198,7 @@ Shader "NextGenSprites/Standard/Single" {
 				o.normalDir = UnityObjectToWorldNormal(v.normal);
 
 				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 
 				//Flip Normals if double sided
 				#if DOUBLESIDED_ON
@@ -424,7 +426,7 @@ Shader "NextGenSprites/Standard/Single" {
 				#endif
 				
 				o.vertexColor = v.vertexColor * float4(_Color.rgb, _Color.a);
-				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				TRANSFER_SHADOW_CASTER(o)
 				return o;
 			}

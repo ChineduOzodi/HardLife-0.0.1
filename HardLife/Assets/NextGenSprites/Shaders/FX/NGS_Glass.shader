@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 // NextGenSprites (copyright) 2016 Ruben de la Torre, www.studio-delatorre.com
@@ -78,7 +80,7 @@ Shader "NextGenSprites/FX/Glass" {
 				o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
 				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 				float3 lightColor = _LightColor0.rgb;
-				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				#ifdef PIXELSNAP_ON
 					o.pos = UnityPixelSnap(o.pos);
 				#endif
@@ -192,7 +194,7 @@ Shader "NextGenSprites/FX/Glass" {
 				o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
 				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 				float3 lightColor = _LightColor0.rgb;
-				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				#ifdef PIXELSNAP_ON
 					o.pos = UnityPixelSnap(o.pos);
 				#endif

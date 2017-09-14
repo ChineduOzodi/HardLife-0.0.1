@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Code Control/VertexColor" {
     Properties {
         _BaseColor ("BaseColor", Color) = (1,1,1,1)
@@ -33,7 +35,7 @@ Shader "Code Control/VertexColor" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.vertexColor = v.vertexColor;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                o.pos = UnityObjectToClipPos(v.vertex);
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
